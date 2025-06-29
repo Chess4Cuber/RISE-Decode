@@ -6,6 +6,12 @@
 
 !libs/*.aar
 
+# Ignore all JAR files to avoid committing binary dependencies.
+# JARs should be managed via Gradle or downloaded as needed, not stored in version control.
+# If a specific JAR must be committed, remove it from .gitignore or use 'git add -f'.
+
+*.jar
+
 # Files for the ART/Dalvik VM
 *.dex
 
