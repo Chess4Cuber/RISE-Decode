@@ -37,10 +37,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /*
- * This OpMode executes a Tank Drive control TeleOp a direct drive robot
+ * This OpMode executes a Tank Drive org.firstinspires.ftc.baseCode.control TeleOp a direct drive robot
  * The code is structured as an Iterative OpMode
  *
- * In this mode, the left and right joysticks control the left and right motors respectively.
+ * In this mode, the left and right joysticks org.firstinspires.ftc.baseCode.control the left and right motors respectively.
  * Pushing a joystick forward will make the attached motor drive forward.
  * It raises and lowers the claw using the Gamepad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.

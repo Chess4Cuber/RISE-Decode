@@ -121,13 +121,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    // These constants define the desired driving/control characteristics
+    // These constants define the desired driving/org.firstinspires.ftc.baseCode.control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.2;     // Max turn speed to limit turn rate.
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
-    // Define the Proportional control coefficient (or GAIN) for "heading control".
+    // Define the Proportional org.firstinspires.ftc.baseCode.control coefficient (or GAIN) for "heading org.firstinspires.ftc.baseCode.control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not correct strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
@@ -174,7 +174,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             telemetry.update();
         }
 
-        // Set the encoders for closed loop speed control, and reset the heading.
+        // Set the encoders for closed loop speed org.firstinspires.ftc.baseCode.control, and reset the heading.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         imu.resetYaw();
@@ -244,7 +244,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
-            // Start driving straight, and then enter the control loop
+            // Start driving straight, and then enter the org.firstinspires.ftc.baseCode.control loop
             maxDriveSpeed = Math.abs(maxDriveSpeed);
             moveRobot(maxDriveSpeed, 0);
 
@@ -398,7 +398,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     }
 
     /**
-     *  Display the various control parameters while driving
+     *  Display the various org.firstinspires.ftc.baseCode.control parameters while driving
      *
      * @param straight  Set to true if we are driving straight, and the encoder positions should be included in the telemetry.
      */

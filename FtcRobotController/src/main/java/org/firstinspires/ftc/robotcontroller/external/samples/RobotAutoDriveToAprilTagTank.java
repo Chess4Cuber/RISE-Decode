@@ -65,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  * This sample assumes that the default AprilTag Library (usually for the current season) is being loaded by default
  * so you should choose to approach a valid tag ID.
  *
- * Under manual control, the left stick will move forward/back, and the right stick will rotate the robot.
+ * Under manual org.firstinspires.ftc.baseCode.control, the left stick will move forward/back, and the right stick will rotate the robot.
  * This is called POV Joystick mode, different than Tank Drive (where each joystick controls a wheel).
  *
  * Manually drive the robot until it displays Target data on the Driver Station.
@@ -91,17 +91,17 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
 
-    //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+    //  Set the GAIN constants to org.firstinspires.ftc.baseCode.control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
-    //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+    //  Drive = Error * Gain    Make these values smaller for smoother org.firstinspires.ftc.baseCode.control, or larger for a more aggressive response.
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
 
-    private DcMotor leftDrive   = null;  //  Used to control the left drive wheel
-    private DcMotor rightDrive  = null;  //  Used to control the right drive wheel
+    private DcMotor leftDrive   = null;  //  Used to org.firstinspires.ftc.baseCode.control the left drive wheel
+    private DcMotor rightDrive  = null;  //  Used to org.firstinspires.ftc.baseCode.control the right drive wheel
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private static final int DESIRED_TAG_ID = -1;    // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -118,7 +118,7 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
         // Initialize the Apriltag Detection process
         initAprilTag();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
+        // Initialize the org.firstinspires.ftc.baseCode.hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
@@ -178,7 +178,7 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
             if (gamepad1.left_bumper && targetFound) {
 
-                // Determine heading and range error so we can use them to control the robot automatically.
+                // Determine heading and range error so we can use them to org.firstinspires.ftc.baseCode.control the robot automatically.
                 double  rangeError   = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
                 double  headingError = desiredTag.ftcPose.bearing;
 

@@ -80,7 +80,7 @@ public class ConceptNullOp extends OpMode {
   /**
    * This method will be called once, when this OpMode is stopped.
    * <p>
-   * Your ability to control hardware from this method will be limited.
+   * Your ability to org.firstinspires.ftc.baseCode.control org.firstinspires.ftc.baseCode.hardware from this method will be limited.
    */
   @Override
   public void stop() {

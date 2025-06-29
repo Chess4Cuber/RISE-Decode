@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 
 /*
- * This OpMode illustrates how to use the Expansion Hub's Bulk-Read feature to speed up control cycle times.
+ * This OpMode illustrates how to use the Expansion Hub's Bulk-Read feature to speed up org.firstinspires.ftc.baseCode.control cycle times.
  * In this example there are 4 motors that need their encoder positions, and velocities read.
  * The sample is written to work with one or two expansion hubs, with no assumption as to where the motors are located.
  *
@@ -50,40 +50,40 @@ import java.util.List;
  * Cache Mode = AUTO   This mode will attempt to minimize the number of discrete read commands, by performing bulk-reads
  *                     and then returning values that have been cached.  The cache is updated automatically whenever any specific encoder is re-read.
  *                     This mode will always return new data, but it may perform more bulk-reads than absolutely required.
- *                     Extra reads will be performed if multiple encoder/velocity reads are performed on the same encoder in one control cycle.
+ *                     Extra reads will be performed if multiple encoder/velocity reads are performed on the same encoder in one org.firstinspires.ftc.baseCode.control cycle.
  *                     This mode is a good compromise between the OFF and MANUAL modes.
  *                     Note: If there are significant user-program delays between encoder reads, the cached value may not be fresh (recent).
  *                     You can issue a clearBulkCache() call at any time force a fresh bulk-read on the next encoder read.
  *
  * Cache Mode = MANUAL This mode requires the user's code to determine the best time to clear the cached bulk-read data.
- *                     Well organized code will reset the cache once at the beginning of the control cycle, and then immediately read and store all the encoder values.
+ *                     Well organized code will reset the cache once at the beginning of the org.firstinspires.ftc.baseCode.control cycle, and then immediately read and store all the encoder values.
  *                     This approach will produce the shortest cycle times, but it does require the user to manually clear the cache.
  *                     Since NO automatic Bulk-Reads are performed, neglecting to clear the bulk cache will result in the same values being returned
  *                     each time an encoder read is performed.
  *
  * -------------------------------------
  *
- * General tip to speed up your control cycles:
+ * General tip to speed up your org.firstinspires.ftc.baseCode.control cycles:
  *
  * No matter what method you use to read encoders and other inputs, you should try to
- * avoid reading the same encoder input multiple times around a control loop.
- * Under normal conditions, this will slow down the control loop.
+ * avoid reading the same encoder input multiple times around a org.firstinspires.ftc.baseCode.control loop.
+ * Under normal conditions, this will slow down the org.firstinspires.ftc.baseCode.control loop.
  * The preferred method is to read all the required inputs ONCE at the beginning of the loop,
- * and save the values in variable that can be used by other parts of the control code.
+ * and save the values in variable that can be used by other parts of the org.firstinspires.ftc.baseCode.control code.
  *
  * eg: if you are sending encoder positions to your telemetry display, putting a getCurrentPosition()
  * call in the telemetry statement will force the code to go and get another copy which will take time.
- * It's much better read the position into a variable once, and use that variable for control AND display.
+ * It's much better read the position into a variable once, and use that variable for org.firstinspires.ftc.baseCode.control AND display.
  * Reading saved variables takes no time at all.
  *
- * Once you put all your sensor reads at the beginning of the control cycle, it's very easy to use
+ * Once you put all your sensor reads at the beginning of the org.firstinspires.ftc.baseCode.control cycle, it's very easy to use
  * the bulk-read AUTO mode to streamline your cycle timing.
  */
 @TeleOp (name = "Motor Bulk Reads", group = "Tests")
 @Disabled
 public class ConceptMotorBulkRead extends LinearOpMode {
 
-    final int       TEST_CYCLES    = 500;   // Number of control cycles to run to determine cycle times.
+    final int       TEST_CYCLES    = 500;   // Number of org.firstinspires.ftc.baseCode.control cycles to run to determine cycle times.
 
     private DcMotorEx m1, m2, m3, m4; // Motor Objects
     private long      e1, e2, e3, e4; // Encoder Values
@@ -116,7 +116,7 @@ public class ConceptMotorBulkRead extends LinearOpMode {
         waitForStart();
 
         // --------------------------------------------------------------------------------------
-        // Run control loop using legacy encoder reads
+        // Run org.firstinspires.ftc.baseCode.control loop using legacy encoder reads
         // In this mode, a single read is done for each encoder position, and a bulk read is done for each velocity read.
         // This is the worst case scenario.
         // This is the same as using LynxModule.BulkCachingMode.OFF
@@ -176,8 +176,8 @@ public class ConceptMotorBulkRead extends LinearOpMode {
 
         // --------------------------------------------------------------------------------------
         // Run test cycles using MANUAL cache mode
-        // In this mode, only one block read is done each control cycle.
-        // This is the MOST efficient method, but it does require that the cache is cleared manually each control cycle.
+        // In this mode, only one block read is done each org.firstinspires.ftc.baseCode.control cycle.
+        // This is the MOST efficient method, but it does require that the cache is cleared manually each org.firstinspires.ftc.baseCode.control cycle.
         // --------------------------------------------------------------------------------------
 
         // Important Step 3: Option B. Set all Expansion hubs to use the MANUAL Bulk Caching mode
@@ -189,7 +189,7 @@ public class ConceptMotorBulkRead extends LinearOpMode {
         cycles = 0;
         while (opModeIsActive() && (cycles++ < TEST_CYCLES)) {
 
-            // Important Step 4: If you are using MANUAL mode, you must clear the BulkCache once per control cycle
+            // Important Step 4: If you are using MANUAL mode, you must clear the BulkCache once per org.firstinspires.ftc.baseCode.control cycle
             for (LynxModule module : allHubs) {
                 module.clearBulkCache();
             }

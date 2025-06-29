@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 /*
  * This OpMode determines the best Exposure for minimizing image motion-blur on a Webcam
- * Note that it is not possible to control the exposure for a Phone Camera, so if you are using a Phone for the Robot Controller
+ * Note that it is not possible to org.firstinspires.ftc.baseCode.control the exposure for a Phone Camera, so if you are using a Phone for the Robot Controller
  * this OpMode/Feature only applies to an externally connected Webcam
  *
  * The goal is to determine the smallest (shortest) Exposure value that still provides reliable Tag Detection.
@@ -232,7 +232,7 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
             telemetry.update();
         }
 
-        // Get camera control values unless we are stopping.
+        // Get camera org.firstinspires.ftc.baseCode.control values unless we are stopping.
         if (!isStopRequested()) {
             ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
             minExposure = (int)exposureControl.getMinExposure(TimeUnit.MILLISECONDS) + 1;

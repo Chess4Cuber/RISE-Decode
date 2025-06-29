@@ -41,11 +41,11 @@
       android:launchMode="singleTask" >
 
       <intent-filter>
-        <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+        <action android:name="android.org.firstinspires.ftc.baseCode.hardware.usb.action.USB_DEVICE_ATTACHED" />
       </intent-filter>
 
       <meta-data
-        android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+        android:name="android.org.firstinspires.ftc.baseCode.hardware.usb.action.USB_DEVICE_ATTACHED"
         android:resource="@xml/device_filter" />
 
       <!--org.firstinspires.main.entry indicates that this app is compatible with the Dragonboard Control Hub-->

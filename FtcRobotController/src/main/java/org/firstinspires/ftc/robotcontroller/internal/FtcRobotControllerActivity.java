@@ -327,7 +327,7 @@ public class FtcRobotControllerActivity extends Activity
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
           @Override
           public boolean onMenuItemClick(MenuItem item) {
-            return onOptionsItemSelected(item); // Delegate to the handler for the hardware menu button
+            return onOptionsItemSelected(item); // Delegate to the handler for the org.firstinspires.ftc.baseCode.hardware menu button
           }
         });
         popupMenu.inflate(R.menu.ftc_robot_controller);

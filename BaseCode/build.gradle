@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'org.firstinspires.ftc.sharedcode'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 34
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(':FtcRobotController')
+    implementation 'org.firstinspires.ftc:Inspection:9.2.0'
+    implementation 'org.firstinspires.ftc:Blocks:9.2.0'
+    implementation 'org.firstinspires.ftc:Tfod:9.2.0'
+    implementation 'org.firstinspires.ftc:RobotCore:9.2.0'
+    implementation 'org.firstinspires.ftc:RobotServer:9.2.0'
+    implementation 'org.firstinspires.ftc:OnBotJava:9.2.0'
+    implementation 'org.firstinspires.ftc:Hardware:9.2.0'
+    implementation 'org.firstinspires.ftc:FtcCommon:9.2.0'
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+}

@@ -51,7 +51,7 @@ and not be embellished with too much additional “clever” code.  If a sensor 
 addressing needs, or has a variety of modes or outputs, these should be demonstrated as
 simply as possible.
 
-Special programming methods, or robot control techniques should be reserved for “Concept” Samples,
+Special programming methods, or robot org.firstinspires.ftc.baseCode.control techniques should be reserved for “Concept” Samples,
 and where possible, Samples should strive to only demonstrate a single concept,
 eg: State machine coding, or a User Menu system, and not combine them into a single “all inclusive”
 sample.  This will prevent an “all inclusive” Sample being deleted just because one part of it

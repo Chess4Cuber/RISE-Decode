@@ -225,7 +225,7 @@ class OctoSwerveModule {
     private static final double DEGREES_PER_US = (360.0 / 1024.0);  // based on REV Through Bore Encoder
     private static final double VELOCITY_SAMPLES_PER_S = (1000.0 / VELOCITY_SAMPLE_INTERVAL_MS);
 
-    // The correct drive and turn directions must be set for the Swerve Module based on the specific hardware geometry.
+    // The correct drive and turn directions must be set for the Swerve Module based on the specific org.firstinspires.ftc.baseCode.hardware geometry.
     // Forward motion must generate an increasing drive count.
     // Counter Clockwise steer rotation must generate an increasing Steer Angle (degrees)
     private static final boolean INVERT_DRIVE_ENCODER = false; // Set true if forward motion decreases drive "Count"

@@ -142,7 +142,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
 
-        // Get the hardware and firmware version
+        // Get the org.firstinspires.ftc.baseCode.hardware and firmware version
         SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
         SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
         myOtos.getVersionInfo(hwVersion, fwVersion);

@@ -88,7 +88,7 @@ public class SensorHuskyLens extends LinearOpMode {
          * Basic check to see if the device is alive and communicating.  This is not
          * technically necessary here as the HuskyLens class does this in its
          * doInitialization() method which is called when the device is pulled out of
-         * the hardware map.  However, sometimes it's unclear why a device reports as
+         * the org.firstinspires.ftc.baseCode.hardware map.  However, sometimes it's unclear why a device reports as
          * failing on initialization.  In the case of this device, it's because the
          * call to knock() failed.
          */

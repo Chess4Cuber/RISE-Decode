@@ -3,7 +3,7 @@
 This repository contains the public FTC SDK for the INTO THE DEEP (2024-2025) competition season.
 
 ## Welcome!
-This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
+This GitHub repository contains the source code that is used to build an Android app to org.firstinspires.ftc.baseCode.control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio Ladybug (2024.2) or later.
@@ -11,7 +11,7 @@ To use this Android Studio project, you will need Android Studio Ladybug (2024.2
 To program your robot in Blocks or OnBot Java, you do not need Android Studio.
 
 ## Getting Started
-If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html) to get familiar with how to use the control system:
+If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html) to get familiar with how to use the org.firstinspires.ftc.baseCode.control system:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FTC Blocks Online Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html)
 
@@ -34,11 +34,11 @@ Once you have downloaded and uncompressed (if needed) your folder, you can use A
 
 ## Getting Help
 ### User Documentation and Tutorials
-*FIRST* maintains online documentation with information and tutorials on how to use the *FIRST* Tech Challenge software and robot control system.  You can access this documentation using the following link:
+*FIRST* maintains online documentation with information and tutorials on how to use the *FIRST* Tech Challenge software and robot org.firstinspires.ftc.baseCode.control system.  You can access this documentation using the following link:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FIRST Tech Challenge Documentation](https://ftc-docs.firstinspires.org/index.html)
 
-Note that the online documentation is an "evergreen" document that is constantly being updated and edited.  It contains the most current information about the *FIRST* Tech Challenge software and control system.
+Note that the online documentation is an "evergreen" document that is constantly being updated and edited.  It contains the most current information about the *FIRST* Tech Challenge software and org.firstinspires.ftc.baseCode.control system.
 
 ### Javadoc Reference Material
 The Javadoc reference documentation for the FTC SDK is now available online.  Click on the following link to view the FTC SDK Javadoc documentation as a live website:
@@ -110,7 +110,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 ## Version 10.2 (20250121-174034)
 
 ### Enhancements
-* Add ability to upload the pipeline for Limelight3A which allows teams to version control their limelight pipelines.
+* Add ability to upload the pipeline for Limelight3A which allows teams to version org.firstinspires.ftc.baseCode.control their limelight pipelines.
 
 
 ### Bug Fixes
@@ -225,14 +225,14 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Fixes https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/942 where visionPortal.close() can cause an IndexOutOfBoundsError.
 * Fixes a bug in the blocks editor where collapsed function blocks show a warning "Collapsed blocks contain warnings." when the Blocks OpMode is reopened.
 * Fixes a bug where the blocks editor wouldn't warn you that you have unsaved changes when you try to leave. This bug was introduced due to a behavior change in Chrome 119.
-* [Issue #764](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/764) - Get gain control returns a null pointer for a switchable camera
+* [Issue #764](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/764) - Get gain org.firstinspires.ftc.baseCode.control returns a null pointer for a switchable camera
 * Fixes a bug where the correct deadzone for certain gamepads was not applied when Advanced Gamepad Features was enabled
 
 ## Version 9.1 (20240215-115542)
 
 ### Enhancements
 * Fixes a problem with Blocks: if the user closes a Block's warning balloon, it will still be closed next time the project is opened in the Blocks editor.
-* In the Blocks editor, an alert concerning missing hardware devices is not shown if all the Blocks that use the missing hardware devices are disabled.
+* In the Blocks editor, an alert concerning missing org.firstinspires.ftc.baseCode.hardware devices is not shown if all the Blocks that use the missing org.firstinspires.ftc.baseCode.hardware devices are disabled.
 * Adds Blocks to support comparing property values CRServo.Direction, DCMotor.Direction, DCMotor.Mode, DCMotor.ZeroPowerBehavior, DigitalChannel.Mode, GyroSensor.HeadingMode, IrSeekerSensor.Mode, and Servo.Direction, to the corresponding enum Block.
 * Improves OnBotJava auto-import to correctly import classes when used in certain situations.
 * Improves OnBotJava autocomplete to provide better completion options in most cases.
@@ -244,8 +244,8 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Added Blocks OpMode sample SensorTouch.
 * Added Java OpMode sample SensorDigitalTouch.
 * Several improvements to VisionPortal
-  * Adds option to control whether the stream is automatically started following a `.build()` call on a VisionPortal Builder
-  * Adds option to control whether the vision processing statistics overlay is rendered or not
+  * Adds option to org.firstinspires.ftc.baseCode.control whether the stream is automatically started following a `.build()` call on a VisionPortal Builder
+  * Adds option to org.firstinspires.ftc.baseCode.control whether the vision processing statistics overlay is rendered or not
   * VisionPortals now implement the `CameraStreamSource` interface, allowing multiportal users to select which portal is routed to the DS in INIT by calling CameraStreamServer.getInstance().setSource(visionPortal). Can be selected via gamepad, between Camera Stream sessions.
   * Add option to `AprilTagProcessor` to suppress calibration warnings
   * Improves camera calibration warnings
@@ -469,7 +469,7 @@ This is a bug fix only release to address the following four issues.
     whether you were actually going to use them or not. This could result in reduced performance and
     unnecessary warnings.
   * With this change, it is very important for Java users to retrieve all needed devices from the
-    `HardwareMap` **during the Init phase of the OpMode**. Namely, declare a variable for each hardware
+    `HardwareMap` **during the Init phase of the OpMode**. Namely, declare a variable for each org.firstinspires.ftc.baseCode.hardware
     device the OpMode will use, and assign a value to each. Do not do this during the Run phase, or your
     OpMode may briefly hang while the devices you are retrieving get initialized.
   * OpModes that do not use all of the I2C devices specified in the configuration file should take
@@ -491,9 +491,9 @@ This is a bug fix only release to address the following four issues.
   * Exceptions during an OpMode now open a popup window with the same color scheme as the log viewer, containing 15 lines of the exception stacktrace to allow easily tracing down the offending line without needing to connect to view logs over ADB or scroll through large amounts of logs in the log viewer.
   * The exception text in the popup window is both zoomable and scrollable just like a webpage.
   * Pressing the "OK" button in the popup window will return to the main screen of the Driver Station and allow an OpMode to be run again immediately, without the need to perform a "Restart Robot"
-* Adds new Java sample to demonstrate using a hardware class to abstract robot actuators, and share them across multiple OpModes.
+* Adds new Java sample to demonstrate using a org.firstinspires.ftc.baseCode.hardware class to abstract robot actuators, and share them across multiple OpModes.
   * Sample OpMode is [ConceptExternalHardwareClass.java](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptExternalHardwareClass.java)
-  * Abstracted hardware class is [RobotHardware.java](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/RobotHardware.java)
+  * Abstracted org.firstinspires.ftc.baseCode.hardware class is [RobotHardware.java](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/RobotHardware.java)
 * Updates RobotAutoDriveByGyro_Linear Java sample to use REV Control/Expansion hub IMU.
 * Updates Vuforia samples to reference PowerPlay assets and have correct names and field locations of image targets.
 * Updates TensorFlow samples to reference PowerPlay assets.
@@ -560,7 +560,7 @@ This is a bug fix only release to address the following four issues.
 * Fixes possible (but unlikely) Driver Station crash when connecting gamepads of any type.
 * Fixes bug where Driver Station would use generic 20% deadzone for Xbox360 and Logitech F310 gamepads when Advanced Gamepad Features was disabled.
 * Added SimpleOmniDrive sample OpMode.
-* Adds UVC white balance control API.
+* Adds UVC white balance org.firstinspires.ftc.baseCode.control API.
 * Fixes [issue #259](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/259) Most blocks samples for TensorFlow can't be used for a different model.
     * The blocks previously labeled TensorFlowObjectDetectionFreightFrenzy (from the subcategory named "Optimized for Freight Frenzy") and TensorFlowObjectDetectionCustomModel (from the subcategory named "Custom Model") have been replaced with blocks labeled TensorFlowObjectDetection. Blocks in existing opmodes will be automatically updated to the new blocks when opened in the blocks editor.
 * Fixes [issue #260](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/260) Blocks can't call java method that has a VuforiaLocalizer parameter.
@@ -579,20 +579,20 @@ This is a bug fix only release to address the following four issues.
     * Upload .jar and .aar files in OnBotJava.
       * Known limitation - RobotController device must be running Android 7.0 or greater.
       * Known limitation - .aar files with assets are not supported.
-    * External libraries can provide support for hardware devices by using the annotation in the
-      com.qualcomm.robotcore.hardware.configuration.annotations package.
+    * External libraries can provide support for org.firstinspires.ftc.baseCode.hardware devices by using the annotation in the
+      com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations package.
     * External libraries can include .so files for native code.
     * External libraries can be used from OnBotJava OpModes.
     * External libraries that use the following annotations can be used from Blocks OpModes.
       * org.firstinspires.ftc.robotcore.external.ExportClassToBlocks
       * org.firstinspires.ftc.robotcore.external.ExportToBlocks
-    * External libraries that use the following annotations can add new hardware devices:
-      * com.qualcomm.robotcore.hardware.configuration.annotations.AnalogSensorType
-      * com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties
-      * com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType
-      * com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType
-      * com.qualcomm.robotcore.hardware.configuration.annotations.MotorType
-      * com.qualcomm.robotcore.hardware.configuration.annotations.ServoType
+    * External libraries that use the following annotations can add new org.firstinspires.ftc.baseCode.hardware devices:
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.AnalogSensorType
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.DeviceProperties
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.DigitalIoDeviceType
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.I2cDeviceType
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.MotorType
+      * com.qualcomm.robotcore.org.firstinspires.ftc.baseCode.hardware.configuration.annotations.ServoType
     * External libraries that use the following annotations can add new functionality to the Robot Controller:
       * org.firstinspires.ftc.ftccommon.external.OnCreate
       * org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop
@@ -623,7 +623,7 @@ This is a bug fix only release to address the following four issues.
     * The warnings are automatically re-enabled when a Robot Controller app from a new FTC season is installed.
 * Adds support for I2C transactions on the Expansion Hub / Control Hub without specifying a register address.
     * See section 3 of the [TI I2C spec](https://www.ti.com/lit/an/slva704/slva704.pdf).
-    * Calling these new methods when using Modern Robotics hardware will result in an UnsupportedOperationException.
+    * Calling these new methods when using Modern Robotics org.firstinspires.ftc.baseCode.hardware will result in an UnsupportedOperationException.
 * Changes VuforiaLocalizer `close()` method to be public.
 * Adds support for TensorFlow v2 object detection models.
 * Reduces ambiguity of the Self Inspect language and graphics.
@@ -678,8 +678,8 @@ This is a bug fix only release to address the following four issues.
     * Fixes [SkyStone issue #143](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/143)
 * Improves web interface compatibility with older browser and Android System WebView versions.
 * Fixes issue in UVC driver where some cameras (e.g. certain MS Lifecams) which reported frame intervals as rounded rather than truncated values (e.g. `666667*100ns` instead of `666666*100ns` for 15FPS) would fail to start streaming.
-* Adds support in UVC driver for virtual PTZ control
-* Adds support in UVC driver for gain (ISO) control
+* Adds support in UVC driver for virtual PTZ org.firstinspires.ftc.baseCode.control
+* Adds support in UVC driver for gain (ISO) org.firstinspires.ftc.baseCode.control
 * Adds support in UVC driver for enabling/disable AE priority. This setting provides a means to tell the camera firmware either
     * A) It can undershoot the requested frame rate in order to provide a theoretically better image (i.e. with a longer exposure than the inter-frame period of the selected frame rate allows)
     * B) It *must* meet the inter-frame deadline for the selected frame rate, even if the image may be underexposed as a result
@@ -811,7 +811,7 @@ Version 5.5 requires Android Studio 4.0 or later.
     * Error messages are highlighted
     * New color scheme
 * Attempts to force-stop a runaway/stuck OpMode without restarting the entire app
-    * Not all types of runaway conditions are stoppable, but if the user code attempts to talk to hardware during the runaway, the system should be able to capture it.
+    * Not all types of runaway conditions are stoppable, but if the user code attempts to talk to org.firstinspires.ftc.baseCode.hardware during the runaway, the system should be able to capture it.
 * Makes various tweaks to the Self Inspect screen
     * Renames "OS version" entry to "Android version"
     * Renames "Wi-Fi Direct Name" to "Wi-Fi Name"
@@ -909,13 +909,13 @@ Version 5.5 requires Android Studio 4.0 or later.
     * Improves logging and reduces log spam during these conditions
 * Syncs the Control Hub time and timezone to a connected web browser programming the robot, if a Driver Station is not available.
 * Adds bulk read functionality for REV Hubs
-  * A bulk caching mode must be set at the Hub level with `LynxModule#setBulkCachingMode()`. This applies to all relevant SDK hardware classes that reference that Hub.
+  * A bulk caching mode must be set at the Hub level with `LynxModule#setBulkCachingMode()`. This applies to all relevant SDK org.firstinspires.ftc.baseCode.hardware classes that reference that Hub.
   * The following following Hub bulk caching modes are available:
-    * `BulkCachingMode.OFF` (default): All hardware calls operate as usual. Bulk data can read through `LynxModule#getBulkData()` and processed manually.
-    * `BulkCachingMode.AUTO`: Applicable hardware calls are served from a bulk read cache that is cleared/refreshed automatically to ensure identical commands don't hit the same cache. The cache can also be cleared manually with `LynxModule#clearBulkCache()`, although this is not recommended.
+    * `BulkCachingMode.OFF` (default): All org.firstinspires.ftc.baseCode.hardware calls operate as usual. Bulk data can read through `LynxModule#getBulkData()` and processed manually.
+    * `BulkCachingMode.AUTO`: Applicable org.firstinspires.ftc.baseCode.hardware calls are served from a bulk read cache that is cleared/refreshed automatically to ensure identical commands don't hit the same cache. The cache can also be cleared manually with `LynxModule#clearBulkCache()`, although this is not recommended.
     * (advanced users) `BulkCachingMode.MANUAL`: Same as `BulkCachingMode.AUTO` except the cache is never cleared automatically. To avoid getting stale data, the cache must be manually cleared at the beginning of each loop body or as the user deems appropriate.
 * Removes PIDF Annotation values added in Rev 5.3 (to AndyMark, goBILDA and TETRIX motor configurations).
-  * The new motor types will still be available but their Default control behavior will revert back to Rev 5.2
+  * The new motor types will still be available but their Default org.firstinspires.ftc.baseCode.control behavior will revert back to Rev 5.2
 * Adds new `ConceptMotorBulkRead` sample Opmode to demonstrate and compare Motor Bulk-Read modes for reducing I/O latencies.
 
 ## Version 5.3 (20191004-112306)
@@ -934,11 +934,11 @@ Version 5.5 requires Android Studio 4.0 or later.
 * Adds goBILDA 5201 and 5202 motors to Robot Configurator
 * Adds PIDF Annotation values to AndyMark, goBILDA and TETRIX motor configurations.
     This has the effect of causing the RUN_USING_ENCODERS and RUN_TO_POSITION modes to use
-    PIDF vs PID closed loop control on these motors.  This should provide more responsive, yet stable, speed control.
-    PIDF adds Feedforward control to the basic PID control loop.
-    Feedforward is useful when controlling a motor's speed because it "anticipates" how much the control voltage
+    PIDF vs PID closed loop org.firstinspires.ftc.baseCode.control on these motors.  This should provide more responsive, yet stable, speed org.firstinspires.ftc.baseCode.control.
+    PIDF adds Feedforward org.firstinspires.ftc.baseCode.control to the basic PID org.firstinspires.ftc.baseCode.control loop.
+    Feedforward is useful when controlling a motor's speed because it "anticipates" how much the org.firstinspires.ftc.baseCode.control voltage
     must change to achieve a new speed set-point, rather than requiring the integrated error to change sufficiently.
-    The PIDF values were chosen to provide responsive, yet stable, speed control on a lightly loaded motor.
+    The PIDF values were chosen to provide responsive, yet stable, speed org.firstinspires.ftc.baseCode.control on a lightly loaded motor.
     The more heavily a motor is loaded (drag or friction), the more noticable the PIDF improvement will be.
 * Fixes startup crash on Android 10
 * Fixes [ftc_app issue #712](https://github.com/ftctechnh/ftc_app/issues/712) (thanks to FROGbots-4634)
@@ -957,8 +957,8 @@ Version 5.5 requires Android Studio 4.0 or later.
 * Includes 64-bit support (to comply with [Google Play requirements](https://android-developers.googleblog.com/2019/01/get-your-apps-ready-for-64-bit.html)).
 * Protects against Stuck OpModes when a Restart Robot is requested. (Thanks to FROGbots-4634) ([ftc_app issue #709](https://github.com/ftctechnh/ftc_app/issues/709))
 * Blocks related changes:
-   * Fixes bug with blocks generated code when hardware device name is a java or javascript reserved word.
-   * Shows generated java code for blocks, even when hardware items are missing from the active configuration.
+   * Fixes bug with blocks generated code when org.firstinspires.ftc.baseCode.hardware device name is a java or javascript reserved word.
+   * Shows generated java code for blocks, even when org.firstinspires.ftc.baseCode.hardware items are missing from the active configuration.
    * Displays warning icon when outdated Vuforia and TensorFlow blocks are used ([SkyStone issue #27](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/27))
 
 ## Version 5.1 (20190820-222104)
@@ -1036,7 +1036,7 @@ Known issues:
 Changes include:
  * Fix to prevent crash when deprecated configuration annotations are used.
  * Change to allow FTC Robot Controller APK to be auto-updated using FIRST Global Control Hub update scripts.
- * Removed samples for non supported / non legal hardware.
+ * Removed samples for non supported / non legal org.firstinspires.ftc.baseCode.hardware.
  * Improvements to Telemetry.addData block with "text" socket.
  * Updated Blocks sample OpMode list to include Rover Ruckus Vuforia example.
  * Update SDK library version number.
@@ -1055,12 +1055,12 @@ Changes include:
 	 + FTC Tech Team is investigating options to mitigate this issue with the phone-based Robot Controllers.
     - Updated sample Vuforia Navigation and VuMark OpModes to demonstrate how to use an internal phone-based camera and an external UVC webcam.
 
- * Support for improved motor control.
-    - REV Robotics Expansion Hub firmware 1.8 and greater will support a feed forward mechanism for closed loop motor control.
+ * Support for improved motor org.firstinspires.ftc.baseCode.control.
+    - REV Robotics Expansion Hub firmware 1.8 and greater will support a feed forward mechanism for closed loop motor org.firstinspires.ftc.baseCode.control.
     - FTC SDK has been modified to support PIDF coefficients (proportional, integral, derivative, and feed forward).
     - FTC Blocks development tool modified to include PIDF programming blocks.
     - Deprecated older PID-related methods and variables.
-    - REV's 1.8.x PIDF-related changes provide a more linear and accurate way to control a motor.
+    - REV's 1.8.x PIDF-related changes provide a more linear and accurate way to org.firstinspires.ftc.baseCode.control a motor.
 
  * Wireless
     - Added 5GHz support for wireless channel changing for those devices that support it.
@@ -1088,7 +1088,7 @@ Changes include:
     - Fixed errors with string and list indices in blocks export to java.
     - Support for USB connected UVC webcams.
     - Refactored optimized Blocks Vuforia code to support Rover Ruckus image targets.
-    - Added programming blocks to support PIDF (proportional, integral, derivative and feed forward) motor control.
+    - Added programming blocks to support PIDF (proportional, integral, derivative and feed forward) motor org.firstinspires.ftc.baseCode.control.
     - Added formatting options (under Telemetry and Miscellaneous categories) so user can set how many decimal places to display a numerical value.
     - Support to play audio files (which are uploaded through Blocks web interface) on Driver Station in addition to the Robot Controller.
     - Fixed bug with Download Image of Blocks feature.
@@ -1096,7 +1096,7 @@ Changes include:
     - Support for REV Robotics 2m Distance Sensor.
     - Added support for a REV Touch Sensor (no longer have to configure as a generic digital device).
     - Added blocks for DcMotorEx methods.
-        + These are enhanced methods that you can use when supported by the motor controller hardware.
+        + These are enhanced methods that you can use when supported by the motor controller org.firstinspires.ftc.baseCode.hardware.
 	+ The REV Robotics Expansion Hub supports these enhanced methods.
 	+ Enhanced methods include methods to get/set motor velocity (in encoder pulses per second), get/set PIDF coefficients, etc..
 
@@ -1202,7 +1202,7 @@ Changes with verion 3.3 include:
  * OnBot Java
     - Significant improvements with autocomplete function for OnBot Java editor.
     - Sample OpModes can be selected as a template when creating new OpMode.
-    - Fixes and changes to complete hardware setup feature.
+    - Fixes and changes to complete org.firstinspires.ftc.baseCode.hardware setup feature.
     - Updated (and more useful) onBot welcome message.
 
 Known issues:
@@ -1257,7 +1257,7 @@ Changes include:
  * Blocks changes
     - Added VuforiaTrackableDefaultListener.getPose and Vuforia.trackPose blocks.
     - Added optimized blocks support for Vuforia extended tracking.
-    - Added atan2 block to the math category.
+    - Added atan2 block to the org.firstinspires.ftc.baseCode.math category.
     - Added useCompetitionFieldTargetLocations parameter to Vuforia.initialize block.  If set to false, the target locations are placed at (0,0,0) with target orientation as specified in https://github.com/gearsincorg/FTCVuforiaDemo/blob/master/Robot_Navigation.java tutorial OpMode.
  * Incorporates additional improvements to USB comm layer to improve system resiliency (to recover from a greater number of communication disruptions).
 
@@ -1279,7 +1279,7 @@ In addition to the release changes listed below (see section labeled "Version 3.
 
 This software is being released as an "alpha" version.  Use this version at your own risk!
 
-This pre-release software contains SIGNIFICANT changes, including changes to the Wi-Fi Direct pairing mechanism, rewrites of the I2C sensor classes, changes to the USB/FTDI layer, and the introduction of support for the REV Robotics Expansion Hub and the REV Robotics color-range-light sensor.  These changes were implemented to improve the reliability and resiliency of the FTC control system.
+This pre-release software contains SIGNIFICANT changes, including changes to the Wi-Fi Direct pairing mechanism, rewrites of the I2C sensor classes, changes to the USB/FTDI layer, and the introduction of support for the REV Robotics Expansion Hub and the REV Robotics color-range-light sensor.  These changes were implemented to improve the reliability and resiliency of the FTC org.firstinspires.ftc.baseCode.control system.
 
 Please note, however, that version 3.00 is considered "alpha" code.  This code is being released so that the FIRST community will have an opportunity to test the new REV Expansion Hub electronics module when it becomes available in May.  The developers do not recommend using this code for critical applications (i.e., competition use).
 
@@ -1305,7 +1305,7 @@ Changes include:
     - Provides support to update Expansion Hub firmware through FTC SDK.
     - Detects REV firmware version and records in log file.
     - Includes support for REV Control Hub (note that the REV Control Hub is not yet approved for FTC use).
-    - Implements FTC Blocks programming support for REV Expansion Hub and sensor hardware.
+    - Implements FTC Blocks programming support for REV Expansion Hub and sensor org.firstinspires.ftc.baseCode.hardware.
     - Detects and alerts when I2C device disconnect.
 
 ## Version 2.62 (built on 17.01.07)
@@ -1314,7 +1314,7 @@ Changes include:
 
 ## Version 2.61 (released on 16.12.19)
   * Blocks Programming mode changes:
-     - Fix to correct issue when an exception was thrown because an OpticalDistanceSensor object appears twice in the hardware map (the second time as a LightSensor).
+     - Fix to correct issue when an exception was thrown because an OpticalDistanceSensor object appears twice in the org.firstinspires.ftc.baseCode.hardware map (the second time as a LightSensor).
 
 ## Version 2.6 (released on 16.12.16)
   * Fixes for Gyro class:
@@ -1477,7 +1477,7 @@ Changes include:
  * setMode and getMode were added to the DcMotor class.
  * ContinuousRotationServo class has been added to the FTC SDK.
  * Range.clip() method has been overloaded so it can support this operation for int, short and byte integers.
- * Some changes have been made (new methods added) on how a user can access items from the hardware map.
+ * Some changes have been made (new methods added) on how a user can access items from the org.firstinspires.ftc.baseCode.hardware map.
  * Users can now set the zero power behavior for a DC motor so that the motor will brake or float when power is zero.
  * Prototype Blockly Programming Mode has been added to FTC Robot Controller.  Users can place the Robot Controller into this mode, and then use a device (such as a laptop) that has a Javascript enabled browser to write Blockly-based OpModes directly onto the Robot Controller.
  * Users can now configure the robot remotely through the FTC Driver Station app.
@@ -1509,8 +1509,8 @@ Changes include:
 
  * Changes made to make the FTC SDK synchronous (significant change!)
     - waitOneFullHardwareCycle() and waitForNextHardwareCycle() are no longer needed and have been deprecated.
-    - runOpMode() (for a LinearOpMode) is now decoupled from the system's hardware read/write thread.
-    - loop() (for an OpMode) is now decoupled from the system's hardware read/write thread.
+    - runOpMode() (for a LinearOpMode) is now decoupled from the system's org.firstinspires.ftc.baseCode.hardware read/write thread.
+    - loop() (for an OpMode) is now decoupled from the system's org.firstinspires.ftc.baseCode.hardware read/write thread.
     - Methods are synchronous.
     - For example, if you call setMode(DcMotorController.RunMode.RESET_ENCODERS) for a motor, the encoder is guaranteed to be reset when the method call is complete.
     - For legacy module (NXT compatible), user no longer has to toggle between read and write modes when reading from or writing to a legacy device.
@@ -1543,7 +1543,7 @@ Changes include:
  * Improved software so that Robot Controller (RC) is much more resilient and “self-healing” to USB disconnects:
     - If user attempts to start/restart RC with one or more module missing, it will display a warning but still start up.
     - When running an OpMode, if one or more modules gets disconnected, the RC & DS will display warnings,and robot will keep on working in spite of the missing module(s).
-    - If a disconnected module gets physically reconnected the RC will auto detect the module and the user will regain control of the recently connected module.
+    - If a disconnected module gets physically reconnected the RC will auto detect the module and the user will regain org.firstinspires.ftc.baseCode.control of the recently connected module.
     - Warning messages are more helpful (identifies the type of module that’s missing plus its USB serial number).
  * Code changes to fix the null gamepad reference when users try to reference the gamepads in the init() portion of their OpMode.
  * NXT light sensor output is now properly scaled.  Note that teams might have to readjust their light threshold values in their OpModes.
@@ -1570,7 +1570,7 @@ Changes include:
  * added formatting variants to DbgLog and RobotLog APIs
  * code modified to allow for a long list of OpMode names.
  * changes to improve thread safety of RobocolDatagramSocket
- * Fix for "missing hardware leaves robot controller disconnected from driver station" error
+ * Fix for "missing org.firstinspires.ftc.baseCode.hardware leaves robot controller disconnected from driver station" error
  * fix for "fast tapping of Init/Start causes problems" (toast is now only instantiated on UI thread).
  * added some log statements for thread life cycle.
  * moved gamepad reset logic inside of initActiveOpMode() for robustness
@@ -1580,8 +1580,8 @@ Changes include:
  * updated FTDI driver
  * made ReadWriteRunnableStanard interface public.
  * fixed off-by-one errors in Command constructor
- * moved specific hardware implmentations into their own package.
- * moved specific gamepad implemnatations to the hardware library.
+ * moved specific org.firstinspires.ftc.baseCode.hardware implmentations into their own package.
+ * moved specific gamepad implemnatations to the org.firstinspires.ftc.baseCode.hardware library.
  * changed LICENSE file to new BSD version.
  * fixed race condition when shutting down Modern Robotics USB devices.
  * methods in the ColorSensor classes have been synchronized.
@@ -1647,4 +1647,4 @@ Changes include:
    - Teams can use blocking statements like Thread.sleep() within a linear OpMode.
  * The API for the Legacy Module and Core Device Interface Module have been updated.
    - Support for encoders with the Legacy Module is now working.
- * The hardware loop has been updated for better performance.
+ * The org.firstinspires.ftc.baseCode.hardware loop has been updated for better performance.

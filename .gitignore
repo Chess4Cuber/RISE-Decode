@@ -70,7 +70,7 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
-# Version control
+# Version org.firstinspires.ftc.baseCode.control
 vcs.xml
 
 # lint

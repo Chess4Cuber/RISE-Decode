@@ -35,24 +35,24 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 /*
- * This OpMode illustrates how to use an external "hardware" class to modularize all the robot's sensors and actuators.
- * This approach is very efficient because the same hardware class can be used by all of your teleop and autonomous OpModes
- * without requiring many copy & paste operations.  Once you have defined and tested the hardware class with one OpMode,
+ * This OpMode illustrates how to use an external "org.firstinspires.ftc.baseCode.hardware" class to modularize all the robot's sensors and actuators.
+ * This approach is very efficient because the same org.firstinspires.ftc.baseCode.hardware class can be used by all of your teleop and autonomous OpModes
+ * without requiring many copy & paste operations.  Once you have defined and tested the org.firstinspires.ftc.baseCode.hardware class with one OpMode,
  * it is instantly available to other OpModes.
  *
- * The real benefit of this approach is that as you tweak your robot hardware, you only need to make changes in ONE place (the Hardware Class).
- * So, to be effective you should put as much or your hardware setup and access code as possible in the hardware class.
- * Essentially anything you do with hardware in BOTH Teleop and Auto should likely go in the hardware class.
+ * The real benefit of this approach is that as you tweak your robot org.firstinspires.ftc.baseCode.hardware, you only need to make changes in ONE place (the Hardware Class).
+ * So, to be effective you should put as much or your org.firstinspires.ftc.baseCode.hardware setup and access code as possible in the org.firstinspires.ftc.baseCode.hardware class.
+ * Essentially anything you do with org.firstinspires.ftc.baseCode.hardware in BOTH Teleop and Auto should likely go in the org.firstinspires.ftc.baseCode.hardware class.
  *
  * The Hardware Class is created in a separate file, and then an "instance" of this class is created in each OpMode.
  * In order for the class to do typical OpMode things (like send telemetry data) it must be passed a reference to the
  * OpMode object when it's created, so it can access all core OpMode functions.  This is illustrated below.
  *
- * In this concept sample, the hardware class file is called RobotHardware.java and it must accompany this sample OpMode.
+ * In this concept sample, the org.firstinspires.ftc.baseCode.hardware class file is called RobotHardware.java and it must accompany this sample OpMode.
  * So, if you copy ConceptExternalHardwareClass.java into TeamCode (using Android Studio or OnBotJava) then RobotHardware.java
  * must also be copied to the same location (maintaining its name).
  *
- * For comparison purposes, this sample and its accompanying hardware class duplicates the functionality of the
+ * For comparison purposes, this sample and its accompanying org.firstinspires.ftc.baseCode.hardware class duplicates the functionality of the
  * RobotTelopPOV_Linear OpMode.  It assumes three motors (left_drive, right_drive and arm) and two servos (left_hand and right_hand)
  *
  * View the RobotHardware.java class file for more details
@@ -68,8 +68,8 @@ import com.qualcomm.robotcore.util.Range;
 @Disabled
 public class ConceptExternalHardwareClass extends LinearOpMode {
 
-    // Create a RobotHardware object to be used to access robot hardware.
-    // Prefix any hardware functions with "robot." to access this class.
+    // Create a RobotHardware object to be used to access robot org.firstinspires.ftc.baseCode.hardware.
+    // Prefix any org.firstinspires.ftc.baseCode.hardware functions with "robot." to access this class.
     RobotHardware   robot       = new RobotHardware(this);
 
     @Override
@@ -79,7 +79,7 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
         double arm          = 0;
         double handOffset   = 0;
 
-        // initialize all the hardware, using the hardware class. See how clean and simple this is?
+        // initialize all the org.firstinspires.ftc.baseCode.hardware, using the org.firstinspires.ftc.baseCode.hardware class. See how clean and simple this is?
         robot.init();
 
         // Send telemetry message to signify robot waiting;
