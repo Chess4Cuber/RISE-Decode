@@ -198,20 +198,6 @@ public abstract class MecanumChassis {
         this.backLeft.setPower(bLeft);
     }
 
-    public void setVelocity(double v){
-        this.frontLeft.setVelocity(v);
-        this.frontRight.setVelocity(v);
-        this.backRight.setVelocity(v);
-        this.backLeft.setVelocity(v);
-    }
-
-    public void setVelocity(double fLeft, double fRight, double bRight, double bLeft){
-        this.frontLeft.setVelocity(fLeft);
-        this.frontRight.setVelocity(fRight);
-        this.backRight.setVelocity(bRight);
-        this.backLeft.setVelocity(bLeft);
-    }
-
     public void reset(){
         this.frontLeft.reset();
         this.frontRight.reset();

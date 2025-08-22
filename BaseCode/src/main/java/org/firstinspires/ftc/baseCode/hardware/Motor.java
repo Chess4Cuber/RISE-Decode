@@ -10,7 +10,7 @@ import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Motor {
-    public DcMotorEx dcMotorEx;
+    public DcMotor dcMotorEx;
 
     //Declare all the constants in the Motor class
     public double TICKS_PER_REV = 0;
@@ -32,7 +32,7 @@ public class Motor {
     PID_Controller motorVeloPID;
 
     public Motor(String name, HardwareMap hardwareMap){
-        dcMotorEx = hardwareMap.get(DcMotorEx.class, name);
+        dcMotorEx = hardwareMap.get(DcMotor.class, name);
 
         motorVeloPID = new PID_Controller(0);
     }
@@ -87,9 +87,6 @@ public class Motor {
         return dcMotorEx.getCurrentPosition()/TICKS_PER_INCH;
     }
 
-    public double getVelocity(){
-        return dcMotorEx.getVelocity();
-    }
 
     public MotorConfigurationType getMotorType(){
         return dcMotorEx.getMotorType();
@@ -108,13 +105,6 @@ public class Motor {
 
     public void setPower(double power){
         dcMotorEx.setPower(power);
-    }
-
-    public void setVelocity(double v){
-        dcMotorEx.setPower(motorVeloPID.PID_Power(dcMotorEx.getVelocity(AngleUnit.DEGREES), v));
-    }
-    public void setVelocity(double v, AngleUnit angleUnit){
-        dcMotorEx.setVelocity(v, angleUnit);
     }
 
     public void setMode(DcMotor.RunMode runMode) {
