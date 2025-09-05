@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.mechanisms.OptimusChassis;
 
 @TeleOp
-public class DriveTesting extends LinearOpMode {
+public class DriveTestingOptimus extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;

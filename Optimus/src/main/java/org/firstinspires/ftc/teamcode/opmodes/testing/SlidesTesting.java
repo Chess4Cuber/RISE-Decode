@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleOp;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,24 +6,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.OptimusChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.OptimusClaw;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.SlidesArmSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem.OptimusLinkageArmSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlidesArmSystem;
 
 @TeleOp
-public class BartholomewTeleOp extends LinearOpMode {
+public class SlidesTesting extends LinearOpMode {
     OptimusChassis chassis;
-    SlidesArmSystem slidesArmSystem;
-    OptimusClaw claw;
+    OptimusSlidesArmSystem slidesArmSystem;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
-        slidesArmSystem = new SlidesArmSystem(gamepad1, telemetry, hardwareMap);
-        claw = new OptimusClaw(gamepad1, hardwareMap);
+        slidesArmSystem = new OptimusSlidesArmSystem(gamepad1, telemetry, hardwareMap);
 
         while (opModeInInit()){
             slidesArmSystem.setPositions();
-            claw.openClaw();
+
             telemetry.addLine("Waiting For Start");
             telemetry.update();
         }
@@ -35,10 +34,10 @@ public class BartholomewTeleOp extends LinearOpMode {
             slidesArmSystem.controllerInput();
             slidesArmSystem.setPositions();
 
-            claw.toggleClaw();
+            slidesArmSystem.setTelemetry();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
-            telemetry.addData("loop time", runtime.seconds()-previousTime);
+//            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 
             previousTime = runtime.seconds();

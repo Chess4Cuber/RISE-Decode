@@ -66,9 +66,6 @@ public abstract class MecanumChassis {
         for (Motor motor : motors) {
             motor.setBreakMode();
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
-            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
-            motor.setMotorType(motorConfigurationType);
         }
 
         controllerInput = new Vector3D(0,0,0);
@@ -77,11 +74,11 @@ public abstract class MecanumChassis {
         this.telemetry = telemetry;
     }
 
-    public void setDriveVectorsRobotCentric(Vector3D input) {
-        fLeft = VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
-        fRight = VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
-        bRight = VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
-        bLeft = VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
+    public void setDriveVectorsRobotCentric(Vector3D input)  {
+        fLeft = VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        fRight = -VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        bRight = -VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        bLeft = -VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {

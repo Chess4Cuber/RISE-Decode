@@ -9,7 +9,7 @@ public class OptimusClaw extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
     public OptimusClaw(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("clawServo", 1, 0, hardwareMap);
+        super("clawServo", .75, .4, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }

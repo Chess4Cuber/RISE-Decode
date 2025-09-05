@@ -5,6 +5,7 @@ public enum SlidesStates {
         LOW_JUNCTION,
         MIDDLE_JUNCTION,
         HIGH_JUNCTION,
+        TRANSFER,
         CONESTACK_FIVE,
         CONESTACK_FOUR,
         CONESTACK_THREE,

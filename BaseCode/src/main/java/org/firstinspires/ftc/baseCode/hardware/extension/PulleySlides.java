@@ -22,16 +22,24 @@ public abstract class PulleySlides {
 
     public RiggingMethod method;
 
-    PID_Controller slidesPID;
+    // TODO: Make parameter in constructor
+    public PID_Controller slidesPID;
 
-    public PulleySlides(int motorCount, String[] names, double pulleyRadius, double cpr, RiggingMethod method, int stages, double kGravity, HardwareMap hardwareMap){
+    public PulleySlides(int motorCount, String[] names, double pulleyRadius, double cpr, RiggingMethod method, int stages, double kGravity, PID_Controller slidesPID, HardwareMap hardwareMap){
         Motor[] motors = new Motor[motorCount];
 
-        for (int i = 0; i <motors.length; i++){
+        for (int i = 0; i < motors.length; i++){
             motors[i] = new Motor(names[i], cpr, hardwareMap);
+            if(i%2 != 0){
+                motors[i].setDirectionReverse();
+            } else{
+                motors[i].setDirectionForward();
+            }
             motors[i].reset();
         }
 
+        this.slidesPID = slidesPID;
+        this.slidesPID.tolerance = 0.1;
         this.pulleyRadius = pulleyRadius;
 
         this.method = method;
