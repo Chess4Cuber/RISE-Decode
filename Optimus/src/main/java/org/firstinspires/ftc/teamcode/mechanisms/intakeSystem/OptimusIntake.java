@@ -8,7 +8,7 @@ public class OptimusIntake extends ServoActiveIntake {
     public OptimusIntake(HardwareMap hardwareMap){
         super(hardwareMap);
 
-        addOtherRotators(new String[]{"lIntakeRotator", "rIntakeRotator"});
+        addOtherRotators(new String[]{"servo1", "servo2"});
 
     }
 }

@@ -12,8 +12,14 @@ public abstract class PassiveIntake {
 
     public PassiveIntake(int motorCount, String[] name, double cpr, Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         Motor[] motors = new Motor[motorCount];
-        for (int i = 0; i <motors.length; i++){
+        for (int i = 0; i < motors.length; i++){
             motors[i] = new Motor(name[i], cpr, hardwareMap);
+            if(i%2 != 0){
+                motors[i].setDirectionReverse();
+            } else{
+                motors[i].setDirectionForward();
+            }
+            motors[i].reset();
         }
 
         this.gamepad1 = gamepad1;
