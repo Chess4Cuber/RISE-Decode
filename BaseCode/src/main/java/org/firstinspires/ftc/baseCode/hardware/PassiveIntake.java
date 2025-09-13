@@ -41,5 +41,11 @@ public abstract class PassiveIntake {
         }
     }
 
+    public void setPower(double power){
+        for (Motor motor : motors) {
+            motor.setPower(power);
+        }
+    }
+
     //TODO: make intake position method using encoders
 }

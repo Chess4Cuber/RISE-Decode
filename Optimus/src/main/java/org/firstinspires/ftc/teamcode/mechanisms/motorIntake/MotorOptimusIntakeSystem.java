@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.SlidesStates;
 public class MotorOptimusIntakeSystem {
     Gamepad gamepad1;
     Telemetry telemetry;
-    boolean lastToggleX = false;
-    boolean lastToggleB = false;
-
+    boolean lastToggleUp = false;
+    boolean lastToggleDown = false;
+    boolean lastToggleRight = false;
     MotorOptimusIntake intake;
     public IntakeStates intakeState;
 
@@ -30,23 +30,51 @@ public class MotorOptimusIntakeSystem {
     public void setPositions() {
         switch (intakeState) {
             case RESTING:
-                intake.toggleIntake();
+                intake.setPower(0);
+                break;
+
+            case INTAKING:
+                intake.setPower(1);
+                break;
+
+            case OUTTAKING:
+                intake.setPower(-1);
                 break;
         }
+
     }
 
     public void controllerInput() {
         switch (intakeState) {
             case RESTING:
-                if ((gamepad1.x != lastToggleX) && gamepad1.x) {
+                if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
                     intakeState = IntakeStates.INTAKING;
                 }
-                if ((gamepad1.b != lastToggleB) && gamepad1.b) {
+                if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up) {
                     intakeState = IntakeStates.OUTTAKING;
                 }
                 break;
+
+            case INTAKING:
+                if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
+                    intakeState = IntakeStates.OUTTAKING;;
+                }
+                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                    intakeState = IntakeStates.RESTING;
+                }
+                break;
+
+            case OUTTAKING:
+                if((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
+                    intakeState = IntakeStates.INTAKING;
+                }
+                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                    intakeState = IntakeStates.RESTING;
+                }
+                break;
         }
-        lastToggleX = gamepad1.x;
-        lastToggleB = gamepad1.b;
+        lastToggleUp = gamepad1.dpad_up;
+        lastToggleDown = gamepad1.dpad_down;
+        lastToggleRight = gamepad1.dpad_right;
     }
 }
