@@ -8,12 +8,12 @@ import org.firstinspires.ftc.teamcode.mechanisms.OptimusChassis;
 
 @TeleOp
 public class DriveTestingOptimus extends LinearOpMode {
-
+    OptimusChassis chassis;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        OptimusChassis chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
+        chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
         telemetry.addLine("Waiting For Start");
         telemetry.update();
 

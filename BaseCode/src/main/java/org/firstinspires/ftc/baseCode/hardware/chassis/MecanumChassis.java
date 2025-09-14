@@ -75,7 +75,7 @@ public abstract class MecanumChassis {
     }
 
     public void setDriveVectorsRobotCentric(Vector3D input)  {
-        fLeft = VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        fLeft = -VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
         fRight = -VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
         bRight = -VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
         bLeft = -VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;

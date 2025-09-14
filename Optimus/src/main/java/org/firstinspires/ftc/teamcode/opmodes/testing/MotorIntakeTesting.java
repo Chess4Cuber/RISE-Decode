@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlidesAr
 
 @TeleOp
 public class MotorIntakeTesting extends LinearOpMode {
-    //OptimusChassis chassis;
+    OptimusChassis chassis;
 
     //OptimusLinkageArmSystem linkageArmSystem;
     MotorOptimusIntakeSystem motorIntakeSystem;
@@ -24,6 +24,7 @@ public class MotorIntakeTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         motorIntakeSystem = new MotorOptimusIntakeSystem(gamepad1, telemetry, hardwareMap);
+        chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
 
         while (opModeInInit()){
 
@@ -36,7 +37,10 @@ public class MotorIntakeTesting extends LinearOpMode {
             motorIntakeSystem.controllerInput();
             motorIntakeSystem.setPositions();
 
-            //telemetry.addData("Pose Estimate", chassis.getPose());
+            chassis.robotCentricDrive();
+            chassis.updatePose();
+
+            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 
