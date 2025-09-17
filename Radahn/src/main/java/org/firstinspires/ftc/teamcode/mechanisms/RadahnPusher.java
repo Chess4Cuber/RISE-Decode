@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 
-public class RadahnClaw extends SingleServoClaw {
+public class RadahnPusher extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
-    public RadahnClaw(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("clawServo", .75, .4, hardwareMap);
+    public RadahnPusher(Gamepad gamepad1, HardwareMap hardwareMap){
+        super("pusher", .75, .4, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }
