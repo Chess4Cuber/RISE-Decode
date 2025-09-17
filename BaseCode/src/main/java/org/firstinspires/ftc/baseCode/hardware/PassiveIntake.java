@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.baseCode.hardware;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -16,8 +17,11 @@ public abstract class PassiveIntake {
             motors[i] = new Motor(name[i], cpr, hardwareMap);
             if(i%2 != 0){
                 motors[i].setDirectionReverse();
+                motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             } else{
                 motors[i].setDirectionForward();
+                motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             }
             motors[i].reset();
         }
@@ -44,6 +48,12 @@ public abstract class PassiveIntake {
     public void setPower(double power){
         for (Motor motor : motors) {
             motor.setPower(power);
+        }
+    }
+
+    public void setVelocity(double velocity){
+        for (Motor motor : motors) {
+            motor.setPower(velocity);
         }
     }
 

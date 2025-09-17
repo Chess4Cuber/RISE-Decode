@@ -37,6 +37,7 @@ public abstract class ServoActiveIntake {
             servo.setPower(power);
         }
     }
+
     public void setPower(double power, int DoF){
         for (CRServo servo:intakeServos.get(DoF)) {
             servo.setPower(power);
