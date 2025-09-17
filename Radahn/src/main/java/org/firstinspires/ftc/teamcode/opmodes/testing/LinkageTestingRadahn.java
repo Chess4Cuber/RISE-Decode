@@ -4,27 +4,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.OptimusChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.OptimusClaw;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.OptimusIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem.OptimusLinkage;
-import org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem.OptimusLinkageArmSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlidesArmSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem.RadahnLinkageArmSystem;
 
 @TeleOp
-public class LinkageTestingOptimus extends LinearOpMode {
-    OptimusChassis chassis;
+public class LinkageTestingRadahn extends LinearOpMode {
+    RadahnChassis chassis;
 
-    OptimusLinkageArmSystem linkageArmSystem;
-    OptimusIntakeSystem intakeSystem;
+    RadahnLinkageArmSystem linkageArmSystem;
+    RadahnServoIntakeSystem intakeSystem;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
+        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
-        linkageArmSystem = new OptimusLinkageArmSystem(gamepad1, telemetry, hardwareMap);
-        intakeSystem = new OptimusIntakeSystem(gamepad1, hardwareMap);
+        linkageArmSystem = new RadahnLinkageArmSystem(gamepad1, telemetry, hardwareMap);
+        intakeSystem = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
 
         while (opModeInInit()){
             linkageArmSystem.setPositions();

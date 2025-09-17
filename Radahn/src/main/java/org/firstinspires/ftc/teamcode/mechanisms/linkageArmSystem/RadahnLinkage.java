@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.baseCode.hardware.extension.ServoLinkage;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class OptimusLinkage extends ServoLinkage {
+public class RadahnLinkage extends ServoLinkage {
 
-    public OptimusLinkage(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
+    public RadahnLinkage(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super(hardwareMap);
 
         addDegreeOfFreedom(new String[]{"leftServoLinkage", "rightServoLinkage"});

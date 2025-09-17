@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.hardware.ServoActiveIntake;
 
-public class OptimusIntake extends ServoActiveIntake {
-    public OptimusIntake(HardwareMap hardwareMap){
+public class RadahnServoIntake extends ServoActiveIntake {
+    public RadahnServoIntake(HardwareMap hardwareMap){
         super(hardwareMap);
 
-        addOtherRotators(new String[]{"servo1", "servo2"});
+        addOtherRotators(new String[]{"servoIntake"});
 
     }
 }

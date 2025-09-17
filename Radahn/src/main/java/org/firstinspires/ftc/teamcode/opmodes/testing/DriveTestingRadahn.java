@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.OptimusChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 
 @TeleOp
-public class DriveTestingOptimus extends LinearOpMode {
-    OptimusChassis chassis;
+public class DriveTestingRadahn extends LinearOpMode {
+    RadahnChassis chassis;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        chassis = new OptimusChassis(gamepad1, telemetry, hardwareMap);
+        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         telemetry.addLine("Waiting For Start");
         telemetry.update();
 

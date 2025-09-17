@@ -3,23 +3,18 @@ package org.firstinspires.ftc.teamcode.mechanisms.intakeSystem;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusArm;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlides;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.SlidesStates;
-
-public class OptimusIntakeSystem {
+public class RadahnServoIntakeSystem {
 
     Gamepad gamepad1;
-    OptimusIntake intake;
+    RadahnServoIntake intake;
     boolean lastToggleUp = false;
     boolean lastToggleDown = false;
 
     boolean lastToggleRight = false;
     public IntakeStates intakeState;
 
-    public OptimusIntakeSystem(Gamepad gamepad1, HardwareMap hardwareMap){
-        intake = new OptimusIntake(hardwareMap);
+    public RadahnServoIntakeSystem(Gamepad gamepad1, HardwareMap hardwareMap){
+        intake = new RadahnServoIntake(hardwareMap);
         intakeState = IntakeStates.RESTING;
         this.gamepad1 = gamepad1;
     }

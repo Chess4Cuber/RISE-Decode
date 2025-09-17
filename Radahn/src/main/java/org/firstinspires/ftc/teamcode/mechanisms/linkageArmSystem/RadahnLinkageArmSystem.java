@@ -4,20 +4,15 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.IntakeStates;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.OptimusIntake;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusArm;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlides;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.SlidesStates;
 
-public class OptimusLinkageArmSystem {
+public class RadahnLinkageArmSystem {
 
     Gamepad gamepad1;
-    OptimusLinkage linkage;
+    RadahnLinkage linkage;
     public LinkageStates linkageState;
     boolean lastToggleA = false;
-    public OptimusLinkageArmSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        linkage = new OptimusLinkage(gamepad1, telemetry, hardwareMap);
+    public RadahnLinkageArmSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
+        linkage = new RadahnLinkage(gamepad1, telemetry, hardwareMap);
 
         this.gamepad1 = gamepad1;
         linkageState = LinkageStates.RETRACTED;
