@@ -21,7 +21,7 @@ public class RadahnMotorOuttakeSystem {
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
-        outtakeState = MotorOuttakeStates.RESTING;
+        outtakeState = MotorOuttakeStates.OUTTAKING;
     }
 
     public void setPositions() {

@@ -27,3 +27,11 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation project(':BaseCode')
 }
+
+dependencies {
+    implementation 'org.openftc:easyopencv:1.5.2'
+}
+
+dependencies {
+    implementation 'org.openftc:apriltag:2.1.0'
+}
