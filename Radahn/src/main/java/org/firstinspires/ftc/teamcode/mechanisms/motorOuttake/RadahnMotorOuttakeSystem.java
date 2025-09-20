@@ -11,7 +11,6 @@ public class RadahnMotorOuttakeSystem {
     Telemetry telemetry;
     boolean lastToggleBack = false;
     boolean lastToggleB = false;
-    boolean lastToggleRight = false;
     RadahnMotorOuttake outtake;
     public MotorOuttakeStates outtakeState;
 
@@ -21,7 +20,7 @@ public class RadahnMotorOuttakeSystem {
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
-        outtakeState = MotorOuttakeStates.OUTTAKING;
+        outtakeState = MotorOuttakeStates.RESTING;
     }
 
     public void setPositions() {
@@ -47,13 +46,13 @@ public class RadahnMotorOuttakeSystem {
                 if ((gamepad1.b != lastToggleB) && gamepad1.b) {
                     outtakeState = MotorOuttakeStates.INTAKING;
                 }
-                if ((gamepad1.back != lastToggleBack) && gamepad1.dpad_up) {
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back) {
                     outtakeState = MotorOuttakeStates.OUTTAKING;
                 }
                 break;
 
             case INTAKING:
-                if((gamepad1.dpad_up != lastToggleBack) && gamepad1.dpad_up){
+                if((gamepad1.back != lastToggleBack) && gamepad1.back){
                     outtakeState = MotorOuttakeStates.OUTTAKING;;
                 }
                 if((gamepad1.b != lastToggleB) && gamepad1.b){

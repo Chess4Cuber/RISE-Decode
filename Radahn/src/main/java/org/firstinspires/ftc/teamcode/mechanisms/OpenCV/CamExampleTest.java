@@ -181,7 +181,6 @@ public class CamExampleTest extends LinearOpMode
             //code for Obelisk_GPP
         }else if(tagOfInterest.id == Obelisk_PGP){
             //code for Obelisk_PGP
-            motorOuttakeSystem.setPositions();
         }else if(tagOfInterest.id == Obelisk_PPG){
             //code for Obelisk_PPG
         }
