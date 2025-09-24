@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleOp;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,13 +6,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem.RadahnLinkageArmSystem;
 
 @TeleOp
-public class LinkageTestingRadahn extends LinearOpMode {
+public class IntakeTestingRadahn extends LinearOpMode {
     RadahnChassis chassis;
-
-    RadahnLinkageArmSystem linkageArmSystem;
     RadahnServoIntakeSystem intakeSystem;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -20,13 +17,9 @@ public class LinkageTestingRadahn extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
-        linkageArmSystem = new RadahnLinkageArmSystem(gamepad1, telemetry, hardwareMap);
         intakeSystem = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
 
         while (opModeInInit()){
-            linkageArmSystem.setPositions();
-            intakeSystem.setPositions();
-
             telemetry.addLine("Waiting For Start");
             telemetry.update();
         }
@@ -34,9 +27,6 @@ public class LinkageTestingRadahn extends LinearOpMode {
         while (opModeIsActive()){
             chassis.robotCentricDrive();
             chassis.updatePose();
-
-            linkageArmSystem.controllerInput();
-            linkageArmSystem.setPositions();
 
             intakeSystem.controllerInput();
             intakeSystem.setPositions();

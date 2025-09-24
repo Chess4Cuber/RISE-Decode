@@ -9,7 +9,6 @@ public class RadahnServoIntakeSystem {
     RadahnServoIntake intake;
     boolean lastToggleUp = false;
     boolean lastToggleDown = false;
-
     boolean lastToggleRight = false;
     public IntakeStates intakeState;
 
@@ -48,7 +47,7 @@ public class RadahnServoIntakeSystem {
 
             case INTAKING:
                 if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    intakeState = IntakeStates.OUTTAKING;;
+                    intakeState = IntakeStates.OUTTAKING;
                 }
                 if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
                     intakeState = IntakeStates.RESTING;
