@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorOuttake.RadahnMotorOuttakeSystem;
 
 @TeleOp
@@ -12,12 +13,12 @@ public class MotorIntakeTesting extends LinearOpMode {
     RadahnChassis chassis;
 
     //OptimusLinkageArmSystem linkageArmSystem;
-    RadahnMotorOuttakeSystem motorOuttakeSystem;
+    RadahnMotorIntakeSystem motorIntakeSystem;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        motorOuttakeSystem = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
+        motorIntakeSystem = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
         while (opModeInInit()){
@@ -28,8 +29,8 @@ public class MotorIntakeTesting extends LinearOpMode {
 
         while (opModeIsActive()){
 
-            motorOuttakeSystem.controllerInput();
-            motorOuttakeSystem.setPositions();
+            motorIntakeSystem.controllerInput();
+            motorIntakeSystem.setPositions();
 
             chassis.robotCentricDrive();
             chassis.updatePose();

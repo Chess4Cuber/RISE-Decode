@@ -7,13 +7,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
 import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorOuttake.RadahnMotorOuttakeSystem;
 
 @TeleOp
 public class RadahnTeleOp extends LinearOpMode {
     RadahnChassis chassis;
-    RadahnServoIntakeSystem intakeSystem;
+    //RadahnServoIntakeSystem intakeSystem;
     RadahnMotorOuttakeSystem motorOuttakeSystem;
+
+    RadahnMotorIntakeSystem motorIntakeSystem;
+
     //RadahnPusher pusher;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -22,7 +26,10 @@ public class RadahnTeleOp extends LinearOpMode {
 
         motorOuttakeSystem = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
-        intakeSystem = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
+        motorIntakeSystem = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
+
+
+        //intakeSystem = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
         //pusher = new RadahnPusher(gamepad1, hardwareMap);
 
         while (opModeInInit()){
@@ -39,8 +46,11 @@ public class RadahnTeleOp extends LinearOpMode {
             motorOuttakeSystem.controllerInput();
             motorOuttakeSystem.setPositions();
 
-            intakeSystem.controllerInput();
-            intakeSystem.setPositions();
+            motorIntakeSystem.controllerInput();
+            motorIntakeSystem.setPositions();
+
+//            intakeSystem.controllerInput();
+//            intakeSystem.setPositions();
 
             //pusher.toggleClaw();
 
