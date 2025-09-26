@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem.OptimusSlidesArmSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.slidesArmSystem.OptimusSlidesArmSystem;
 
 @TeleOp
 public class SlidesTesting extends LinearOpMode {

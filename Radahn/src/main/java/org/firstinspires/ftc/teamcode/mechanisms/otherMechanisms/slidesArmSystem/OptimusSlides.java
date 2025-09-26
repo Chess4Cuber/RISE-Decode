@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.slidesArmSystem;
 
 import static org.firstinspires.ftc.baseCode.hardware.extension.PulleySlides.RiggingMethod.CONTINUOUS;
 

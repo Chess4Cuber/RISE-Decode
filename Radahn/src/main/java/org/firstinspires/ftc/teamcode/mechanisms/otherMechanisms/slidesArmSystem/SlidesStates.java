@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.slidesArmSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.slidesArmSystem;
 
 public enum SlidesStates {
         GROUND,

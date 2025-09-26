@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.linkageArmSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.linkageArmSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
