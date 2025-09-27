@@ -71,4 +71,9 @@ public class RadahnMotorOuttakeSystem {
         lastToggleBack = gamepad1.back;
         lastToggleB = gamepad1.b;
     }
+
+    public void setMotorOuttakeState(MotorOuttakeStates state){
+        outtakeState = state;
+    }
+
 }

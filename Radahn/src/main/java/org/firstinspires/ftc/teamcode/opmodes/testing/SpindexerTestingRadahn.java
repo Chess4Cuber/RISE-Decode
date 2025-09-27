@@ -5,29 +5,33 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.RadahnSpindexerSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
 
 @TeleOp
-public class DualDriveTesting extends LinearOpMode {
+public class SpindexerTestingRadahn extends LinearOpMode {
     RadahnChassis chassis;
+    RadahnSpindexerSystem spindexerSystem;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
-        telemetry.addLine("Waiting For Start");
-        telemetry.update();
+        spindexerSystem = new RadahnSpindexerSystem(gamepad1, telemetry, hardwareMap);
 
-        waitForStart();
+        while (opModeInInit()){
+            spindexerSystem.setPositions();
+
+            telemetry.addLine("Waiting For Start");
+            telemetry.update();
+        }
 
         while (opModeIsActive()){
-
-            if(gamepad1.x){
-                chassis.robotCentricDrive();
-            }else if(gamepad1.y){
-                chassis.fieldCentricDrive();
-            }
-
+            chassis.robotCentricDrive();
             chassis.updatePose();
+
+            spindexerSystem.controllerInput();
+            spindexerSystem.setPositions();
 
             telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);

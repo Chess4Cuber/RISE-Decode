@@ -35,13 +35,12 @@ public abstract class TouchSensor {
         touchSensors.add(newSensors);
     }
 
-    public boolean getTouchSensor(int sensor){
-        return touchSensors.get(sensor)[sensor].getState();
+    public boolean getTouchSensor(int Num){
+        return touchSensors.get(Num)[0].getState();
     }
 
-    public void resetTouchSensor(int sensor){
-        touchSensors.get(sensor)[sensor].setState(false);
-
+    public void setTouchSensor(int Num){
+        touchSensors.get(Num)[0].setState(false);
     }
 
 

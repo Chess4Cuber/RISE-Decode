@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexer;
+package org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
