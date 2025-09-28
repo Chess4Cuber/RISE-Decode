@@ -35,7 +35,7 @@ public class MotorIntakeTesting extends LinearOpMode {
             chassis.robotCentricDrive();
             chassis.updatePose();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

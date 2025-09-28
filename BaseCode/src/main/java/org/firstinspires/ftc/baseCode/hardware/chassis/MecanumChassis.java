@@ -66,6 +66,7 @@ public abstract class MecanumChassis {
         for (Motor motor : motors) {
             motor.setBreakMode();
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.reset();
         }
 
         controllerInput = new Vector3D(0,0,0);
@@ -174,6 +175,9 @@ public abstract class MecanumChassis {
         return odo.getPose();
     }
 
+    public double[] getEncoderReadings(){
+        return odo.getEncoderReadings();
+    }
     public Vector3D getPoseVector(){
         return odo.getPoseVector();
     }

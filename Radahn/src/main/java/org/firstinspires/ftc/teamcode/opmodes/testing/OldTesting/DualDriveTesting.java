@@ -29,7 +29,7 @@ public class DualDriveTesting extends LinearOpMode {
 
             chassis.updatePose();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

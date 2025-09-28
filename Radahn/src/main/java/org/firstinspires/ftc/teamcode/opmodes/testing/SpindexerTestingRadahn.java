@@ -33,7 +33,7 @@ public class SpindexerTestingRadahn extends LinearOpMode {
             spindexerSystem.controllerInput();
             spindexerSystem.setPositions();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

@@ -31,7 +31,7 @@ public class IntakeTestingRadahn extends LinearOpMode {
             intakeSystem.controllerInput();
             intakeSystem.setPositions();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

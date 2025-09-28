@@ -14,6 +14,8 @@ public class Odometry {
 
     public Encoder leftEncoder, rightEncoder, middleEncoder;
 
+    double[] encoderReadings = {0,0,0};
+
     // Array order convention: odoConstants = {CPR, wheelDia, TRACKWIDTH, FORWARD_OFFSET};
     double[] odoConstants;
 
@@ -43,7 +45,7 @@ public class Odometry {
                 double deltaMiddleEncoderPos = middleEncoder.getCurrPosInches() - previousEncoderPos[2];
                 double deltaRightEncoderPos = rightEncoder.getCurrPosInches() - previousEncoderPos[1];
 
-                double phi = (deltaLeftEncoderPos - deltaRightEncoderPos)/odoConstants[2];
+                double phi = (deltaRightEncoderPos - deltaLeftEncoderPos)/odoConstants[2];
                 double deltaMiddlePos = (deltaLeftEncoderPos + deltaRightEncoderPos)/2;
                 double deltaPerpPos = deltaMiddleEncoderPos - odoConstants[3]*phi;
 
@@ -54,14 +56,23 @@ public class Odometry {
                 y_pos += delta_y;
                 heading += phi;
                 break;
+
             case TWO_WHEEL:
 
                 break;
         }
 
+        encoderReadings[0] = leftEncoder.getCurrPosInches();
+        encoderReadings[1] = rightEncoder.getCurrPosInches();
+        encoderReadings[2] = middleEncoder.getCurrPosInches();
+
         pose[0] = x_pos;
         pose[1] = y_pos;
-        pose[2] = heading;
+        pose[2] = Math.toDegrees(heading);
+
+        previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+        previousEncoderPos[1] = rightEncoder.getCurrPosInches();
+        previousEncoderPos[2] = middleEncoder.getCurrPosInches();
     }
     public double[] getPose() {
         return pose;
@@ -79,5 +90,9 @@ public class Odometry {
     }
     public double getHeading() {
         return heading;
+    }
+
+    public double[] getEncoderReadings() {
+        return encoderReadings;
     }
 }

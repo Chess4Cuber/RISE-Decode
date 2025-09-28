@@ -54,7 +54,7 @@ public class RadahnTeleOp extends LinearOpMode {
 
             //pusher.toggleClaw();
 
-            telemetry.addData("Pose Estimate", chassis.getPose());
+//            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 
