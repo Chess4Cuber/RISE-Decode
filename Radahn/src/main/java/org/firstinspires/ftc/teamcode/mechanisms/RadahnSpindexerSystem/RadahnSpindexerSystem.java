@@ -11,12 +11,15 @@ public class RadahnSpindexerSystem {
 
     Gamepad gamepad1;
     RadahnSpindexer spindexer;
-    RadahnTouchSensors touchSensors;
+    //RadahnTouchSensors touchSensors;
+    RadahnColorSensors colorSensors;
+
     public SpindexerStates spindexerState;
 
     public RadahnSpindexerSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        //spindexer = new RadahnSpindexer(gamepad1, telemetry, hardwareMap);
-        touchSensors = new RadahnTouchSensors(hardwareMap);
+        spindexer = new RadahnSpindexer(gamepad1, telemetry, hardwareMap);
+        //touchSensors = new RadahnTouchSensors(hardwareMap);
+        colorSensors = new RadahnColorSensors(hardwareMap);
 
         this.gamepad1 = gamepad1;
         spindexerState = SpindexerStates.HOLE_0;
@@ -36,34 +39,54 @@ public class RadahnSpindexerSystem {
             case HOLE_2:
                 //spindexer.setPosition(-.7);
                 break;
+
+            case HOLE_OUTTAKE:
+                //spindexer.setPosition(.67);
+                break;
         }
     }
+
+    //TODO: Fix "a" val
 
     public void controllerInput(){
         switch (spindexerState) {
             case HOLE_0:
-                if (touchSensors.getTouchSensor(0)) {
+                if (colorSensors.seesColor(0, 0, 256, 0, 0)){
                     spindexerState = SpindexerStates.HOLE_1;
-                    telemetry.addData("hole 0", touchSensors.getTouchSensor(0));
+                    //touchSensors.setTouchSensor(0);
+                }
+
+                if (colorSensors.seesColor(0, 128, 0, 128, 0)){
+                    spindexerState = SpindexerStates.HOLE_1;
                     //touchSensors.setTouchSensor(0);
                 }
                 break;
 
             case HOLE_1:
-                if (touchSensors.getTouchSensor(1)) {
+                if (colorSensors.seesColor(0, 0, 256, 0, 0)){
                     spindexerState = SpindexerStates.HOLE_2;
-                    telemetry.addData("hole 1", touchSensors.getTouchSensor(1));
-                    //touchSensors.setTouchSensor(1);
+                }
+
+                if (colorSensors.seesColor(0, 128, 0, 128, 0)){
+                    spindexerState = SpindexerStates.HOLE_2;
                 }
                 break;
 
             case HOLE_2:
-                if (touchSensors.getTouchSensor(2)) {
+                if (colorSensors.seesColor(0, 0, 256, 0, 0)){
                     spindexerState = SpindexerStates.HOLE_0;
-                    telemetry.addData("hole 2", touchSensors.getTouchSensor(2));
-                    //touchSensors.setTouchSensor(2);
+                }
+
+                if (colorSensors.seesColor(0, 128, 0, 128, 0)){
+                    spindexerState = SpindexerStates.HOLE_0;
                 }
                 break;
+
+//            case HOLE_OUTTAKE:
+//                if () {
+//                    spindexerState = SpindexerStates.HOLE_0;
+//                }
+//                break;
         }
 
     }
