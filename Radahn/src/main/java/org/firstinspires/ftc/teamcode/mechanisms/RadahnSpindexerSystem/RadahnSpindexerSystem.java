@@ -46,7 +46,7 @@ public class RadahnSpindexerSystem {
         }
     }
 
-    //TODO: Fix "a" val
+    //TODO: Fix "a" value
 
     public void controllerInput(){
         switch (spindexerState) {
