@@ -16,7 +16,7 @@ public class RadahnSpindexerSystem {
     RadahnColorSensors colorSensors;
 
     public SpindexerStates spindexerState;
-    public HoleColorStates colorState;
+//    public HoleColorStates colorState;
 
     public HoleColorStates HoleColor0, HoleColor1, HoleColor2;
 
@@ -90,8 +90,8 @@ public class RadahnSpindexerSystem {
                 }
 
                 if (colorSensors.seesColor(1, .6f, 0, .9f, .2f)){
-                    spindexerState = SpindexerStates.HOLE_2;
                     HoleColor1 = HoleColorStates.PURPLE;
+                    spindexerState = SpindexerStates.HOLE_2;
                     display(HoleColor1);
                 }
                 break;
@@ -107,15 +107,14 @@ public class RadahnSpindexerSystem {
                     HoleColor2 = HoleColorStates.PURPLE;
                     spindexerState = SpindexerStates.HOLE_0;
                     display(HoleColor2);
-
                 }
                 break;
 
-//            case HOLE_OUTTAKE:
-//                if () {
-//                    spindexerState = SpindexerStates.HOLE_0;
-//                }
-//                break;
+            case HOLE_OUTTAKE0:
+                if(gamepad1.a){
+
+                }
+
         }
 
     }
@@ -126,6 +125,7 @@ public class RadahnSpindexerSystem {
     public HoleColorStates getColorState(HoleColorStates color){
         return color;
     }
+
 
 
     public void display(HoleColorStates color){
