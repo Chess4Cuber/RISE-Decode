@@ -4,6 +4,11 @@ public enum SpindexerStates {
     HOLE_0,
     HOLE_1,
     HOLE_2,
-    HOLE_OUTTAKE
+    HOLE_OUTTAKE0,
+    HOLE_OUTTAKE1,
+    HOLE_OUTTAKE2
+
 }
+
+
 
