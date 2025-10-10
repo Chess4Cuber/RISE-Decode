@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.IntakeStates;
-import org.firstinspires.ftc.teamcode.mechanisms.motorOuttake.MotorOuttakeStates;
 
 public class RadahnMotorIntakeSystem {
     Gamepad gamepad1;

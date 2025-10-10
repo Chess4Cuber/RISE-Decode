@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorOuttake.RadahnMotorOuttakeSystem;
 

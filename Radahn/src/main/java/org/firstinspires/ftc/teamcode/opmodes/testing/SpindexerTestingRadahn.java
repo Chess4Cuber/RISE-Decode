@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.RadahnSpindexerSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.intakeSystem.RadahnServoIntakeSystem;
 
 @TeleOp
 public class SpindexerTestingRadahn extends LinearOpMode {
