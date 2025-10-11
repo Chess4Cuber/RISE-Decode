@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.ColorSensor;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.sensors.ColorSensor;
-import org.firstinspires.ftc.baseCode.sensors.TouchSensor;
 
 public class RadahnColorSensors extends ColorSensor {
     public RadahnColorSensors(HardwareMap hardwareMap){

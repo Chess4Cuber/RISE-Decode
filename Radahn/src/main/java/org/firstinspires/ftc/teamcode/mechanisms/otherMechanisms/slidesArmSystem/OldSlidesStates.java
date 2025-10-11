@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.slidesArmSystem;
 
-public enum SlidesStates {
+public enum OldSlidesStates {
         GROUND,
         LOW_JUNCTION,
         MIDDLE_JUNCTION,

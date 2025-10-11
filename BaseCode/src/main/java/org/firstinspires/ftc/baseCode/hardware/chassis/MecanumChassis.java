@@ -56,10 +56,10 @@ public abstract class MecanumChassis {
         backRight = new Motor(motorNames[2], hardwareMap);
         backLeft = new Motor(motorNames[3], hardwareMap);
 
-        frontRight.setDirectionForward();
-        backRight.setDirectionForward();
-        frontLeft.setDirectionReverse();
-        backLeft.setDirectionReverse();
+        frontRight.setDirectionReverse();
+        backRight.setDirectionReverse();
+        frontLeft.setDirectionForward();
+        backLeft.setDirectionForward();
 
         List<Motor> motors = Arrays.asList(frontLeft, frontRight, backRight, backLeft);
 

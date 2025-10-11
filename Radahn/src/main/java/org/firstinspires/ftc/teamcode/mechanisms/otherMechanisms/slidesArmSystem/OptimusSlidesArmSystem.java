@@ -13,13 +13,13 @@ public class OptimusSlidesArmSystem {
 
     boolean lastToggleX = false;
     boolean lastToggleB = false;
-    public SlidesStates slidesState;
+    public OldSlidesStates slidesState;
 
     public OptimusSlidesArmSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         slides = new OptimusSlides(gamepad1, telemetry, hardwareMap);
         arm = new OptimusArm(hardwareMap);
 
-        slidesState = SlidesStates.GROUND;
+        slidesState = OldSlidesStates.GROUND;
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
     }
@@ -50,20 +50,20 @@ public class OptimusSlidesArmSystem {
         switch (slidesState) {
             case GROUND:
                 if ((gamepad1.x != lastToggleX) && gamepad1.x) {
-                    slidesState = SlidesStates.HIGH_JUNCTION;
+                    slidesState = OldSlidesStates.HIGH_JUNCTION;
                 }
                 if((gamepad1.b != lastToggleB) && gamepad1.b){
-                    slidesState = SlidesStates.TRANSFER;
+                    slidesState = OldSlidesStates.TRANSFER;
                 }
                 break;
             case TRANSFER:
                 if((gamepad1.b != lastToggleB) && gamepad1.b){
-                    slidesState = SlidesStates.HIGH_JUNCTION;
+                    slidesState = OldSlidesStates.HIGH_JUNCTION;
                 }
                 break;
             case HIGH_JUNCTION:
                 if ((gamepad1.x != lastToggleX) && gamepad1.x) {
-                    slidesState = SlidesStates.GROUND;
+                    slidesState = OldSlidesStates.GROUND;
                 }
                 break;
         }
