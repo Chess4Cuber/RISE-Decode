@@ -13,7 +13,7 @@ public class RadahnChassis extends MecanumChassis {
     double CPR = 2000;
     double wheelDia = 1.89;
     double trackwidth = 16.6;
-    double forwardOffset = 1.75;
+    double forwardOffset = 0;
 
     PID_Controller TranslationalPID_X;
     PID_Controller TranslationalPID_Y;
@@ -30,9 +30,9 @@ public class RadahnChassis extends MecanumChassis {
 
         setPID_Controller(TranslationalPID_X, TranslationalPID_Y, HeadingPID);
 
-        frontLeft.setDirectionReverse();
-        frontRight.setDirectionForward();
-        backRight.setDirectionForward();
-        backLeft.setDirectionReverse();
+        frontLeft.setDirectionForward();
+        frontRight.setDirectionReverse();
+        backRight.setDirectionReverse();
+        backLeft.setDirectionForward();
     }
 }

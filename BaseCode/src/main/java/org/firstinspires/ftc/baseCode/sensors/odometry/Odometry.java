@@ -55,6 +55,19 @@ public class Odometry {
                 x_pos += delta_x;
                 y_pos += delta_y;
                 heading += phi;
+
+                encoderReadings[0] = leftEncoder.getCurrPosInches();
+                encoderReadings[1] = rightEncoder.getCurrPosInches();
+                encoderReadings[2] = middleEncoder.getCurrPosInches();
+
+                pose[0] = x_pos;
+                pose[1] = y_pos;
+                pose[2] = Math.toDegrees(heading);
+
+                previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+                previousEncoderPos[1] = rightEncoder.getCurrPosInches();
+                previousEncoderPos[2] = middleEncoder.getCurrPosInches();
+
                 break;
 
             case TWO_WHEEL:
@@ -62,17 +75,7 @@ public class Odometry {
                 break;
         }
 
-        encoderReadings[0] = leftEncoder.getCurrPosInches();
-        encoderReadings[1] = rightEncoder.getCurrPosInches();
-        encoderReadings[2] = middleEncoder.getCurrPosInches();
 
-        pose[0] = x_pos;
-        pose[1] = y_pos;
-        pose[2] = Math.toDegrees(heading);
-
-        previousEncoderPos[0] = leftEncoder.getCurrPosInches();
-        previousEncoderPos[1] = rightEncoder.getCurrPosInches();
-        previousEncoderPos[2] = middleEncoder.getCurrPosInches();
     }
     public double[] getPose() {
         return pose;
