@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.mechanisms.OpenCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.baseCode.hardware.Motor;
+import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.baseCode.CameraVision.AprilTagTracker;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import java.util.List;
 
@@ -40,26 +38,6 @@ public class ConceptScanMotif extends OpMode {
         // Create pipeline
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
 
-        // Setup camera and display preview on REV Hub
-        int cameraMonitorViewId = hardwareMap.appContext.getResources()
-                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
-        camera.setPipeline(pipeline);
-
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addData("Camera", "Failed to open: " + errorCode);
-                telemetry.update();
-            }
-        });
 
         // Initialize motor tracker
         tracker = new AprilTagTracker("panMotor", 387.5, hardwareMap, CAMERA_WIDTH);
@@ -72,6 +50,7 @@ public class ConceptScanMotif extends OpMode {
 
     @Override
     public void loop() {
+
         List<AprilTagDetection> detections = pipeline.getLatestDetections();
 
         if (!detections.isEmpty()) {
@@ -97,6 +76,7 @@ public class ConceptScanMotif extends OpMode {
         }
 
         telemetry.update();
+
     }
 
     @Override
@@ -107,4 +87,29 @@ public class ConceptScanMotif extends OpMode {
             camera.closeCameraDevice();
         }
     }
+
+
+    public void idk(){
+        //        // Setup camera and display preview on REV Hub
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources()
+//                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        camera = OpenCvCameraFactory.getInstance()
+//                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//
+//        camera.setPipeline(pipeline);
+//
+//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+//            @Override
+//            public void onOpened() {
+//                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode) {
+//                telemetry.addData("Camera", "Failed to open: " + errorCode);
+//                telemetry.update();
+//            }
+//        });
+    }
+
 }
