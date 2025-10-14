@@ -22,6 +22,7 @@ public class ConceptScanMotif extends OpMode {
     // Camera lens intrinsics for your webcam
     private static final double FX = 578.272;
     private static final double FY = 578.272;
+
     private static final double CX = 402.145;
     private static final double CY = 221.506;
 
