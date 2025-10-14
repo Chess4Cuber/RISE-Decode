@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.OpenCV;
+package org.firstinspires.ftc.baseCode.CameraVision;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,14 +15,14 @@ import java.util.List;
  */
 public class AprilTagTracker extends Motor {
 
-    private final PID_Controller pid;
+    private PID_Controller pid;
     private final double frameCenterX;
 
     private double tolerancePixels = 15; // deadband around center
     private double maxPower = 0.12;       // max motor power
     private double lastPower = 0;
     private double smoothingFactor = 0.25; // low-pass smoothing
-    private double stopRangePixels = 20; // motor stops if tag is within ±20 pixels of center
+    private double stopRangePixels;
 
     private final ElapsedTime runtime = new ElapsedTime();
 
