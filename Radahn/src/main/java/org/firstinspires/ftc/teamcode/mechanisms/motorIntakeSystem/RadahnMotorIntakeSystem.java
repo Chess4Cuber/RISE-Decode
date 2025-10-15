@@ -9,8 +9,7 @@ public class RadahnMotorIntakeSystem {
     Gamepad gamepad1;
     Telemetry telemetry;
     boolean lastToggleUp = false;
-    boolean lastToggleDown = false;
-    boolean lastToggleRight = false;
+    boolean lastToggleA = false;
     RadahnMotorIntake outtake;
     public MotorIntakeStates outtakeState;
 
@@ -42,7 +41,7 @@ public class RadahnMotorIntakeSystem {
     public void controllerInput(){
         switch(outtakeState) {
             case RESTING:
-                if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
+                if ((gamepad1.a != lastToggleA) && gamepad1.a) {
                     outtakeState = MotorIntakeStates.INTAKING;
                 }
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up) {
@@ -54,23 +53,22 @@ public class RadahnMotorIntakeSystem {
                 if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
                     outtakeState = MotorIntakeStates.OUTTAKING;
                 }
-                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                if((gamepad1.a != lastToggleA) && gamepad1.a){
                     outtakeState = MotorIntakeStates.RESTING;
                 }
                 break;
 
             case OUTTAKING:
-                if((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
+                if((gamepad1.a != lastToggleA) && gamepad1.a) {
                     outtakeState = MotorIntakeStates.INTAKING;
                 }
-                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
                     outtakeState = MotorIntakeStates.RESTING;
                 }
                 break;
         }
         lastToggleUp = gamepad1.dpad_up;
-        lastToggleDown = gamepad1.dpad_down;
-        lastToggleRight = gamepad1.dpad_right;
+        lastToggleA = gamepad1.a;
     }
 
 }

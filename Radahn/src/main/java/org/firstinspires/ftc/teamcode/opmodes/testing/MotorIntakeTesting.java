@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.motorOuttake.RadahnMotorOuttakeSystem;
 
 @TeleOp
 public class MotorIntakeTesting extends LinearOpMode {

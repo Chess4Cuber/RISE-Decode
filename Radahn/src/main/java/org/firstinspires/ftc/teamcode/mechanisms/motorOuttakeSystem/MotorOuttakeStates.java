@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.motorOuttake;
+package org.firstinspires.ftc.teamcode.mechanisms.motorOuttakeSystem;
 
 public enum MotorOuttakeStates {
     INTAKING,

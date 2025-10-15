@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.ArmSystem.RadahnArm;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.ColorSensor.HoleColorStates;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.ColorSensor.RadahnColorSensors;
 
@@ -15,9 +14,10 @@ public class RadahnSpindexerSystem {
     Gamepad gamepad1;
     RadahnSpindexer spindexer;
     RadahnColorSensors colorSensors;
-    RadahnArm pusher;
     public SpindexerStates spindexerState;
 //    public HoleColorStates colorState;
+
+    RadahnPusher pusher;
 
     public HoleColorStates HoleColor0, HoleColor1, HoleColor2;
 
@@ -25,11 +25,11 @@ public class RadahnSpindexerSystem {
     public RadahnSpindexerSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         spindexer = new RadahnSpindexer(gamepad1, telemetry, hardwareMap);
         colorSensors = new RadahnColorSensors(hardwareMap);
-        pusher = new RadahnArm(hardwareMap);
+        pusher = new RadahnPusher(gamepad1, hardwareMap);
 
         this.gamepad1 = gamepad1;
         spindexerState = SpindexerStates.HOLE_0;
-//        colorState = HoleColorStates.GREEN;
+//      colorState = HoleColorStates.GREEN;
 
     }
 
@@ -37,7 +37,6 @@ public class RadahnSpindexerSystem {
         switch (spindexerState) {
             case HOLE_0:
                 //spindexer.setPosition(0);
-                //pusher.setPosition(0, 0);
                 break;
 
             case HOLE_1:
@@ -52,18 +51,20 @@ public class RadahnSpindexerSystem {
 
             case HOLE_OUTTAKE0:
                 //spindexer.setPosition(.67);
-                //pusher.setPosition(1, 0);
-                //pusher.setPosition(0, 0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
+
             case HOLE_OUTTAKE1:
                 //spindexer.setPosition(whatever);
-                //pusher.setPosition(1, 0);
-                //pusher.setPosition(0, 0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
+
             case HOLE_OUTTAKE2:
                 //spindexer.setPosition(oieuboieurb);
-                //pusher.setPosition(1, 0);
-                //pusher.setPosition(0, 0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
 
         }
