@@ -27,12 +27,7 @@ public class RadahnTeleOp extends LinearOpMode {
         motorIntakeSystem = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
 
 
-        //intakeSystem = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
-        //pusher = new RadahnPusher(gamepad1, hardwareMap);
-
         while (opModeInInit()){
-            //pusher.closeClaw();
-
             telemetry.addLine("Waiting For Start");
             telemetry.update();
         }
@@ -47,12 +42,8 @@ public class RadahnTeleOp extends LinearOpMode {
             motorIntakeSystem.controllerInput();
             motorIntakeSystem.setPositions();
 
-//            intakeSystem.controllerInput();
-//            intakeSystem.setPositions();
 
-            //pusher.toggleClaw();
-
-//            telemetry.addData("Pose Estimate", chassis.getPose());
+ //           telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

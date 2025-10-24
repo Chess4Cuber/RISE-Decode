@@ -32,19 +32,17 @@ public class ConceptScanMotif extends OpMode {
     // --- Motor configuration ---
     private static final double PAN_MOTOR_CPR = 387.5;  // encoder counts per revolution
 
-    private OpenCvCamera camera;
-    private AprilTagDetectionPipeline pipeline;
-    private AprilTagTracker tracker;
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline pipeline;
+    AprilTagTracker tracker;
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
-        // Initialize the pipeline
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
 
-        // Initialize the webcam (no preview window)
         camera = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
         camera.setPipeline(pipeline);

@@ -2,5 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.ColorSen
 
 public enum HoleColorStates {
     GREEN,
-    PURPLE
+    PURPLE,
+    UNKNOWN
 }

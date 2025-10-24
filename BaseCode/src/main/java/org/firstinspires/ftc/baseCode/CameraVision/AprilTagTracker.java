@@ -15,18 +15,18 @@ import java.util.List;
  */
 public class AprilTagTracker extends Motor {
 
-    private PID_Controller pid;
-    private final double frameCenterX;
+    PID_Controller pid;
+    double frameCenterX;
 
-    private double tolerancePixels = 15; // deadband around center
-    private double maxPower = 0.12;       // max motor power
-    private double lastPower = 0;
-    private double smoothingFactor = 0.25; // low-pass smoothing
-    private double stopRangePixels;
+    double tolerancePixels = 15; // deadband around center
+    double maxPower = 0.12;       // max motor power
+    double lastPower = 0;
+    double smoothingFactor = 0.25; // low-pass smoothing
+    double stopRangePixels;
 
-    private final ElapsedTime runtime = new ElapsedTime();
-
-    private int directionMultiplier = 1; // 1 = normal, -1 = reversed
+    ElapsedTime runtime = new ElapsedTime();
+    Motor pan;
+    int directionMultiplier = 1; // 1 = normal, -1 = reversed
 
     public AprilTagTracker(String motorName, double cpr, HardwareMap hwmap, double frameWidth) {
         super(motorName, cpr, hwmap);
@@ -38,7 +38,7 @@ public class AprilTagTracker extends Motor {
         this.pid.tolerance = tolerancePixels;
 
         // Brake motor when zero power
-        dcMotorEx.setZeroPowerBehavior(com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE);
+        this.pan.setZeroPowerBehavior(com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
@@ -74,7 +74,7 @@ public class AprilTagTracker extends Motor {
         if (Math.abs(smoothedPower) < 0.03) smoothedPower = 0;
 
         // Apply power
-        dcMotorEx.setPower(smoothedPower);
+        this.pan.setPower(smoothedPower);
         lastPower = smoothedPower;
 
         return smoothedPower;
@@ -87,7 +87,7 @@ public class AprilTagTracker extends Motor {
 
     private void safeStop() {
         try {
-            dcMotorEx.setPower(0);
+            this.pan.setPower(0);
         } catch (Exception ignored) {}
         lastPower = 0;
     }

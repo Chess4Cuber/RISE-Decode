@@ -15,9 +15,9 @@ public class RadahnSpindexerSystem {
     RadahnSpindexer spindexer;
     RadahnColorSensors colorSensors;
     public SpindexerStates spindexerState;
-//    public HoleColorStates colorState;
-
     RadahnPusher pusher;
+    boolean lastToggleY = false;
+
 
     public HoleColorStates HoleColor0, HoleColor1, HoleColor2;
 
@@ -48,6 +48,11 @@ public class RadahnSpindexerSystem {
                 //spindexer.setPosition(-.7);
                 //pusher.setPosition(0, 0);
                 break;
+
+            case HOLE_REST:
+                //spindexer.setPosition(outtake0 pos);
+                break;
+
 
             case HOLE_OUTTAKE0:
                 //spindexer.setPosition(.67);
@@ -81,7 +86,6 @@ public class RadahnSpindexerSystem {
                     HoleColor0 = HoleColorStates.GREEN;
                     spindexerState = SpindexerStates.HOLE_1;
                     display(HoleColor0);
-                    //touchSensors.setTouchSensor(0);
                 }
 
                 //sees purple
@@ -89,7 +93,6 @@ public class RadahnSpindexerSystem {
                     HoleColor0 = HoleColorStates.PURPLE;
                     spindexerState = SpindexerStates.HOLE_1;
                     display(HoleColor0);
-                    //touchSensors.setTouchSensor(0);
                 }
                 break;
 
@@ -119,14 +122,22 @@ public class RadahnSpindexerSystem {
                     spindexerState = SpindexerStates.HOLE_0;
                     display(HoleColor2);
                 }
+
+                if ((gamepad1.y != lastToggleY) && gamepad1.y){
+                    spindexerState = SpindexerStates.HOLE_OUTTAKE0;
+                }
+
                 break;
 
+
             case HOLE_OUTTAKE0:
-                if(gamepad1.a){
+                if((gamepad1.y != lastToggleY) && gamepad1.y){
 
                 }
 
         }
+
+        lastToggleY = gamepad1.y;
 
     }
 
@@ -136,7 +147,6 @@ public class RadahnSpindexerSystem {
     public HoleColorStates getColorState(HoleColorStates color){
         return color;
     }
-
 
 
     public void display(HoleColorStates color){

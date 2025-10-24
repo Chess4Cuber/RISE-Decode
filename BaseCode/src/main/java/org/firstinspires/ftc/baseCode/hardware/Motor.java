@@ -3,14 +3,12 @@ package org.firstinspires.ftc.baseCode.hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Motor {
-    public DcMotor dcMotorEx;
+    public DcMotor pan;
 
     //Declare all the constants in the Motor class
     public double TICKS_PER_REV = 0;
@@ -32,13 +30,13 @@ public class Motor {
     PID_Controller motorVeloPID;
 
     public Motor(String name, HardwareMap hardwareMap){
-        dcMotorEx = hardwareMap.get(DcMotor.class, name);
+        pan = hardwareMap.get(DcMotor.class, name);
 
         motorVeloPID = new PID_Controller(0);
     }
 
     public Motor(String name , double cpr, HardwareMap hwmap){
-        dcMotorEx = hwmap.get(DcMotorEx.class, name);
+        pan = hwmap.get(DcMotorEx.class, name);
         TICKS_PER_REV = cpr;
         TICKS_PER_INCH = TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI);
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
@@ -48,7 +46,7 @@ public class Motor {
     }
 
     public Motor(String name , double cpr, double kp, double kd, double ki, HardwareMap hwmap){
-        dcMotorEx = hwmap.get(DcMotorEx.class, name);
+        pan = hwmap.get(DcMotorEx.class, name);
         this.TICKS_PER_REV = cpr;
         TICKS_PER_INCH = TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI);
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
@@ -58,56 +56,56 @@ public class Motor {
     }
 
     public void reset(){
-        dcMotorEx.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        dcMotorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pan.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
-        dcMotorEx.setZeroPowerBehavior(zeroPowerBehavior);
+        pan.setZeroPowerBehavior(zeroPowerBehavior);
     }
     public void setBreakMode(){
-        dcMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pan.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void setFloatMode(){
-        dcMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        pan.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public double getCurrPosDegrees(){
-        return (dcMotorEx.getCurrentPosition()/TICKS_PER_DEGREE);
+        return (pan.getCurrentPosition()/TICKS_PER_DEGREE);
     }
     public double getCurrPosRadians(){
-        return (dcMotorEx.getCurrentPosition()/TICKS_PER_RADIAN);
+        return (pan.getCurrentPosition()/TICKS_PER_RADIAN);
     }
 
     public double getCurrPosTicks(){
-        return dcMotorEx.getCurrentPosition();
+        return pan.getCurrentPosition();
     }
 
     public double getCurrPosInches(){
-        return dcMotorEx.getCurrentPosition()/TICKS_PER_INCH;
+        return pan.getCurrentPosition()/TICKS_PER_INCH;
     }
 
 
     public MotorConfigurationType getMotorType(){
-        return dcMotorEx.getMotorType();
+        return pan.getMotorType();
     }
 
     public void setMotorType(MotorConfigurationType motorConfigurationType){
-        dcMotorEx.setMotorType(motorConfigurationType);
+        pan.setMotorType(motorConfigurationType);
     }
 
     public void setDirectionForward(){
-        dcMotorEx.setDirection(DcMotor.Direction.FORWARD);
+        pan.setDirection(DcMotor.Direction.FORWARD);
     }
     public void setDirectionReverse(){
-        dcMotorEx.setDirection(DcMotor.Direction.REVERSE);
+        pan.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void setPower(double power){
-        dcMotorEx.setPower(power);
+        pan.setPower(power);
     }
 
     public void setMode(DcMotor.RunMode runMode) {
-        dcMotorEx.setMode(runMode);
+        pan.setMode(runMode);
     }
 }
