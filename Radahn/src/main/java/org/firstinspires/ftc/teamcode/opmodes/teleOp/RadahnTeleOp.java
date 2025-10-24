@@ -16,7 +16,6 @@ public class RadahnTeleOp extends LinearOpMode {
 
     RadahnMotorIntakeSystem motorIntakeSystem;
 
-    //RadahnPusher pusher;
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
     @Override

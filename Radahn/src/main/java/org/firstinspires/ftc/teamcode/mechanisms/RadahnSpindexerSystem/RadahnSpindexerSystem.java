@@ -37,16 +37,20 @@ public class RadahnSpindexerSystem {
         switch (spindexerState) {
             case HOLE_0:
                 //spindexer.setPosition(0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
 
             case HOLE_1:
                 //spindexer.setPosition(.7);
-                //pusher.setPosition(0, 0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
 
             case HOLE_2:
                 //spindexer.setPosition(-.7);
-                //pusher.setPosition(0, 0);
+                //pusher.openClaw();
+                //pusher.closeClaw();
                 break;
 
             case HOLE_REST:
@@ -80,7 +84,6 @@ public class RadahnSpindexerSystem {
     public void controllerInput(){
         switch (spindexerState) {
             case HOLE_0:
-
                 //sees green
                 if (colorSensors.seesColor(0, 0, 1, 0, .2f)){
                     HoleColor0 = HoleColorStates.GREEN;
@@ -97,12 +100,14 @@ public class RadahnSpindexerSystem {
                 break;
 
             case HOLE_1:
+                //sees green
                 if (colorSensors.seesColor(1, 0, 1, 0, .2f)){
                     HoleColor1 = HoleColorStates.GREEN;
                     spindexerState = SpindexerStates.HOLE_2;
                     display(HoleColor1);
                 }
 
+                //sees purple
                 if (colorSensors.seesColor(1, .6f, 0, .9f, .2f)){
                     HoleColor1 = HoleColorStates.PURPLE;
                     spindexerState = SpindexerStates.HOLE_2;
@@ -111,15 +116,17 @@ public class RadahnSpindexerSystem {
                 break;
 
             case HOLE_2:
+                //sees green
                 if (colorSensors.seesColor(2, 0, 1, 0, .2f)){
                     HoleColor2 = HoleColorStates.GREEN;
-                    spindexerState = SpindexerStates.HOLE_0;
+                    spindexerState = SpindexerStates.HOLE_REST;
                     display(HoleColor2);
                 }
 
+                //sees purple
                 if (colorSensors.seesColor(2, .6f, 0, .9f, .2f)){
                     HoleColor2 = HoleColorStates.PURPLE;
-                    spindexerState = SpindexerStates.HOLE_0;
+                    spindexerState = SpindexerStates.HOLE_REST;
                     display(HoleColor2);
                 }
 
@@ -130,10 +137,32 @@ public class RadahnSpindexerSystem {
                 break;
 
 
+            case HOLE_REST:
+                if((gamepad1.y != lastToggleY) && gamepad1.y){
+                    spindexerState = SpindexerStates.HOLE_OUTTAKE0;
+                }
+                break;
+
+
             case HOLE_OUTTAKE0:
                 if((gamepad1.y != lastToggleY) && gamepad1.y){
-
+                    spindexerState = SpindexerStates.HOLE_OUTTAKE1;
                 }
+                break;
+
+
+            case HOLE_OUTTAKE1:
+                if((gamepad1.y != lastToggleY) && gamepad1.y){
+                    spindexerState = SpindexerStates.HOLE_OUTTAKE2;
+                }
+                break;
+
+
+            case HOLE_OUTTAKE2:
+                if((gamepad1.y != lastToggleY) && gamepad1.y){
+                    spindexerState = SpindexerStates.HOLE_0;
+                }
+                break;
 
         }
 

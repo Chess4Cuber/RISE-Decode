@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
 
 public class Motor {
-    public DcMotor pan;
+    public DcMotor dcMotorEx;
 
     //Declare all the constants in the Motor class
     public double TICKS_PER_REV = 0;
@@ -30,13 +30,13 @@ public class Motor {
     PID_Controller motorVeloPID;
 
     public Motor(String name, HardwareMap hardwareMap){
-        pan = hardwareMap.get(DcMotor.class, name);
+        dcMotorEx = hardwareMap.get(DcMotor.class, name);
 
         motorVeloPID = new PID_Controller(0);
     }
 
     public Motor(String name , double cpr, HardwareMap hwmap){
-        pan = hwmap.get(DcMotorEx.class, name);
+        dcMotorEx = hwmap.get(DcMotorEx.class, name);
         TICKS_PER_REV = cpr;
         TICKS_PER_INCH = TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI);
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
@@ -46,7 +46,7 @@ public class Motor {
     }
 
     public Motor(String name , double cpr, double kp, double kd, double ki, HardwareMap hwmap){
-        pan = hwmap.get(DcMotorEx.class, name);
+        dcMotorEx = hwmap.get(DcMotorEx.class, name);
         this.TICKS_PER_REV = cpr;
         TICKS_PER_INCH = TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI);
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
@@ -56,56 +56,56 @@ public class Motor {
     }
 
     public void reset(){
-        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pan.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        dcMotorEx.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dcMotorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
-        pan.setZeroPowerBehavior(zeroPowerBehavior);
+        dcMotorEx.setZeroPowerBehavior(zeroPowerBehavior);
     }
     public void setBreakMode(){
-        pan.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dcMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void setFloatMode(){
-        pan.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        dcMotorEx.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public double getCurrPosDegrees(){
-        return (pan.getCurrentPosition()/TICKS_PER_DEGREE);
+        return (dcMotorEx.getCurrentPosition()/TICKS_PER_DEGREE);
     }
     public double getCurrPosRadians(){
-        return (pan.getCurrentPosition()/TICKS_PER_RADIAN);
+        return (dcMotorEx.getCurrentPosition()/TICKS_PER_RADIAN);
     }
 
     public double getCurrPosTicks(){
-        return pan.getCurrentPosition();
+        return dcMotorEx.getCurrentPosition();
     }
 
     public double getCurrPosInches(){
-        return pan.getCurrentPosition()/TICKS_PER_INCH;
+        return dcMotorEx.getCurrentPosition()/TICKS_PER_INCH;
     }
 
 
     public MotorConfigurationType getMotorType(){
-        return pan.getMotorType();
+        return dcMotorEx.getMotorType();
     }
 
     public void setMotorType(MotorConfigurationType motorConfigurationType){
-        pan.setMotorType(motorConfigurationType);
+        dcMotorEx.setMotorType(motorConfigurationType);
     }
 
     public void setDirectionForward(){
-        pan.setDirection(DcMotor.Direction.FORWARD);
+        dcMotorEx.setDirection(DcMotor.Direction.FORWARD);
     }
     public void setDirectionReverse(){
-        pan.setDirection(DcMotor.Direction.REVERSE);
+        dcMotorEx.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void setPower(double power){
-        pan.setPower(power);
+        dcMotorEx.setPower(power);
     }
 
     public void setMode(DcMotor.RunMode runMode) {
-        pan.setMode(runMode);
+        dcMotorEx.setMode(runMode);
     }
 }
