@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.turretHoodSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem;
 
 public enum TurretHoodStates {
     INTAKING,

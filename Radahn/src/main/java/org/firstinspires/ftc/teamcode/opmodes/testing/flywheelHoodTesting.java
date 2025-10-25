@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.mechanisms.turretHoodSystem.RadahnHoodedOuttakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -17,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import java.util.List;
 
 @TeleOp(name = "Turret Hood Testing (Alliance Toggle)")
-public class TurretHoodTesting extends LinearOpMode {
+public class flywheelHoodTesting extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
     RadahnChassis chassis;
@@ -49,11 +48,9 @@ public class TurretHoodTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // Initialize systems
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
-        // Initialize camera pipeline
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
         camera = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -72,10 +69,8 @@ public class TurretHoodTesting extends LinearOpMode {
             }
         });
 
-
+        // Init period: alliance selection
         while (opModeInInit()) {
-
-
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 isBlueAlliance = !isBlueAlliance;
             }
@@ -87,11 +82,9 @@ public class TurretHoodTesting extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-
-
             List<AprilTagDetection> detections = pipeline.getLatestDetections();
             double tagDistanceInches = 0;
-
+            int trackedTagID = -1;
 
             if (detections != null && !detections.isEmpty()) {
                 int targetTagID = isBlueAlliance ? BLUE_GOAL_TAG_ID : RED_GOAL_TAG_ID;
@@ -99,11 +92,11 @@ public class TurretHoodTesting extends LinearOpMode {
                 for (AprilTagDetection tag : detections) {
                     if (tag.id == targetTagID) {
                         tagDistanceInches = tag.pose.z * 39.3701; // meters → inches
+                        trackedTagID = tag.id;
                         break;
                     }
                 }
             }
-
 
             hoodedOuttakeSystem.updateDistance(tagDistanceInches);
             hoodedOuttakeSystem.controllerInput();
@@ -112,14 +105,14 @@ public class TurretHoodTesting extends LinearOpMode {
             chassis.robotCentricDrive();
             chassis.updatePose();
 
-
             telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
+            telemetry.addData("Tracked Tag ID", trackedTagID >= 0 ? trackedTagID : "None");
+            telemetry.addData("Tag Distance (inches)", "%.2f", tagDistanceInches);
             telemetry.addData("Loop Time", runtime.seconds() - previousTime);
             telemetry.update();
 
             previousTime = runtime.seconds();
         }
-
 
         hoodedOuttakeSystem.updateDistance(0);
         hoodedOuttakeSystem.setPositions();
