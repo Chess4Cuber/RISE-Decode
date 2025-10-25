@@ -10,6 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class RadahnnSlides extends PulleySlides {
 
     public RadahnnSlides(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        super(2, new String[]{"slidesLeft", "slidesRight"}, 1.5, 387.5, RiggingMethod.CONTINUOUS, 2, 0, new PID_Controller(0.05,0,0,0.05), hardwareMap);
+        super(2, new String[]{"slidesLeft", "slidesRight"}, 1.5, 387.5, RiggingMethod.CONTINUOUS, 2, 0.2, new PID_Controller(0.05,0,0,0.025), hardwareMap);
     }
 }

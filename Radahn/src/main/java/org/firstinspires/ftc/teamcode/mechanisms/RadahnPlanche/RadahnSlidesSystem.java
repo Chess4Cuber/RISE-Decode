@@ -28,7 +28,7 @@ public class RadahnSlidesSystem {
                 slides.setExtension(0);
                 break;
             case EXTENDED:
-                slides.setExtension(30);
+                slides.setExtension(50);
                 break;
 
         }

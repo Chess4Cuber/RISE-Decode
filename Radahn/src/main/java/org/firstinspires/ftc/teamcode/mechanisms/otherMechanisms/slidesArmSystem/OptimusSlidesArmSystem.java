@@ -9,7 +9,7 @@ public class OptimusSlidesArmSystem {
     Gamepad gamepad1;
     Telemetry telemetry;
     OptimusSlides slides;
-    OptimusArm arm;
+//    OptimusArm arm;
 
     boolean lastToggleX = false;
     boolean lastToggleB = false;
@@ -17,7 +17,7 @@ public class OptimusSlidesArmSystem {
 
     public OptimusSlidesArmSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         slides = new OptimusSlides(gamepad1, telemetry, hardwareMap);
-        arm = new OptimusArm(hardwareMap);
+        //arm = new OptimusArm(hardwareMap);
 
         slidesState = OldSlidesStates.GROUND;
         this.gamepad1 = gamepad1;
@@ -28,21 +28,21 @@ public class OptimusSlidesArmSystem {
         switch (slidesState){
             case GROUND:
                 slides.setExtension(0);
-                arm.setPosition(0.5,0); // first arm stage
-                arm.setPosition(0.65,1); //rotator
-                arm.setPosition(.97,2); //wrist
+                //arm.setPosition(0.5,0); // first arm stage
+                //arm.setPosition(0.65,1); //rotator
+                //arm.setPosition(.97,2); //wrist
                 break;
             case TRANSFER:
                 slides.setExtension(0);
-                arm.setPosition(0.64,0); // first arm stage
-                arm.setPosition(0.5,1); //rotator
-                arm.setPosition(.97,2); //wrist
+                //arm.setPosition(0.64,0); // first arm stage
+                //arm.setPosition(0.5,1); //rotator
+                //arm.setPosition(.97,2); //wrist
                 break;
             case HIGH_JUNCTION:
                 slides.setExtension(50);
-                arm.setPosition(0.2,0); // first arm stage
-                arm.setPosition(0.1,1); //rotator
-                arm.setPosition(0,2); //wrist
+//                arm.setPosition(0.2,0); // first arm stage
+//                arm.setPosition(0.1,1); //rotator
+//                arm.setPosition(0,2); //wrist
                 break;
         }
     }
