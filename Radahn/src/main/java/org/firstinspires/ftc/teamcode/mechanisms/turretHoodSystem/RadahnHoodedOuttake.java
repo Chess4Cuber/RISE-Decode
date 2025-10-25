@@ -24,5 +24,10 @@ public class RadahnHoodedOuttake extends PassiveIntake {
         return hoodServo.getPosition();
     }
 
+    public void setVelocityRPM(double rpm) {
+        double ticksPerRevolution = motors[0].TICKS_PER_REV;
+        double ticksPerSecond = (rpm * ticksPerRevolution) / 60.0;
+        motors[0].dcMotorEx.setVelocity(ticksPerSecond);
+    }
 
 }

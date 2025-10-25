@@ -1,0 +1,131 @@
+package org.firstinspires.ftc.teamcode.opmodes.testing;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.mechanisms.turretHoodSystem.RadahnHoodedOuttakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+import java.util.List;
+
+@TeleOp(name = "Turret Hood Testing (Alliance Toggle)")
+public class TurretHoodTesting extends LinearOpMode {
+
+    RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
+    RadahnChassis chassis;
+
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline pipeline;
+
+    public ElapsedTime runtime = new ElapsedTime();
+    double previousTime = 0;
+
+    // Camera constants
+    private static final double TAG_SIZE = 0.0508; // 2 inches in meters
+    private static final double FX = 578.272;
+    private static final double FY = 578.272;
+    private static final double CX = 402.145;
+    private static final double CY = 221.506;
+
+    private static final int CAMERA_WIDTH = 640;
+    private static final int CAMERA_HEIGHT = 480;
+
+    // Define the IDs of the goal tags for each alliance
+    private static final int BLUE_GOAL_TAG_ID = 20;
+    private static final int RED_GOAL_TAG_ID = 24;
+
+    // Alliance toggle
+    private boolean isBlueAlliance = true;
+    private boolean lastToggleY = false;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        // Initialize systems
+        hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
+        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
+
+        // Initialize camera pipeline
+        pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
+        camera = OpenCvCameraFactory.getInstance()
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        camera.setPipeline(pipeline);
+
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("Camera", "Failed to open: " + errorCode);
+                telemetry.update();
+            }
+        });
+
+
+        while (opModeInInit()) {
+
+
+            if ((gamepad1.y != lastToggleY) && gamepad1.y) {
+                isBlueAlliance = !isBlueAlliance;
+            }
+            lastToggleY = gamepad1.y;
+
+            telemetry.addLine("Waiting For Start");
+            telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
+            telemetry.update();
+        }
+
+        while (opModeIsActive()) {
+
+
+            List<AprilTagDetection> detections = pipeline.getLatestDetections();
+            double tagDistanceInches = 0;
+
+
+            if (detections != null && !detections.isEmpty()) {
+                int targetTagID = isBlueAlliance ? BLUE_GOAL_TAG_ID : RED_GOAL_TAG_ID;
+
+                for (AprilTagDetection tag : detections) {
+                    if (tag.id == targetTagID) {
+                        tagDistanceInches = tag.pose.z * 39.3701; // meters → inches
+                        break;
+                    }
+                }
+            }
+
+
+            hoodedOuttakeSystem.updateDistance(tagDistanceInches);
+            hoodedOuttakeSystem.controllerInput();
+            hoodedOuttakeSystem.setPositions();
+
+            chassis.robotCentricDrive();
+            chassis.updatePose();
+
+
+            telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
+            telemetry.addData("Loop Time", runtime.seconds() - previousTime);
+            telemetry.update();
+
+            previousTime = runtime.seconds();
+        }
+
+
+        hoodedOuttakeSystem.updateDistance(0);
+        hoodedOuttakeSystem.setPositions();
+        if (camera != null) {
+            camera.stopStreaming();
+            camera.closeCameraDevice();
+        }
+    }
+}

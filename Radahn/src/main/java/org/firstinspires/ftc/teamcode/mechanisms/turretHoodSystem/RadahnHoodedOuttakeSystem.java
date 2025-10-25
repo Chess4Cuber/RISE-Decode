@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms.turretHoodSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnHoodedOuttakeSystem {
@@ -27,12 +26,9 @@ public class RadahnHoodedOuttakeSystem {
         this.telemetry = telemetry;
     }
 
-    public void updateDistance(double distanceInches) {
-        this.tagDistanceInches = distanceInches;
-    }
-
+    /** Updates motor and hood positions based on current tag distance */
     public void setPositions() {
-        double targetVelocity = computeMotorVelocity(tagDistanceInches);
+        double targetRPM = computeMotorVelocity(tagDistanceInches) * 60.0 / hoodedOuttake.motors[0].TICKS_PER_REV;
         double targetHoodPosition = computeHoodPosition(tagDistanceInches);
 
         switch (outtakeState) {
@@ -41,41 +37,50 @@ public class RadahnHoodedOuttakeSystem {
                 break;
 
             case INTAKING:
-                //hoodedOuttake.setVelocity(targetVelocity);
+                hoodedOuttake.setVelocityRPM(targetRPM);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
             case OUTTAKING:
-                //hoodedOuttake.setVelocity(-targetVelocity);
+                hoodedOuttake.setVelocityRPM(-targetRPM);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
         }
 
-        telemetry.addData("Outtake State", outtakeState);
-        telemetry.addData("Distance (in)", "%.2f", tagDistanceInches);
-        telemetry.addData("Motor Target Vel", "%.3f", targetVelocity);
-        telemetry.addData("Hood Target Pos", "%.3f", targetHoodPosition);
+        displayTelemetry(targetRPM, targetHoodPosition);
     }
 
+    /** Handles button-based state changes */
     public void controllerInput() {
         switch (outtakeState) {
             case RESTING:
-                if ((gamepad1.b != lastToggleB) && gamepad1.b)
+                if ((gamepad1.b != lastToggleB) && gamepad1.b){
                     outtakeState = TurretHoodStates.INTAKING;
-                if ((gamepad1.back != lastToggleBack) && gamepad1.back)
+                }
+
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back) {
                     outtakeState = TurretHoodStates.OUTTAKING;
+                }
                 break;
 
             case INTAKING:
-                if ((gamepad1.back != lastToggleBack) && gamepad1.back)
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back){
                     outtakeState = TurretHoodStates.OUTTAKING;
-                if ((gamepad1.b != lastToggleB) && gamepad1.b)
+                }
+
+                if ((gamepad1.b != lastToggleB) && gamepad1.b){
                     outtakeState = TurretHoodStates.RESTING;
+                }
                 break;
 
             case OUTTAKING:
-                if ((gamepad1.b != lastToggleB) && gamepad1.b)
+                if ((gamepad1.b != lastToggleB) && gamepad1.b){
                     outtakeState = TurretHoodStates.INTAKING;
+                }
+
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back){
+                    outtakeState = TurretHoodStates.RESTING;
+                }
                 break;
         }
 
@@ -87,36 +92,50 @@ public class RadahnHoodedOuttakeSystem {
         this.outtakeState = state;
     }
 
-    /**
-     * Maps AprilTag distance (in inches) → desired motor velocity.
-     * TODO: tune function experimentally.
-     */
-    private double computeMotorVelocity(double distanceInches) {
+    /** Computes motor velocity based on AprilTag distance (ticks/sec) */
+    public double computeMotorVelocity(double distanceInches) {
         if (distanceInches <= 0) return 0;
 
-        // Example placeholder: linear relationship
-        // velocity increases from 400 -> 1200 ticks/sec between 6" and 36"
-        double minDist = 6, maxDist = 36;
-        double minVel = 400, maxVel = 1200;
-        double slope = (maxVel - minVel) / (maxDist - minDist);
+        double minDist = 6;
+        double maxDist = 36;
+        double minRPM = 2000;
+        double maxRPM = 5500;
 
-        double velocity = minVel + slope * (distanceInches - minDist);
-        return Math.max(minVel, Math.min(maxVel, velocity));
+        double slope = (maxRPM - minRPM) / (maxDist - minDist);
+        double targetRPM = minRPM + slope * (distanceInches - minDist);
+        targetRPM = Math.max(minRPM, Math.min(maxRPM, targetRPM));
+
+        // Convert RPM → ticks/sec
+        return targetRPM * hoodedOuttake.motors[0].TICKS_PER_REV / 60.0;
     }
 
-    /**
-     * Maps AprilTag distance (in inches) → hood servo position.
-     * TODO: tune function experimentally.
-     */
-    private double computeHoodPosition(double distanceInches) {
-        if (distanceInches <= 0) return 0.5; // default neutral
+    /** Computes hood servo position based on AprilTag distance */
+    public double computeHoodPosition(double distanceInches) {
+        if (distanceInches <= 0) return 0.5;
 
-        // Example placeholder: servo goes from 0.2 → 0.8 as distance increases
-        double minDist = 6, maxDist = 36;
-        double minPos = 0.2, maxPos = 0.8;
-        double slope = (maxPos - minPos) / (maxDist - minDist);
+        double minDist = 6;
+        double maxDist = 36;
+        double minPos = 0.2;
+        double maxPos = 0.8;
 
-        double position = minPos + slope * (distanceInches - minDist);
+        double normalized = (distanceInches - minDist) / (maxDist - minDist);
+        normalized = Math.max(0, Math.min(1, normalized));
+
+        // Quadratic curve for smooth hood adjustment
+        double position = minPos + (maxPos - minPos) * (normalized * normalized);
         return Math.max(minPos, Math.min(maxPos, position));
+    }
+
+    /** Updates the latest measured distance from the AprilTag */
+    public void updateDistance(double distanceInches) {
+        this.tagDistanceInches = distanceInches;
+    }
+
+    /** Telemetry for tuning */
+    private void displayTelemetry(double targetRPM, double targetHoodPosition) {
+        telemetry.addData("Outtake State", outtakeState);
+        telemetry.addData("Distance (in)", "%.2f", tagDistanceInches);
+        telemetry.addData("Motor Target RPM", "%.1f", targetRPM);
+        telemetry.addData("Hood Target Pos", "%.3f", targetHoodPosition);
     }
 }
