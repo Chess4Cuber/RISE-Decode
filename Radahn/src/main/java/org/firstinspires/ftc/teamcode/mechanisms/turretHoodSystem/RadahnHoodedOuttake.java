@@ -23,4 +23,6 @@ public class RadahnHoodedOuttake extends PassiveIntake {
     public double getHoodPosition() {
         return hoodServo.getPosition();
     }
+
+
 }

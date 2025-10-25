@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.motorOuttakeSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;

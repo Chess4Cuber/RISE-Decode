@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
 
 public class Motor {
-    public DcMotor dcMotorEx;
+    public DcMotorEx dcMotorEx;
 
     //Declare all the constants in the Motor class
     public double TICKS_PER_REV = 0;
@@ -30,7 +30,7 @@ public class Motor {
     PID_Controller motorVeloPID;
 
     public Motor(String name, HardwareMap hardwareMap){
-        dcMotorEx = hardwareMap.get(DcMotor.class, name);
+        dcMotorEx = hardwareMap.get(DcMotorEx.class, name);
 
         motorVeloPID = new PID_Controller(0);
     }
@@ -108,4 +108,21 @@ public class Motor {
     public void setMode(DcMotor.RunMode runMode) {
         dcMotorEx.setMode(runMode);
     }
+
+    public void setVelocityTicks(double ticksPerSecond){
+        dcMotorEx.setVelocity(ticksPerSecond);
+    }
+    public void setVelocityRPM(double rpm){
+        double ticksPerSec = (rpm/60.0) * TICKS_PER_REV;
+        dcMotorEx.setVelocity(ticksPerSec);
+    }
+    public double getVelocityTicks(){
+        return dcMotorEx.getVelocity();
+    }
+    public double getVelocityRPM(){
+        double ticksPerSec = getVelocityTicks();
+        return ticksPerSec *60.0 / TICKS_PER_REV;
+    }
+
+
 }

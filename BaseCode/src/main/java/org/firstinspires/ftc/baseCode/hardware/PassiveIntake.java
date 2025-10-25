@@ -51,4 +51,16 @@ public abstract class PassiveIntake {
         }
     }
 
+    public void setVelocityRPM(double rpm){
+        for (Motor motor : motors) {
+            motor.setVelocityRPM(rpm);
+        }
+    }
+
+    public void setVelocityTicks(double ticksPerSecond){
+        for (Motor motor : motors) {
+            motor.setVelocityTicks(ticksPerSecond);
+        }
+    }
+
 }
