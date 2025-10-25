@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.motorOuttakeSystem.RadahnMotorO
 @TeleOp
 public class RadahnTeleOp extends LinearOpMode {
     RadahnChassis chassis;
-    //RadahnServoIntakeSystem intakeSystem;
     RadahnMotorOuttakeSystem motorOuttakeSystem;
 
     RadahnMotorIntakeSystem motorIntakeSystem;
