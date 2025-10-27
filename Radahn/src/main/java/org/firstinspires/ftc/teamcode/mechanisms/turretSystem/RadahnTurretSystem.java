@@ -14,12 +14,12 @@ public class RadahnTurretSystem {
     Telemetry telemetry;
     TurretStates turretState;
 
-    private final PID_Controller pid;
+    final PID_Controller pid;
 
-    private final double cameraWidth;
-    private final double cameraFOV; // in radians
+    final double cameraWidth;
+    final double cameraFOV;
 
-    private static final double CENTER_TOLERANCE_PIXELS = 10; // tolerance for horizontal offset
+    static final double CENTER_TOLERANCE_PIXELS = 30;
 
     public RadahnTurretSystem(HardwareMap hardwareMap, Telemetry telemetry, double pulleyRadius, PID_Controller pid, double cameraWidth, double cameraFOV) {
         turret = new RadahnTurret(1, new String[]{"turretMotor"}, pulleyRadius, 435, pid, hardwareMap);
@@ -41,16 +41,16 @@ public class RadahnTurretSystem {
         if (detections != null && !detections.isEmpty()) {
             for (AprilTagDetection tag : detections) {
                 if (tag.id == targetTagID) {
-                    // Calculate horizontal offset from camera center
-                    double offsetPixels = tag.pose.x; // positive = right, negative = left
+
+                    double offsetPixels = tag.pose.x;
                     if (Math.abs(offsetPixels) > CENTER_TOLERANCE_PIXELS) {
-                        double offsetRatio = offsetPixels / (cameraWidth / 2.0); // -1 to 1
-                        double angleOffset = offsetRatio * (cameraFOV / 2.0); // radians
+                        double offsetRatio = offsetPixels / (cameraWidth / 2.0);
+                        double angleOffset = offsetRatio * (cameraFOV / 2.0);
 
                         targetAngle = currentAngle + angleOffset;
                         turretState = TurretStates.TRACKING;
                     } else {
-                        turretState = TurretStates.RESTING; // within tolerance
+                        turretState = TurretStates.RESTING;
                     }
                     foundTarget = true;
                     break;
@@ -62,7 +62,6 @@ public class RadahnTurretSystem {
             turretState = TurretStates.RESTING;
         }
 
-        // Apply PID only if outside tolerance
         if (turretState == TurretStates.TRACKING) {
             double power = pid.PID_Power(currentAngle, targetAngle);
             turret.setTargetAngle(currentAngle + power);

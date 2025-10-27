@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import java.util.List;
 
 @TeleOp(name = "Turret Hood Testing (Alliance Toggle)")
-public class flywheelHoodTesting extends LinearOpMode {
+public class TurretHoodTesting extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
     RadahnChassis chassis;
