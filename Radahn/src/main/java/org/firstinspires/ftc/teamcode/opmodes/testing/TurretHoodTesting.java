@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,7 +21,7 @@ import java.util.List;
 public class TurretHoodTesting extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
-    RadahnChassis chassis;
+    //RadahnChassis chassis;
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline pipeline;
@@ -48,8 +50,11 @@ public class TurretHoodTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
-        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
+        //chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
         camera = OpenCvCameraFactory.getInstance()
@@ -60,6 +65,8 @@ public class TurretHoodTesting extends LinearOpMode {
             @Override
             public void onOpened() {
                 camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(camera, 30);
+
             }
 
             @Override
@@ -102,8 +109,8 @@ public class TurretHoodTesting extends LinearOpMode {
             hoodedOuttakeSystem.controllerInput();
             hoodedOuttakeSystem.setPositions();
 
-            chassis.robotCentricDrive();
-            chassis.updatePose();
+            //chassis.robotCentricDrive();
+            //chassis.updatePose();
 
             telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
             telemetry.addData("Tracked Tag ID", trackedTagID >= 0 ? trackedTagID : "None");

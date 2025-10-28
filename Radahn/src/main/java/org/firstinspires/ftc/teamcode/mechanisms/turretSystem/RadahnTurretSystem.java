@@ -10,19 +10,23 @@ import java.util.List;
 
 public class RadahnTurretSystem {
 
-    RadahnTurret turret;
-    Telemetry telemetry;
-    TurretStates turretState;
+    private final RadahnTurret turret;
+    private final Telemetry telemetry;
+    private final PID_Controller pid;
 
-    final PID_Controller pid;
+    private final double cameraWidth;
+    private final double cameraFOV;
 
-    final double cameraWidth;
-    final double cameraFOV;
+    private static final double CENTER_TOLERANCE_PIXELS = 30;
+    private static final double MIN_POWER = 0.03;
+    private static final double MAX_POWER = 0.25;
+    private static final double SMOOTHING = 0.2;
 
-    static final double CENTER_TOLERANCE_PIXELS = 30;
+    private TurretStates turretState;
+    private double lastPower = 0;
 
     public RadahnTurretSystem(HardwareMap hardwareMap, Telemetry telemetry, double pulleyRadius, PID_Controller pid, double cameraWidth, double cameraFOV) {
-        turret = new RadahnTurret(1, new String[]{"turretMotor"}, pulleyRadius, 435, pid, hardwareMap);
+        turret = new RadahnTurret(hardwareMap);
 
         this.telemetry = telemetry;
         this.pid = pid;
@@ -42,7 +46,9 @@ public class RadahnTurretSystem {
             for (AprilTagDetection tag : detections) {
                 if (tag.id == targetTagID) {
 
-                    double offsetPixels = tag.pose.x;
+                    // Use center.x for horizontal position in pixels
+                    double offsetPixels = tag.center.x - (cameraWidth / 2.0);
+
                     if (Math.abs(offsetPixels) > CENTER_TOLERANCE_PIXELS) {
                         double offsetRatio = offsetPixels / (cameraWidth / 2.0);
                         double angleOffset = offsetRatio * (cameraFOV / 2.0);
@@ -52,6 +58,7 @@ public class RadahnTurretSystem {
                     } else {
                         turretState = TurretStates.RESTING;
                     }
+
                     foundTarget = true;
                     break;
                 }
@@ -62,18 +69,36 @@ public class RadahnTurretSystem {
             turretState = TurretStates.RESTING;
         }
 
+        double power;
+
         if (turretState == TurretStates.TRACKING) {
-            double power = pid.PID_Power(currentAngle, targetAngle);
-            turret.setTargetAngle(currentAngle + power);
+            power = pid.PID_Power(currentAngle, targetAngle);
+            power = clamp(power, -MAX_POWER, MAX_POWER);
+
+            // Smoothing + deadband
+            power = SMOOTHING * power + (1 - SMOOTHING) * lastPower;
+            if (Math.abs(power) < MIN_POWER) power = 0;
+
+            turret.setPower(power);
         } else {
             turret.setPower(0);
+            power = 0;
         }
 
-        telemetry.addData("Turret Angle (rad)", turret.getCurrentAngle());
+        lastPower = power;
+
+        // Telemetry
         telemetry.addData("Turret State", turretState);
+        telemetry.addData("Turret Angle (rad)", turret.getCurrentAngle());
+        telemetry.addData("Target Angle (rad)", targetAngle);
+        telemetry.addData("Power", power);
     }
 
-    public void setTurretState(TurretStates state){
+    private double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
+    public void setTurretState(TurretStates state) {
         turretState = state;
     }
 
