@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.Radahn
 public class RadahnTeleOp extends LinearOpMode {
     RadahnChassis chassis;
     RadahnMotorOuttakeSystem motorOuttakeSystem;
-
     RadahnMotorIntakeSystem motorIntakeSystem;
 
     public ElapsedTime runtime = new ElapsedTime();
