@@ -29,7 +29,6 @@ public class TurretHoodTesting extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
 
-    // Camera constants
     private static final double TAG_SIZE = 0.0508; // 2 inches in meters
     private static final double FX = 578.272;
     private static final double FY = 578.272;
@@ -39,11 +38,9 @@ public class TurretHoodTesting extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640;
     private static final int CAMERA_HEIGHT = 480;
 
-    // Define the IDs of the goal tags for each alliance
     private static final int BLUE_GOAL_TAG_ID = 20;
     private static final int RED_GOAL_TAG_ID = 24;
 
-    // Alliance toggle
     private boolean isBlueAlliance = true;
     private boolean lastToggleY = false;
 
@@ -51,7 +48,6 @@ public class TurretHoodTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
 
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
         //chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
@@ -76,7 +72,6 @@ public class TurretHoodTesting extends LinearOpMode {
             }
         });
 
-        // Init period: alliance selection
         while (opModeInInit()) {
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 isBlueAlliance = !isBlueAlliance;
@@ -98,7 +93,7 @@ public class TurretHoodTesting extends LinearOpMode {
 
                 for (AprilTagDetection tag : detections) {
                     if (tag.id == targetTagID) {
-                        tagDistanceInches = tag.pose.z * 39.3701; // meters → inches
+                        tagDistanceInches = tag.pose.z * 39.3701; // meters -> inches
                         trackedTagID = tag.id;
                         break;
                     }

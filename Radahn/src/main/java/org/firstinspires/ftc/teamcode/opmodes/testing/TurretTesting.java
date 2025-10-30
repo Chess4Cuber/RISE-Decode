@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import java.util.List;
 
-@TeleOp(name = "Turret Testing (Dashboard + Manual)", group = "Testing")
+@TeleOp(name = "Turret Testing")
 public class TurretTesting extends LinearOpMode {
 
     RadahnTurretSystem turretSystem;
@@ -47,7 +47,6 @@ public class TurretTesting extends LinearOpMode {
         // Combine DS and Dashboard telemetry
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        // Initialize turret PID controller
         PID_Controller turretPID = new PID_Controller(0.005, 0.01, 0.7, 0.0001);
         turretPID.tolerance = 0.02;
 
@@ -55,7 +54,6 @@ public class TurretTesting extends LinearOpMode {
                 hardwareMap, telemetry, 1.0, turretPID, CAMERA_WIDTH, Math.toRadians(60)
         );
 
-        // Set up camera and AprilTag pipeline
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
         camera = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -75,7 +73,6 @@ public class TurretTesting extends LinearOpMode {
             }
         });
 
-        // Alliance selection during init
         while (opModeInInit()) {
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 isBlueAlliance = !isBlueAlliance;
@@ -87,15 +84,12 @@ public class TurretTesting extends LinearOpMode {
             telemetry.update();
         }
 
-        // Main loop
         while (opModeIsActive()) {
             int targetTagID = isBlueAlliance ? BLUE_GOAL_TAG_ID : RED_GOAL_TAG_ID;
             List<AprilTagDetection> detections = pipeline.getLatestDetections();
 
-            // Auto tracking with AprilTag
             turretSystem.update(detections, targetTagID);
 
-            // Manual override for testing encoder/PID
             double manualPower = 0;
             if (gamepad1.left_bumper) manualPower = -0.2;
             else if (gamepad1.right_bumper) manualPower = 0.2;
@@ -119,11 +113,12 @@ public class TurretTesting extends LinearOpMode {
             previousTime = runtime.seconds();
         }
 
-        // Cleanup
+
         turretSystem.getTurret().setPower(0);
         if (camera != null) {
             camera.stopStreaming();
             camera.closeCameraDevice();
         }
     }
+
 }
