@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIn
 
 @TeleOp
 public class MotorIntakeTesting extends LinearOpMode {
-    RadahnChassis chassis;
+    //RadahnChassis chassis;
 
     //OptimusLinkageArmSystem linkageArmSystem;
     RadahnMotorIntakeSystem motorIntakeSystem;
@@ -18,7 +18,7 @@ public class MotorIntakeTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         motorIntakeSystem = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
-        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
+        //chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
 
         while (opModeInInit()){
 
@@ -31,8 +31,8 @@ public class MotorIntakeTesting extends LinearOpMode {
             motorIntakeSystem.controllerInput();
             motorIntakeSystem.setPositions();
 
-            chassis.robotCentricDrive();
-            chassis.updatePose();
+//            chassis.robotCentricDrive();
+//            chassis.updatePose();
 
 //            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);

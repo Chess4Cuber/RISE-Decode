@@ -10,60 +10,60 @@ public class RadahnMotorIntakeSystem {
     Telemetry telemetry;
     boolean lastToggleUp = false;
     boolean lastToggleA = false;
-    RadahnMotorIntake outtake;
-    public MotorIntakeStates outtakeState;
+    RadahnMotorIntake intake;
+    public MotorIntakeStates intakeState;
 
     public RadahnMotorIntakeSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
 
-        outtake = new RadahnMotorIntake(gamepad1, telemetry, hardwareMap);
+        intake = new RadahnMotorIntake(gamepad1, telemetry, hardwareMap);
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
-        outtakeState = MotorIntakeStates.RESTING;
+        intakeState = MotorIntakeStates.RESTING;
     }
 
     public void setPositions(){
-        switch(outtakeState){
+        switch(intakeState){
             case RESTING:
-                outtake.setPower(0);
+                intake.setPower(0);
                 break;
 
             case INTAKING:
-                outtake.setPower(1);
+                intake.setPower(1);
                 break;
 
             case OUTTAKING:
-                outtake.setPower(-1);
+                intake.setPower(-1);
                 break;
         }
     }
 
     public void controllerInput(){
-        switch(outtakeState) {
+        switch(intakeState) {
             case RESTING:
                 if ((gamepad1.a != lastToggleA) && gamepad1.a) {
-                    outtakeState = MotorIntakeStates.INTAKING;
+                    intakeState = MotorIntakeStates.INTAKING;
                 }
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up) {
-                    outtakeState = MotorIntakeStates.OUTTAKING;
+                    intakeState = MotorIntakeStates.OUTTAKING;
                 }
                 break;
 
             case INTAKING:
                 if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    outtakeState = MotorIntakeStates.OUTTAKING;
+                    intakeState = MotorIntakeStates.OUTTAKING;
                 }
                 if((gamepad1.a != lastToggleA) && gamepad1.a){
-                    outtakeState = MotorIntakeStates.RESTING;
+                    intakeState = MotorIntakeStates.RESTING;
                 }
                 break;
 
             case OUTTAKING:
                 if((gamepad1.a != lastToggleA) && gamepad1.a) {
-                    outtakeState = MotorIntakeStates.INTAKING;
+                    intakeState = MotorIntakeStates.INTAKING;
                 }
                 if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    outtakeState = MotorIntakeStates.RESTING;
+                    intakeState = MotorIntakeStates.RESTING;
                 }
                 break;
         }

@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import java.util.List;
 
-@TeleOp(name = "Turret Testing (Dashboard)", group = "Testing")
+@TeleOp(name = "Turret Testing (Dashboard + Manual)", group = "Testing")
 public class TurretTesting extends LinearOpMode {
 
     RadahnTurretSystem turretSystem;
@@ -27,7 +27,7 @@ public class TurretTesting extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
 
-    static final double TAG_SIZE = 0.0508; // 2 inches in meters
+    static final double TAG_SIZE = 0.0762; // 3 inches in meters
     static final double FX = 578.272;
     static final double FY = 578.272;
     static final double CX = 402.145;
@@ -65,7 +65,6 @@ public class TurretTesting extends LinearOpMode {
             @Override
             public void onOpened() {
                 camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-                // Stream video to Dashboard
                 FtcDashboard.getInstance().startCameraStream(camera, 30);
             }
 
@@ -93,10 +92,28 @@ public class TurretTesting extends LinearOpMode {
             int targetTagID = isBlueAlliance ? BLUE_GOAL_TAG_ID : RED_GOAL_TAG_ID;
             List<AprilTagDetection> detections = pipeline.getLatestDetections();
 
+            // Auto tracking with AprilTag
             turretSystem.update(detections, targetTagID);
 
+            // Manual override for testing encoder/PID
+            double manualPower = 0;
+            if (gamepad1.left_bumper) manualPower = -0.2;
+            else if (gamepad1.right_bumper) manualPower = 0.2;
+
+            if (manualPower != 0) {
+                turretSystem.getTurret().setPower(manualPower);
+            }
+
+            // Telemetry
             telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
             telemetry.addData("Loop Time", runtime.seconds() - previousTime);
+            telemetry.addData("Encoder Ticks", turretSystem.getTurret().motors[0].getCurrPosTicks());
+            telemetry.addData("Current Angle (rad)", turretSystem.getTurret().getCurrentAngle());
+            telemetry.addData("PID Power", turretPID.PID_Power(
+                    turretSystem.getTurret().getCurrentAngle(),
+                    turretSystem.getTurret().getCurrentAngle() // current target for demonstration
+            ));
+            telemetry.addData("Manual Power", manualPower);
             telemetry.update();
 
             previousTime = runtime.seconds();

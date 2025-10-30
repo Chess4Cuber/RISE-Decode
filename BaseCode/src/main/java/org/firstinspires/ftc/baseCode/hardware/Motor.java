@@ -60,6 +60,12 @@ public class Motor {
         dcMotorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void resetTurret() {
+        dcMotorEx.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dcMotorEx.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
         dcMotorEx.setZeroPowerBehavior(zeroPowerBehavior);
     }

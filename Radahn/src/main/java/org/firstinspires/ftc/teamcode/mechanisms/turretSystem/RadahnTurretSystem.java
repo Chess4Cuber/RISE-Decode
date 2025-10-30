@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.openftc.apriltag.AprilTagDetection;
-
 import java.util.List;
 
 public class RadahnTurretSystem {
@@ -17,10 +15,13 @@ public class RadahnTurretSystem {
     private final double cameraWidth;
     private final double cameraFOV;
 
-    private static final double CENTER_TOLERANCE_PIXELS = 30;
+    private static final double CENTER_TOLERANCE_PIXELS = 120;
     private static final double MIN_POWER = 0.03;
-    private static final double MAX_POWER = 0.25;
-    private static final double SMOOTHING = 0.2;
+    private static final double MAX_POWER = 0.11;
+    private static final double SMOOTHING = 0.5;
+    private static final double MAX_DELTA_ANGLE = Math.toRadians(2); // max 2 degrees per loop
+    private static final double ANGLE_SCALE = 0.3; // scale target angle to avoid overshoot
+    private static final double ANGLE_DEADZONE = Math.toRadians(0.5); // <0.5 rad ≈ 28.6 deg -> stop moving
 
     private TurretStates turretState;
     private double lastPower = 0;
@@ -45,14 +46,11 @@ public class RadahnTurretSystem {
         if (detections != null && !detections.isEmpty()) {
             for (AprilTagDetection tag : detections) {
                 if (tag.id == targetTagID) {
-
-                    // Use center.x for horizontal position in pixels
                     double offsetPixels = tag.center.x - (cameraWidth / 2.0);
 
                     if (Math.abs(offsetPixels) > CENTER_TOLERANCE_PIXELS) {
                         double offsetRatio = offsetPixels / (cameraWidth / 2.0);
-                        double angleOffset = offsetRatio * (cameraFOV / 2.0);
-
+                        double angleOffset = -offsetRatio * (cameraFOV / 2.0) * ANGLE_SCALE; // scale down
                         targetAngle = currentAngle + angleOffset;
                         turretState = TurretStates.TRACKING;
                     } else {
@@ -72,12 +70,18 @@ public class RadahnTurretSystem {
         double power;
 
         if (turretState == TurretStates.TRACKING) {
-            power = pid.PID_Power(currentAngle, targetAngle);
-            power = clamp(power, -MAX_POWER, MAX_POWER);
+            // If we are very close to the target, don’t move
+            if (Math.abs(targetAngle - currentAngle) < ANGLE_DEADZONE) {
+                power = 0;
+                turretState = TurretStates.RESTING;
+            } else {
+                power = pid.PID_Power(currentAngle, targetAngle) * 0.5;
+                power = clamp(power, -MAX_POWER, MAX_POWER);
 
-            // Smoothing + deadband
-            power = SMOOTHING * power + (1 - SMOOTHING) * lastPower;
-            if (Math.abs(power) < MIN_POWER) power = 0;
+                // Smoothing + deadband
+                power = SMOOTHING * power + (1 - SMOOTHING) * lastPower;
+                if (Math.abs(power) < MIN_POWER) power = 0;
+            }
 
             turret.setPower(power);
         } else {
@@ -87,7 +91,6 @@ public class RadahnTurretSystem {
 
         lastPower = power;
 
-        // Telemetry
         telemetry.addData("Turret State", turretState);
         telemetry.addData("Turret Angle (rad)", turret.getCurrentAngle());
         telemetry.addData("Target Angle (rad)", targetAngle);
