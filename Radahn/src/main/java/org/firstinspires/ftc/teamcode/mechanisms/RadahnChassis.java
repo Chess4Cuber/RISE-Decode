@@ -12,7 +12,7 @@ public class RadahnChassis extends MecanumChassis {
 
     double CPR = 2000;
     double wheelDia = 1.89;
-    double trackwidth = 16.6;
+    double trackwidth = 17.1;
     double forwardOffset = 0;
 
     PID_Controller TranslationalPID_X;
@@ -24,9 +24,9 @@ public class RadahnChassis extends MecanumChassis {
         setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
                 new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap);
 
-        TranslationalPID_X = new PID_Controller(0);
-        TranslationalPID_Y = new PID_Controller(0);
-        HeadingPID = new PID_Controller(0);
+        TranslationalPID_X = new PID_Controller(0.05);
+        TranslationalPID_Y = new PID_Controller(0.05);
+        HeadingPID = new PID_Controller(0.02);
 
         setPID_Controller(TranslationalPID_X, TranslationalPID_Y, HeadingPID);
 

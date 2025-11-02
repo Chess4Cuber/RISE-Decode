@@ -38,45 +38,54 @@ public class Odometry {
         this.odoConstants = odoConstants;
     }
 
-    public void updatePose(){
-        switch (odoType){
+    public void updatePose() {
+        switch (odoType) {
             case THREE_WHEEL:
+                // Calculate encoder deltas in inches
                 double deltaLeftEncoderPos = leftEncoder.getCurrPosInches() - previousEncoderPos[0];
-                double deltaMiddleEncoderPos = middleEncoder.getCurrPosInches() - previousEncoderPos[2];
                 double deltaRightEncoderPos = rightEncoder.getCurrPosInches() - previousEncoderPos[1];
+                double deltaMiddleEncoderPos = middleEncoder.getCurrPosInches() - previousEncoderPos[2];
 
-                double phi = (deltaRightEncoderPos - deltaLeftEncoderPos)/odoConstants[2];
-                double deltaMiddlePos = (deltaLeftEncoderPos + deltaRightEncoderPos)/2;
-                double deltaPerpPos = deltaMiddleEncoderPos - odoConstants[3]*phi;
+                // Change in robot orientation (radians)
+                double phi = (deltaRightEncoderPos - deltaLeftEncoderPos) / odoConstants[2];
 
-                double delta_x = deltaMiddlePos*Math.cos(heading) - deltaPerpPos*Math.sin(heading);
-                double delta_y = deltaMiddlePos*Math.sin(heading) + deltaPerpPos*Math.cos(heading);
+                // Forward and lateral displacement in robot coordinates
+                double deltaParallel = (deltaLeftEncoderPos + deltaRightEncoderPos) / 2.0;
+                double deltaPerp = deltaMiddleEncoderPos - (odoConstants[3] * phi);
 
-                x_pos += delta_x;
-                y_pos += delta_y;
+                // Transform to global coordinates
+                double deltaX = deltaParallel * Math.cos(heading) - deltaPerp * Math.sin(heading);
+                double deltaY = deltaParallel * Math.sin(heading) + deltaPerp * Math.cos(heading);
+
+                // Update global pose
+                x_pos += deltaX;
+                y_pos += deltaY;
                 heading += phi;
 
-                encoderReadings[0] = leftEncoder.getCurrPosInches();
-                encoderReadings[1] = rightEncoder.getCurrPosInches();
-                encoderReadings[2] = middleEncoder.getCurrPosInches();
+                // Normalize heading to [-π, π]
+                heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
-                pose[0] = x_pos;
-                pose[1] = y_pos;
-                pose[2] = Math.toDegrees(heading);
-
+                // Store current encoder positions for next loop
                 previousEncoderPos[0] = leftEncoder.getCurrPosInches();
                 previousEncoderPos[1] = rightEncoder.getCurrPosInches();
                 previousEncoderPos[2] = middleEncoder.getCurrPosInches();
 
+                // Update output arrays
+                encoderReadings[0] = previousEncoderPos[0];
+                encoderReadings[1] = previousEncoderPos[1];
+                encoderReadings[2] = previousEncoderPos[2];
+
+                pose[0] = x_pos;
+                pose[1] = y_pos;
+                pose[2] = Math.toDegrees(heading);
                 break;
 
             case TWO_WHEEL:
-
+                // TODO: implement later if needed
                 break;
         }
-
-
     }
+
     public double[] getPose() {
         return pose;
     }
