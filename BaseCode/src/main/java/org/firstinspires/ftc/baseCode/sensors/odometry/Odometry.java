@@ -53,16 +53,15 @@ public class Odometry {
                 double deltaParallel = (deltaLeftEncoderPos + deltaRightEncoderPos) / 2.0;
                 double deltaPerp = deltaMiddleEncoderPos - (odoConstants[3] * phi);
 
-                // Transform to global coordinates
+
                 double deltaX = deltaParallel * Math.cos(heading) - deltaPerp * Math.sin(heading);
                 double deltaY = deltaParallel * Math.sin(heading) + deltaPerp * Math.cos(heading);
 
-                // Update global pose
+                // Update pose
                 x_pos += deltaX;
                 y_pos += deltaY;
                 heading += phi;
 
-                // Normalize heading to [-π, π]
                 heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
                 // Store current encoder positions for next loop

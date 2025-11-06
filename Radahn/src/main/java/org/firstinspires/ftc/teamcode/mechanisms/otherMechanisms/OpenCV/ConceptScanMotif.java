@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.OpenCV;
+package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.OpenCV;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

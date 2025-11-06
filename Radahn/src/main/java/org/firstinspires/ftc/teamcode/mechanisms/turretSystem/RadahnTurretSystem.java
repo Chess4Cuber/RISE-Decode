@@ -70,7 +70,6 @@ public class RadahnTurretSystem {
         double power;
 
         if (turretState == TurretStates.TRACKING) {
-            // If we are very close to the target, don’t move
             if (Math.abs(targetAngle - currentAngle) < ANGLE_DEADZONE) {
                 power = 0;
                 turretState = TurretStates.RESTING;
@@ -78,7 +77,6 @@ public class RadahnTurretSystem {
                 power = pid.PID_Power(currentAngle, targetAngle) * 0.5;
                 power = clamp(power, -MAX_POWER, MAX_POWER);
 
-                // Smoothing + deadband
                 power = SMOOTHING * power + (1 - SMOOTHING) * lastPower;
                 if (Math.abs(power) < MIN_POWER) power = 0;
             }

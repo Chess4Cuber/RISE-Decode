@@ -5,14 +5,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.RadahnSpindexerSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 @TeleOp
 public class RadahnTeleOp extends LinearOpMode {
     RadahnChassis chassis;
     RadahnMotorOuttakeSystem motorOuttakeSystem;
     RadahnMotorIntakeSystem motorIntakeSystem;
+    RadahnTurretSystem turretSystem;
+    RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
+    RadahnSpindexerSystem spindexer;
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -40,7 +46,7 @@ public class RadahnTeleOp extends LinearOpMode {
             motorIntakeSystem.setPositions();
 
 
- //           telemetry.addData("Pose Estimate", chassis.getPose());
+            telemetry.addData("Pose Estimate", chassis.getPose());
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();
 

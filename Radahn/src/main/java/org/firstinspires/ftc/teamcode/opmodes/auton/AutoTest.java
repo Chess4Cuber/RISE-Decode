@@ -10,7 +10,12 @@ public class AutoTest extends LinearOpMode {
 
     RadahnChassis chassis;
 
-    enum AutoStage { FORWARD, TURN, BACK, DONE }
+    enum AutoStage {
+        FORWARD,
+        TURN,
+        BACK,
+        DONE
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -27,7 +32,7 @@ public class AutoTest extends LinearOpMode {
         Vector3D turn = new Vector3D(24, 0, Math.toRadians(180));
         Vector3D back = new Vector3D(0, 0, Math.toRadians(180));
 
-        while (opModeIsActive() && stage != AutoStage.DONE) {
+        while (opModeIsActive()) {
             chassis.updatePose();
 
             switch (stage) {
