@@ -15,7 +15,7 @@ public class RadahnTurretSystem {
     private final double cameraWidth;
     private final double cameraFOV;
 
-    private static final double CENTER_TOLERANCE_PIXELS = 120;
+    private static final double CENTER_TOLERANCE_PIXELS = 40;
     private static final double MIN_POWER = 0.03;
     private static final double MAX_POWER = 0.11;
     private static final double SMOOTHING = 0.5;

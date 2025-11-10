@@ -36,44 +36,44 @@ public class RadahnSpindexerSystem {
     public void setPositions(){
         switch (spindexerState) {
             case HOLE_0:
-                //spindexer.setPosition(0);
+                spindexer.setPosition(0);
                 //pusher.openClaw();
                 //pusher.closeClaw();
                 break;
 
             case HOLE_1:
-                //spindexer.setPosition(.7);
+                spindexer.setPosition(.7);
                 //pusher.openClaw();
                 //pusher.closeClaw();
                 break;
 
             case HOLE_2:
-                //spindexer.setPosition(-.7);
+                spindexer.setPosition(-.7);
                 //pusher.openClaw();
                 //pusher.closeClaw();
                 break;
 
             case HOLE_REST:
-                //spindexer.setPosition(outtake0 pos);
+                spindexer.setPosition(.4);
                 break;
 
 
             case HOLE_OUTTAKE0:
-                //spindexer.setPosition(.67);
-                //pusher.openClaw();
-                //pusher.closeClaw();
+                spindexer.setPosition(.4);
+                pusher.openClaw();
+                pusher.closeClaw();
                 break;
 
             case HOLE_OUTTAKE1:
-                //spindexer.setPosition(whatever);
-                //pusher.openClaw();
-                //pusher.closeClaw();
+                spindexer.setPosition(.8);
+                pusher.openClaw();
+                pusher.closeClaw();
                 break;
 
             case HOLE_OUTTAKE2:
-                //spindexer.setPosition(oieuboieurb);
-                //pusher.openClaw();
-                //pusher.closeClaw();
+                spindexer.setPosition(-.8);
+                pusher.openClaw();
+                pusher.closeClaw();
                 break;
 
         }

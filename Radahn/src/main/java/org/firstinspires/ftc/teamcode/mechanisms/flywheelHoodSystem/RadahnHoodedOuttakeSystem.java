@@ -98,8 +98,8 @@ public class RadahnHoodedOuttakeSystem {
 
         double minDist = 6;
         double maxDist = 36;
-        double minRPM = 2000;
-        double maxRPM = 5500;
+        double minRPM = 500;
+        double maxRPM = 3000;
 
         double slope = (maxRPM - minRPM) / (maxDist - minDist);
         double targetRPM = minRPM + slope * (distanceInches - minDist);
@@ -115,8 +115,8 @@ public class RadahnHoodedOuttakeSystem {
 
         double minDist = 6;
         double maxDist = 36;
-        double minPos = 0.2;
-        double maxPos = 0.8;
+        double minPos = 0.8;
+        double maxPos = 0;
 
         double normalized = (distanceInches - minDist) / (maxDist - minDist);
         normalized = Math.max(0, Math.min(1, normalized));
