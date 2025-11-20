@@ -20,6 +20,7 @@ public class RadahnMotorIntakeSystem {
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
         intakeState = MotorIntakeStates.RESTING;
+
     }
 
     public void setPositions(){
