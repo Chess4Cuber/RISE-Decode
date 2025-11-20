@@ -20,7 +20,7 @@ public class RadahnHoodedOuttakeSystem {
 
     public RadahnHoodedOuttakeSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         hoodedOuttake = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
-        outtakeState = TurretHoodStates.RESTING;
+        outtakeState = TurretHoodStates.OUTTAKING;
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
@@ -36,12 +36,12 @@ public class RadahnHoodedOuttakeSystem {
                 hoodedOuttake.setPower(0);
                 break;
 
-            case INTAKING:
+            case OUTTAKING:
                 hoodedOuttake.setVelocityRPM(targetRPM);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
-            case OUTTAKING:
+            case INTAKING:
                 hoodedOuttake.setVelocityRPM(-targetRPM);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;

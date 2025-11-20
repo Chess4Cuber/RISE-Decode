@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntake;
+import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -21,7 +23,8 @@ import java.util.List;
 public class TurretHoodTesting extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
-    //RadahnChassis chassis;
+    RadahnChassis chassis;
+    RadahnMotorIntakeSystem intake;
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline pipeline;
@@ -29,7 +32,7 @@ public class TurretHoodTesting extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
 
-    private static final double TAG_SIZE = 0.0508; // 2 inches in meters
+    private static final double TAG_SIZE = 0.17; // 2 inches in meters
     private static final double FX = 578.272;
     private static final double FY = 578.272;
     private static final double CX = 402.145;
@@ -50,7 +53,8 @@ public class TurretHoodTesting extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
-        //chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
+        chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
+        intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
 
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
         camera = OpenCvCameraFactory.getInstance()
@@ -104,8 +108,11 @@ public class TurretHoodTesting extends LinearOpMode {
             hoodedOuttakeSystem.controllerInput();
             hoodedOuttakeSystem.setPositions();
 
-            //chassis.robotCentricDrive();
-            //chassis.updatePose();
+            chassis.robotCentricDrive();
+            chassis.updatePose();
+
+            intake.controllerInput();
+            intake.setPositions();
 
             telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
             telemetry.addData("Tracked Tag ID", trackedTagID >= 0 ? trackedTagID : "None");
