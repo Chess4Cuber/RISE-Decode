@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.MotorOuttakeStates;
 
 public class RadahnMotorIntakeSystem {
     Gamepad gamepad1;
@@ -30,11 +31,11 @@ public class RadahnMotorIntakeSystem {
                 break;
 
             case INTAKING:
-                intake.setPower(-1);
+                intake.setPower(-.5);
                 break;
 
             case OUTTAKING:
-                intake.setPower(1);
+                intake.setPower(.5);
                 break;
         }
     }
@@ -71,5 +72,10 @@ public class RadahnMotorIntakeSystem {
         lastToggleUp = gamepad1.dpad_up;
         lastToggleA = gamepad1.a;
     }
+
+    public void setMotorIntakeState(MotorIntakeStates state){
+        intakeState = state;
+    }
+
 
 }

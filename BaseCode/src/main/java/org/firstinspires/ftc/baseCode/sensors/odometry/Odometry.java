@@ -10,6 +10,13 @@ public class Odometry {
     double x_pos = 0;
     double y_pos = 0;
     double heading = 0;
+
+    double x_offset = 0;
+    double y_offset = 0;
+    double head_offset = 0;
+
+
+
     double[] previousEncoderPos = {0,0,0};
 
     public Encoder leftEncoder, rightEncoder, middleEncoder;
@@ -21,12 +28,16 @@ public class Odometry {
 
     OdometryType odoType;
 
-    public Odometry(String[] names, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap){
+    public Odometry(String[] names, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap, double xOff, double yOff, double headOff){
         switch (odoType){
             case THREE_WHEEL:
                 leftEncoder = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
                 rightEncoder = new Encoder(names[1], odoConstants[0], odoConstants[1], hardwareMap);
                 middleEncoder = new Encoder(names[2], odoConstants[0], odoConstants[1], hardwareMap);
+                x_offset = xOff;
+                y_offset = yOff;
+                head_offset = headOff;
+
                 break;
             case TWO_WHEEL:
                 leftEncoder = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
@@ -74,9 +85,9 @@ public class Odometry {
                 encoderReadings[1] = previousEncoderPos[1];
                 encoderReadings[2] = previousEncoderPos[2];
 
-                pose[0] = x_pos;
-                pose[1] = y_pos;
-                pose[2] = Math.toDegrees(heading);
+                pose[0] = x_pos * x_offset;
+                pose[1] = y_pos * y_offset;
+                pose[2] = Math.toDegrees(heading) * head_offset;
                 break;
 
             case TWO_WHEEL:
@@ -90,7 +101,7 @@ public class Odometry {
     }
 
     public Vector3D getPoseVector() {
-        return new Vector3D(x_pos, y_pos, heading);
+        return new Vector3D(pose[0], pose[1], pose[2]);
     }
 
     public double getX() {

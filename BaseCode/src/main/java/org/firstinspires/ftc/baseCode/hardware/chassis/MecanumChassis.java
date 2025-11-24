@@ -38,7 +38,7 @@ public abstract class MecanumChassis {
     double VY_WEIGHT = 1;
     double OMEGA_WEIGHT = 1;
 
-    Odometry odo;
+    public Odometry odo;
 
     PID_Controller TranslationalPID_X;
     PID_Controller TranslationalPID_Y;
@@ -76,8 +76,8 @@ public abstract class MecanumChassis {
     }
 
     public void setDriveVectorsRobotCentric(Vector3D input)  {
-        fLeft = -VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
-        fRight = -VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        fLeft = VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
+        fRight = VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
         bRight = -VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
         bLeft = -VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
 
@@ -97,10 +97,10 @@ public abstract class MecanumChassis {
         double x_rotated = input.A * Math.cos(odo.getHeading()) + input.B * Math.sin(odo.getHeading());
         double y_rotated = input.A * Math.sin(odo.getHeading()) - input.B * Math.cos(odo.getHeading());
 
-        fLeft = VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
-        fRight = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
-        bRight = VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
-        bLeft = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        fLeft = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        fRight = VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
+        bRight = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
+        bLeft = -VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {
@@ -126,7 +126,7 @@ public abstract class MecanumChassis {
     public void goToPosePID(Vector3D input){
         double PID_Drive = TranslationalPID_X.PID_Power(odo.getX(), input.A);
         double PID_Strafe = TranslationalPID_Y.PID_Power(odo.getY(), input.B);
-        double PID_Turn = HeadingPID.PID_Power(angleWrap(odo.getHeading()), input.C);
+        double PID_Turn = HeadingPID.PID_Power(getPose()[2], input.C);
 
         Vector3D PID_Vector = new Vector3D(PID_Drive, PID_Strafe, PID_Turn);
 
@@ -167,8 +167,8 @@ public abstract class MecanumChassis {
         this.TranslationalProfile_Heading = TranslationalProfile_Heading;
     }
 
-    public void setOdometry(String[] odoNames, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap){
-        odo = new Odometry(odoNames, odoType, odoConstants, hardwareMap);
+    public void setOdometry(String[] odoNames, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap, double xOff, double yOff, double headOff){
+        odo = new Odometry(odoNames, odoType, odoConstants, hardwareMap, xOff, yOff, headOff);
     }
 
     public double[] getPose(){

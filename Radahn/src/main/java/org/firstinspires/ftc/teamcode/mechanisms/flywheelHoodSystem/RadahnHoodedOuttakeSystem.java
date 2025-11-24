@@ -26,7 +26,6 @@ public class RadahnHoodedOuttakeSystem {
         this.telemetry = telemetry;
     }
 
-    /** Updates motor and hood positions based on current tag distance */
     public void setPositions() {
         double targetRPM = computeMotorVelocity(tagDistanceInches) * 60.0 / hoodedOuttake.motors[0].TICKS_PER_REV;
         double targetHoodPosition = computeHoodPosition(tagDistanceInches);
@@ -92,7 +91,6 @@ public class RadahnHoodedOuttakeSystem {
         this.outtakeState = state;
     }
 
-    /** Computes motor velocity based on AprilTag distance (ticks/sec) */
     public double computeMotorVelocity(double distanceInches) {
         if (distanceInches <= 0) return 0;
 
@@ -109,7 +107,6 @@ public class RadahnHoodedOuttakeSystem {
         return targetRPM * hoodedOuttake.motors[0].TICKS_PER_REV / 60.0;
     }
 
-    /** Computes hood servo position based on AprilTag distance */
     public double computeHoodPosition(double distanceInches) {
         if (distanceInches <= 0) return 0.5;
 
@@ -126,12 +123,10 @@ public class RadahnHoodedOuttakeSystem {
         return Math.max(minPos, Math.min(maxPos, position));
     }
 
-    /** Updates the latest measured distance from the AprilTag */
     public void updateDistance(double distanceInches) {
         this.tagDistanceInches = distanceInches;
     }
 
-    /** Telemetry for tuning */
     private void displayTelemetry(double targetRPM, double targetHoodPosition) {
         telemetry.addData("Outtake State", outtakeState);
         telemetry.addData("Distance (in)", "%.2f", tagDistanceInches);

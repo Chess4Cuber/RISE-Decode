@@ -12,17 +12,17 @@ public class RadahnChassis extends MecanumChassis {
 
     double CPR = 2000;
     double wheelDia = 1.89;
-    double trackwidth = 17.1;
-    double forwardOffset = 0;
+    double trackwidth = 9.5;
+    double forwardOffset = 5.25;
 
-    PID_Controller TranslationalPID_X;
-    PID_Controller TranslationalPID_Y;
-    PID_Controller HeadingPID;
+    public PID_Controller TranslationalPID_X;
+    public PID_Controller TranslationalPID_Y;
+    public PID_Controller HeadingPID;
     public RadahnChassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super(new String[]{"fLeft", "fRight", "bRight", "bLeft"}, gamepad1, telemetry, hardwareMap);
 
         setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
-                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap);
+                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, -.88, .88, -.95);
 
         TranslationalPID_X = new PID_Controller(0.05);
         TranslationalPID_Y = new PID_Controller(0.05);
@@ -35,4 +35,6 @@ public class RadahnChassis extends MecanumChassis {
         backRight.setDirectionReverse();
         backLeft.setDirectionForward();
     }
+
+
 }

@@ -20,7 +20,7 @@ public class DriveTestingRadahn extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-            chassis.robotCentricDrive();
+            chassis.fieldCentricDrive();
             chassis.updatePose();
 
             telemetry.addData("Pose Estimate X:", chassis.getPose()[0]);

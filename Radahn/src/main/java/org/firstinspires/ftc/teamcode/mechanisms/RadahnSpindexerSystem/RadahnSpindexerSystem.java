@@ -15,7 +15,7 @@ public class RadahnSpindexerSystem {
     RadahnSpindexer spindexer;
     RadahnColorSensors colorSensors;
     public SpindexerStates spindexerState;
-    RadahnPusher pusher;
+    RadahnPusherSpindexer pusher;
     boolean lastToggleY = false;
 
 
@@ -25,7 +25,7 @@ public class RadahnSpindexerSystem {
     public RadahnSpindexerSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         spindexer = new RadahnSpindexer(gamepad1, telemetry, hardwareMap);
         colorSensors = new RadahnColorSensors(hardwareMap);
-        pusher = new RadahnPusher(gamepad1, hardwareMap);
+        pusher = new RadahnPusherSpindexer(gamepad1, hardwareMap);
 
         this.gamepad1 = gamepad1;
         spindexerState = SpindexerStates.HOLE_0;
