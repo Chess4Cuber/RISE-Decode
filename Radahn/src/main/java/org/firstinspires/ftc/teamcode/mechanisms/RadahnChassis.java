@@ -22,7 +22,7 @@ public class RadahnChassis extends MecanumChassis {
         super(new String[]{"fLeft", "fRight", "bRight", "bLeft"}, gamepad1, telemetry, hardwareMap);
 
         setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
-                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, -.88, .88, -.95);
+                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, -.88, .88, -1);
 
         TranslationalPID_X = new PID_Controller(0.05);
         TranslationalPID_Y = new PID_Controller(0.05);

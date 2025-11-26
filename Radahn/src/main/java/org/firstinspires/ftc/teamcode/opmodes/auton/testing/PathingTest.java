@@ -46,8 +46,6 @@ public class PathingTest extends LinearOpMode {
         parkingStep = ParkingStep.STEP_ONE;
 
         while (opModeInInit()){
-            simpleOuttake.setMotorOuttakeState(OUTTAKING);
-            simpleOuttake.setPositions();
 
             telemetry.update();
         }
@@ -57,9 +55,6 @@ public class PathingTest extends LinearOpMode {
 
             chassis.goToPosePID(targetPose);
             poseVector.set(chassis.odo.getX(), chassis.odo.getY(), chassis.getPose()[2]);
-
-            intake.setPositions();
-            simpleOuttake.setPositions();
 
             autonLeftRed();
 
@@ -72,12 +67,10 @@ public class PathingTest extends LinearOpMode {
     public void autonLeftRed(){
         switch (parkingStep){
             case STEP_ONE:
-                intake.setMotorIntakeState(INTAKING);
-                targetPose.set(-30, 30, 110);
+                targetPose.set(0, 0, 180);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(RESTING);
-                    parkingStep = ParkingStep.STEP_TWO;
+                    //parkingStep = ParkingStep.STEP_TWO;
                     runtime.reset();
                 }
                 break;
@@ -86,12 +79,10 @@ public class PathingTest extends LinearOpMode {
                 if (runtime.seconds() > 2 ){
                     parkingStep = ParkingStep.STEP_THREE;
                     runtime.reset();
-                    intake.setMotorIntakeState(RESTING);
                 }
 
                 break;
             case STEP_THREE:
-                simpleOuttake.setMotorOuttakeState(OUTTAKING);
                 targetPose.set(0, 30, 0);
                 break;
         }
