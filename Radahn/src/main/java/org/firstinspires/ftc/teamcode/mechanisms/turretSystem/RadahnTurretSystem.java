@@ -14,14 +14,13 @@ public class RadahnTurretSystem {
 
     private final double cameraWidth;
     private final double cameraFOV;
-
-    private static final double CENTER_TOLERANCE_PIXELS = 40;
-    private static final double MIN_POWER = 0.03;
-    private static final double MAX_POWER = 0.11;
-    private static final double SMOOTHING = 0.5;
+    private static final double CENTER_TOLERANCE_PIXELS = 50;
+    private static final double MIN_POWER = 0.0;
+    private static final double MAX_POWER = .7;
+    private static final double SMOOTHING = 0.2;
     private static final double MAX_DELTA_ANGLE = Math.toRadians(2); // max 2 degrees per loop
-    private static final double ANGLE_SCALE = 0.3; // scale target angle to avoid overshoot
-    private static final double ANGLE_DEADZONE = Math.toRadians(0.5); // <0.5 rad ≈ 28.6 deg -> stop moving
+    private static final double ANGLE_SCALE = 1; // scale target angle to avoid overshoot
+    private static final double ANGLE_DEADZONE = Math.toRadians(0); // <0.5 rad ≈ 28.6 deg -> stop moving
 
     private TurretStates turretState;
     private double lastPower = 0;

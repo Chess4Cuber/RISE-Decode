@@ -27,13 +27,13 @@ public class TurretTesting extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
 
-    static final double TAG_SIZE = 0.11; // 3 inches in meters
+    static final double TAG_SIZE = 0.17; // 2 inches in meters
     static final double FX = 578.272;
     static final double FY = 578.272;
     static final double CX = 402.145;
     static final double CY = 221.506;
-    static final int CAMERA_WIDTH = 640;
-    static final int CAMERA_HEIGHT = 480;
+    private static final int CAMERA_WIDTH = 640;
+    private static final int CAMERA_HEIGHT = 480;
 
     boolean isBlueAlliance = true;
     boolean lastToggleY = false;

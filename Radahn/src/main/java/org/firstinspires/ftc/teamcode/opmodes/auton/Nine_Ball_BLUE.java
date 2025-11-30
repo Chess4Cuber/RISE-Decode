@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmodes.auton.testing;
+package org.firstinspires.ftc.teamcode.opmodes.auton;
 
 import static org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates.INTAKING;
-import static org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates.RESTING;
-import static org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.MotorOuttakeStates.OUTTAKING;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,27 +9,30 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
 
 @Autonomous
-public class PathingTest extends LinearOpMode {
+public class Nine_Ball_BLUE extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
     int cycleCounter = 1;
 
-    public enum ParkingStep{
-        STEP_ONE,
-        STEP_TWO,
-        STEP_THREE
-    }
+    public enum AutoStep{
+        AWAY_FROM_GOAL,
+        SHOOTPRE,
+        FIRST_LINE,
+        SHOOT_FIRST,
+        SECOND_LINE,
+        SHOOT_SECOND,
+        THIRD_LINE,
+        SHOOT_THIRD,
 
+    }
 
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
-    RadahnMotorOuttakeSystem simpleOuttake;
+    AutoStep parkingStep;
 
-    ParkingStep parkingStep;
     Vector3D poseVector = new Vector3D(0,0,0);
 
     Vector3D targetPose = new Vector3D(0, 0, 0);
@@ -41,9 +42,8 @@ public class PathingTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
-        simpleOuttake = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
 
-        parkingStep = ParkingStep.STEP_ONE;
+        parkingStep = AutoStep.AWAY_FROM_GOAL;
 
         while (opModeInInit()){
 
@@ -56,6 +56,8 @@ public class PathingTest extends LinearOpMode {
             chassis.goToPosePID(targetPose);
             poseVector.set(chassis.odo.getX(), chassis.odo.getY(), chassis.getPose()[2]);
 
+            intake.setPositions();
+
             autonLeftRed();
 
             Telemetry();
@@ -66,24 +68,33 @@ public class PathingTest extends LinearOpMode {
 
     public void autonLeftRed(){
         switch (parkingStep){
-            case STEP_ONE:
-                targetPose.set(0, 0, 170);
+            case AWAY_FROM_GOAL:
+                targetPose.set(-35, -70, 63);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
-                    //parkingStep = ParkingStep.STEP_TWO;
+                    parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
                 }
                 break;
 
-            case STEP_TWO:
-                if (runtime.seconds() > 2 ){
-                    parkingStep = ParkingStep.STEP_THREE;
+            case SHOOTPRE:
+                //targetPose.set(0, -63, 60);
+
+                //TODO: ADD SHOOTING SUBSYSTEMS
+
+                if (runtime.seconds() > 4 ){
+                    parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                 }
 
+                intake.setMotorIntakeState(INTAKING);
+
+                parkingStep = AutoStep.FIRST_LINE;
+
                 break;
-            case STEP_THREE:
-                targetPose.set(0, 30, 0);
+
+            case FIRST_LINE:
+                targetPose.set(-60, -20, 63);
                 break;
         }
     }

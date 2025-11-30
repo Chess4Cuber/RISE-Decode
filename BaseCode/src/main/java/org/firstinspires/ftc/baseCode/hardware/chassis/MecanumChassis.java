@@ -124,20 +124,20 @@ public abstract class MecanumChassis {
     }
 
     public void goToPosePID(Vector3D input){
-        // Compute PID for translation normally
+        // Translation PIDs
         double PID_Drive = TranslationalPID_X.PID_Power(odo.getX(), input.A);
         double PID_Strafe = TranslationalPID_Y.PID_Power(odo.getY(), input.B);
 
-        // Compute shortest heading error in DEGREES
-        double currentHeading = getPose()[2]; // already in degrees
-        double targetHeading = input.C;
+        // Heading PID
+        double currentHeading = getPose()[2];   // in degrees
+        double targetHeading = input.C;         // in degrees
 
+        // Wrap the heading error to [-180, 180] to take shortest rotation path
         double headingError = targetHeading - currentHeading;
+        if (headingError > 180) headingError -= 360;
+        if (headingError < -180) headingError += 360;
 
-        // Wrap to [-180, 180] degrees
-        headingError = ((headingError + 180) % 360) - 180;
-
-        // Feed PID: treat 0 as current, headingError as target
+        // Feed PID: current = 0, target = headingError
         double PID_Turn = HeadingPID.PID_Power(0, headingError);
 
         Vector3D PID_Vector = new Vector3D(PID_Drive, PID_Strafe, PID_Turn);
@@ -161,11 +161,9 @@ public abstract class MecanumChassis {
         if (radians > Math.PI) {
             radians -= 2*Math.PI;
         }
-
         if (radians < -Math.PI) {
-            radians += radians - 2*Math.PI;
+            radians += 2*Math.PI;
         }
-
         return radians;
     }
 

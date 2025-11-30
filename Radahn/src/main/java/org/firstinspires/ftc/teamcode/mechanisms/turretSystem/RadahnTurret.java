@@ -10,7 +10,7 @@ public class RadahnTurret extends PulleySlides {
         super(1, new String[]{"turretMotor"},1.0, 435, RiggingMethod.CONTINUOUS, 1, 0.0, new PID_Controller(0.002, 0.07, 0.7, 0.0001), hardwareMap);
 
         // Flip motor direction so turret rotates correctly
-        motors[0].setDirectionReverse();
+        motors[0].setDirectionForward();
 
         // Reset encoder and put motor in RUN_USING_ENCODER mode for PID control
         motors[0].resetTurret();

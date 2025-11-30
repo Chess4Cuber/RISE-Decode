@@ -87,7 +87,7 @@ public class Odometry {
 
                 pose[0] = x_pos * x_offset;
                 pose[1] = y_pos * y_offset;
-                pose[2] = Math.toDegrees(heading) ;
+                pose[2] = Math.toDegrees(heading) * head_offset;
                 break;
 
             case TWO_WHEEL:

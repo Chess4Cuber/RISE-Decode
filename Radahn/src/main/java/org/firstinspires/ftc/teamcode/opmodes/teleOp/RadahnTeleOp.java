@@ -41,8 +41,8 @@ public class RadahnTeleOp extends LinearOpMode {
     private static final double CX = 402.145;
     private static final double CY = 221.506;
 
-    private static final int CAMERA_WIDTH = 640;
-    private static final int CAMERA_HEIGHT = 480;
+    private static final int CAMERA_WIDTH = 176;
+    private static final int CAMERA_HEIGHT = 144;
 
     private static final int BLUE_GOAL_TAG_ID = 20;
     private static final int RED_GOAL_TAG_ID = 24;
