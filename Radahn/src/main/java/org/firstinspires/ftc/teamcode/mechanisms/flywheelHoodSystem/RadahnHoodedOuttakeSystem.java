@@ -37,12 +37,12 @@ public class RadahnHoodedOuttakeSystem {
 
             case OUTTAKING:
                 hoodedOuttake.setVelocityRPM(targetRPM);
-                hoodedOuttake.setHoodPosition(targetHoodPosition);
+                hoodedOuttake.setHoodPosition(-targetHoodPosition);
                 break;
 
             case INTAKING:
                 hoodedOuttake.setVelocityRPM(-targetRPM);
-                hoodedOuttake.setHoodPosition(targetHoodPosition);
+                hoodedOuttake.setHoodPosition(-targetHoodPosition);
                 break;
         }
 

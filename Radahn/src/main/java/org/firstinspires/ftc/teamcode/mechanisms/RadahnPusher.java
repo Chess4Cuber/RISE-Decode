@@ -29,4 +29,8 @@ public class RadahnPusher extends SingleServoClaw {
         }
         lastToggleY = gamepad1.y;
     }
+
+    public void setClawState(ClawState clawState){
+        this.clawState = clawState;
+    }
 }
