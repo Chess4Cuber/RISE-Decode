@@ -52,7 +52,7 @@ public class RadahnMotorOuttakeSystem {
 
             case INTAKING:
                 if((gamepad1.back != lastToggleBack) && gamepad1.back){
-                    outtakeState = MotorOuttakeStates.OUTTAKING;;
+                    outtakeState = MotorOuttakeStates.OUTTAKING;
                 }
                 if((gamepad1.b != lastToggleB) && gamepad1.b){
                     outtakeState = MotorOuttakeStates.RESTING;
