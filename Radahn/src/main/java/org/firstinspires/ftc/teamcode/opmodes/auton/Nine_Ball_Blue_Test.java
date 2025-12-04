@@ -27,9 +27,11 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
         BACK_FIRST,
         SHOOT_FIRST,
         SECOND_LINE,
+        SECOND_LINE2,
         BACK_SECOND,
         SHOOT_SECOND,
         THIRD_LINE,
+        THIRD_LINE2,
         BACK_THIRD,
         SHOOT_THIRD,
         PARK
@@ -46,7 +48,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
     Vector3D poseVector = new Vector3D(0,0,0);
     Vector3D targetPose = new Vector3D(0, 0, 0);
 
-    double tolerance = 1.5;
+    double tolerance = 3;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -86,7 +88,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
     public void autonBlue(){
         switch (parkingStep){
             case AWAY_FROM_GOAL:
-                targetPose.set(-35, -70, 63);
+                targetPose.set(-35, -60, 63);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
@@ -113,7 +115,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
             case FIRST_LINE:
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                targetPose.set(47, 0, 0);
+                targetPose.set(-47, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -149,20 +151,23 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case SECOND_LINE:
-                targetPose.set(28.5, 36, 0);
+                targetPose.set(-28.5, -36, 0);
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
-                    targetPose.set(47, 36, 0);
-
-                }
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-                    parkingStep = AutoStep.BACK_SECOND;
+                    parkingStep = AutoStep.SECOND_LINE2;
                     runtime.reset();
                 }
                 break;
+
+            case SECOND_LINE2:
+                targetPose.set(-50, -36, 0);
+                if (targetPose.findDistance(poseVector) < tolerance ){
+                    parkingStep = AutoStep.BACK_SECOND;
+                    runtime.reset();
+                }
+
+
 
             case BACK_SECOND:
                 targetPose.set(0, 0, 0);
@@ -189,16 +194,19 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case THIRD_LINE:
-                targetPose.set(28.5, 47.5, 0);
+                targetPose.set(-28.5, -47.5, 0);
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                if(targetPose.findDistance(poseVector)<tolerance){
-                    targetPose.set(47, 47.5, 0);
-                }
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+                    parkingStep = AutoStep.THIRD_LINE2;
+                    runtime.reset();
+                }
+                break;
 
+            case THIRD_LINE2:
+                    targetPose.set(-50, -47.5, 0);
+                if (targetPose.findDistance(poseVector) < tolerance ){
                     parkingStep = AutoStep.BACK_THIRD;
                     runtime.reset();
                 }
@@ -229,7 +237,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(46, 12, 0);
+                targetPose.set(-46, -12, 0);
                 break;
 
         }
