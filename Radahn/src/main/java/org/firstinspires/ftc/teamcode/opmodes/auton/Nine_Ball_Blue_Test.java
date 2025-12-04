@@ -19,7 +19,6 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
-
     public enum AutoStep{
         AWAY_FROM_GOAL,
         SHOOTPRE,
