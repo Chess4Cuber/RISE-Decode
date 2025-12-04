@@ -117,4 +117,23 @@ public class Odometry {
     public double[] getEncoderReadings() {
         return encoderReadings;
     }
+
+    public void setPose(double x, double y, double headingDeg) {
+        this.x_pos = x;
+        this.y_pos = y;
+        this.heading = Math.toRadians(headingDeg);
+
+        pose[0] = x;
+        pose[1] = y;
+        pose[2] = headingDeg;
+    }
+
+    public void resetEncoderDeltas() {
+        previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+        previousEncoderPos[1] = rightEncoder.getCurrPosInches();
+        previousEncoderPos[2] = middleEncoder.getCurrPosInches();
+    }
+
+
+
 }
