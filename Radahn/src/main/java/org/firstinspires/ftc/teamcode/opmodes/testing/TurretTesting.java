@@ -50,9 +50,7 @@ public class TurretTesting extends LinearOpMode {
         PID_Controller turretPID = new PID_Controller(0.005, 0.01, 0.7, 0.0001);
         turretPID.tolerance = 0.02;
 
-        turretSystem = new RadahnTurretSystem(
-                hardwareMap, telemetry, 1.0, turretPID, CAMERA_WIDTH, Math.toRadians(60)
-        );
+        turretSystem = new RadahnTurretSystem(hardwareMap, telemetry, 1.0, turretPID, CAMERA_WIDTH, Math.toRadians(60));
 
         pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
         camera = OpenCvCameraFactory.getInstance()

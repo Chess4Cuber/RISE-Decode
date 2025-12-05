@@ -36,6 +36,16 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
         PARK
     }
 
+    public enum PusherState {
+        REVUP,
+        SHOOT_FIRST,
+        SHOOT_SECOND,
+        SHOOT_THIRD,
+        DONE
+    }
+
+    PusherState pusherState;
+
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnMotorOuttakeSystem simpleOuttake;
@@ -58,6 +68,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
         hoodedServo = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
 
         parkingStep = AutoStep.AWAY_FROM_GOAL;
+        pusherState = PusherState.REVUP;
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -92,13 +103,55 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
                     parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
                 }
                 break;
 
             case SHOOTPRE:
-                pusherMove();
+                switch (pusherState) {
+                    case REVUP:
+                        if (runtime.seconds() > 4) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_FIRST;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_FIRST:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.SHOOT_SECOND;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_SECOND:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_THIRD;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_THIRD:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.DONE;
+                            runtime.reset();
+
+                        }
+                        break;
+
+                    case DONE:
+                        // Do nothing; all balls have been shot
+                        break;
+                }
 
                 chassis.odo.setPose(0, 0, 0);
                 chassis.odo.resetEncoderDeltas();
@@ -106,6 +159,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 if (runtime.seconds() > .3 ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+
                     parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                 }
@@ -114,10 +168,11 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
             case FIRST_LINE:
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                targetPose.set(-47, 0, 0);
+                targetPose.set(-50, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+
                     parkingStep = AutoStep.BACK_FIRST;
                     runtime.reset();
                 }
@@ -138,11 +193,53 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case SHOOT_FIRST:
-                pusherMove();
+                switch (pusherState) {
+                    case REVUP:
+                        if (runtime.seconds() > 4) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_FIRST;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_FIRST:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.SHOOT_SECOND;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_SECOND:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_THIRD;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_THIRD:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.DONE;
+                            runtime.reset();
+
+                        }
+                        break;
+
+                    case DONE:
+                        // Do nothing; all balls have been shot
+                        break;
+                }
 
                 if (runtime.seconds() > .3 ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+
                     parkingStep = AutoStep.SECOND_LINE;
                     runtime.reset();
                 }
@@ -151,9 +248,9 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
 
             case SECOND_LINE:
                 targetPose.set(-28.5, -36, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
+                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
                     parkingStep = AutoStep.SECOND_LINE2;
                     runtime.reset();
                 }
@@ -161,8 +258,10 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
 
             case SECOND_LINE2:
                 targetPose.set(-50, -36, 0);
+
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     parkingStep = AutoStep.BACK_SECOND;
+
                     runtime.reset();
                 }
 
@@ -181,7 +280,48 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case SHOOT_SECOND:
-                pusherMove();
+                switch (pusherState) {
+                    case REVUP:
+                        if (runtime.seconds() > 4) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_FIRST;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_FIRST:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.SHOOT_SECOND;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_SECOND:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_THIRD;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_THIRD:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.DONE;
+                            runtime.reset();
+
+                        }
+                        break;
+
+                    case DONE:
+                        // Do nothing; all balls have been shot
+                        break;
+                }
 
                 if (runtime.seconds() > .3 ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
@@ -224,7 +364,48 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                pusherMove();
+                switch (pusherState) {
+                    case REVUP:
+                        if (runtime.seconds() > 4) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_FIRST;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_FIRST:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.SHOOT_SECOND;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_SECOND:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+
+                            pusherState = PusherState.SHOOT_THIRD;
+                            runtime.reset();
+                        }
+                        break;
+
+                    case SHOOT_THIRD:
+                        if (runtime.seconds() > 0.5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                            pusherState = PusherState.DONE;
+                            runtime.reset();
+
+                        }
+                        break;
+
+                    case DONE:
+                        // Do nothing; all balls have been shot
+                        break;
+                }
 
                 if (runtime.seconds() > .3 ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
@@ -275,15 +456,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
         }
     }
 
-    public enum PusherState {
-        REVUP,
-        SHOOT_FIRST,
-        SHOOT_SECOND,
-        SHOOT_THIRD,
-        DONE
-    }
 
-    PusherState pusherState = PusherState.REVUP;
 
     public void pusherMove() {
         switch (pusherState) {
