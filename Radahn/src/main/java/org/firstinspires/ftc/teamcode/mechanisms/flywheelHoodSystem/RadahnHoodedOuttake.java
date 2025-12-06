@@ -15,7 +15,7 @@ public class RadahnHoodedOuttake extends PassiveIntake {
         super(1, new String[]{"flyMotor"}, 387.5, gamepad1, telemetry, hardwareMap);
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
 
-        motors[0].reset();
+        motors[0].encode();
     }
 
     public void setHoodPosition(double position) {

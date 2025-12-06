@@ -110,17 +110,18 @@ public class RadahnHoodedOuttakeSystem {
     // FIXED — positive range, no double-negation needed
     public double computeHoodPosition(double distanceInches) {
 
-        double minDist = 6;
-        double maxDist = 120;
-
-        double minPos = 0.0;
-        double maxPos = 1;
-
-        double clampedDist = Math.max(minDist, Math.min(maxDist, distanceInches));
-        double normalized = (clampedDist - minDist) / (maxDist - minDist);
-
-        double targetHoodPosition = minPos + (maxPos - minPos) * (normalized * normalized);
-        return Math.max(minPos, Math.min(maxPos, targetHoodPosition));
+//        double minDist = 6;
+//        double maxDist = 120;
+//
+//        double minPos = 0.0;
+//        double maxPos = 1;
+//
+//        double clampedDist = Math.max(minDist, Math.min(maxDist, distanceInches));
+//        double normalized = (clampedDist - minDist) / (maxDist - minDist);
+//
+//        double targetHoodPosition = minPos + (maxPos - minPos) * (normalized * normalized);
+//        return Math.max(minPos, Math.min(maxPos, targetHoodPosition));
+        return .3;
     }
 
 //    public double computeHoodPositionSimple(double distanceInches){
