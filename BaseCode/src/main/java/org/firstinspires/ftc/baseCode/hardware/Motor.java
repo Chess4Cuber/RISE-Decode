@@ -65,6 +65,10 @@ public class Motor {
         dcMotorEx.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void encode(){
+        dcMotorEx.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior){
         dcMotorEx.setZeroPowerBehavior(zeroPowerBehavior);

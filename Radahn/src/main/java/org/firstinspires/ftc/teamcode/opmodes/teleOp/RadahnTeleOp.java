@@ -10,11 +10,8 @@ import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnSpindexerSystem.RadahnSpindexerSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -41,8 +38,8 @@ public class RadahnTeleOp extends LinearOpMode {
     private static final double CX = 402.145;
     private static final double CY = 221.506;
 
-    private static final int CAMERA_WIDTH = 176;
-    private static final int CAMERA_HEIGHT = 144;
+    private static final int CAMERA_WIDTH = 640;
+    private static final int CAMERA_HEIGHT = 480;
 
     private static final int BLUE_GOAL_TAG_ID = 20;
     private static final int RED_GOAL_TAG_ID = 24;

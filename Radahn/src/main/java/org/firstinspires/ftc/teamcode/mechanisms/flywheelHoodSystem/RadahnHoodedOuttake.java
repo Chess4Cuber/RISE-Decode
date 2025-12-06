@@ -14,6 +14,8 @@ public class RadahnHoodedOuttake extends PassiveIntake {
     public RadahnHoodedOuttake(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(1, new String[]{"flyMotor"}, 387.5, gamepad1, telemetry, hardwareMap);
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
+
+        motors[0].reset();
     }
 
     public void setHoodPosition(double position) {
@@ -22,6 +24,10 @@ public class RadahnHoodedOuttake extends PassiveIntake {
 
     public double getHoodPosition() {
         return hoodServo.getPosition();
+    }
+
+    public double getRPMMotor(){
+        return motors[0].getVelocityRPM();
     }
 
     public void setVelocityRPM(double rpm) {

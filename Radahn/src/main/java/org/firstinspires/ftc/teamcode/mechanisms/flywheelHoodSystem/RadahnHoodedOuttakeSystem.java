@@ -20,14 +20,15 @@ public class RadahnHoodedOuttakeSystem {
 
     public RadahnHoodedOuttakeSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         hoodedOuttake = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
-        outtakeState = TurretHoodStates.OUTTAKING;
+        outtakeState = TurretHoodStates.RESTING;
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
     }
 
     public void setPositions() {
-        double targetRPM = computeMotorVelocity(tagDistanceInches) * 60.0 / hoodedOuttake.motors[0].TICKS_PER_REV;
+        // FIXED — compute Motor RPM correctly, not double conversion
+        double targetRPM = computeMotorVelocity(tagDistanceInches);
         double targetHoodPosition = computeHoodPosition(tagDistanceInches);
 
         switch (outtakeState) {
@@ -37,47 +38,46 @@ public class RadahnHoodedOuttakeSystem {
 
             case OUTTAKING:
                 hoodedOuttake.setVelocityRPM(targetRPM);
-                hoodedOuttake.setHoodPosition(-targetHoodPosition);
+                hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
             case INTAKING:
                 hoodedOuttake.setVelocityRPM(-targetRPM);
-                hoodedOuttake.setHoodPosition(-targetHoodPosition);
+                hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
         }
 
         displayTelemetry(targetRPM, targetHoodPosition);
     }
 
-    /** Handles button-based state changes */
     public void controllerInput() {
         switch (outtakeState) {
             case RESTING:
-                if ((gamepad1.b != lastToggleB) && gamepad1.b){
-                    outtakeState = TurretHoodStates.INTAKING;
+                if ((gamepad1.b != lastToggleB) && gamepad1.b) {
+                    outtakeState = TurretHoodStates.OUTTAKING;
                 }
 
                 if ((gamepad1.back != lastToggleBack) && gamepad1.back) {
-                    outtakeState = TurretHoodStates.OUTTAKING;
-                }
-                break;
-
-            case INTAKING:
-                if ((gamepad1.back != lastToggleBack) && gamepad1.back){
-                    outtakeState = TurretHoodStates.OUTTAKING;
-                }
-
-                if ((gamepad1.b != lastToggleB) && gamepad1.b){
-                    outtakeState = TurretHoodStates.RESTING;
+                    outtakeState = TurretHoodStates.INTAKING;
                 }
                 break;
 
             case OUTTAKING:
-                if ((gamepad1.b != lastToggleB) && gamepad1.b){
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back) {
                     outtakeState = TurretHoodStates.INTAKING;
                 }
 
-                if ((gamepad1.back != lastToggleBack) && gamepad1.back){
+                if ((gamepad1.b != lastToggleB) && gamepad1.b) {
+                    outtakeState = TurretHoodStates.RESTING;
+                }
+                break;
+
+            case INTAKING:
+                if ((gamepad1.b != lastToggleB) && gamepad1.b) {
+                    outtakeState = TurretHoodStates.OUTTAKING;
+                }
+
+                if ((gamepad1.back != lastToggleBack) && gamepad1.back) {
                     outtakeState = TurretHoodStates.RESTING;
                 }
                 break;
@@ -92,36 +92,40 @@ public class RadahnHoodedOuttakeSystem {
     }
 
     public double computeMotorVelocity(double distanceInches) {
-        if (distanceInches <= 0) return 0;
 
-        double minDist = 6;
-        double maxDist = 36;
-        double minRPM = 500;
-        double maxRPM = 3000;
+        double minDist = 30;
+        double maxDist = 120;
 
-        double slope = (maxRPM - minRPM) / (maxDist - minDist);
-        double targetRPM = minRPM + slope * (distanceInches - minDist);
-        targetRPM = Math.max(minRPM, Math.min(maxRPM, targetRPM));
+        // tune these
+        double minRPM = 1000;
+        double maxRPM = 4700;
 
-        // Convert RPM → ticks/sec
-        return targetRPM * hoodedOuttake.motors[0].TICKS_PER_REV / 60.0;
+        double clampedDist = Math.max(minDist, Math.min(maxDist, distanceInches));
+        double normalized = (clampedDist - minDist) / (maxDist - minDist);  // 0..1
+
+        return minRPM + (maxRPM - minRPM) * Math.pow(normalized,.25);
+
     }
 
+    // FIXED — positive range, no double-negation needed
     public double computeHoodPosition(double distanceInches) {
-        if (distanceInches <= 0) return 0.5;
 
         double minDist = 6;
-        double maxDist = 36;
-        double minPos = 0.8;
-        double maxPos = 0;
+        double maxDist = 120;
 
-        double normalized = (distanceInches - minDist) / (maxDist - minDist);
-        normalized = Math.max(0, Math.min(1, normalized));
+        double minPos = 0.0;
+        double maxPos = 1;
 
-        // Quadratic curve for smooth hood adjustment
-        double position = minPos + (maxPos - minPos) * (normalized * normalized);
-        return Math.max(minPos, Math.min(maxPos, position));
+        double clampedDist = Math.max(minDist, Math.min(maxDist, distanceInches));
+        double normalized = (clampedDist - minDist) / (maxDist - minDist);
+
+        double targetHoodPosition = minPos + (maxPos - minPos) * (normalized * normalized);
+        return Math.max(minPos, Math.min(maxPos, targetHoodPosition));
     }
+
+//    public double computeHoodPositionSimple(double distanceInches){
+//        if(distance <)
+//    }
 
     public void updateDistance(double distanceInches) {
         this.tagDistanceInches = distanceInches;
@@ -131,6 +135,9 @@ public class RadahnHoodedOuttakeSystem {
         telemetry.addData("Outtake State", outtakeState);
         telemetry.addData("Distance (in)", "%.2f", tagDistanceInches);
         telemetry.addData("Motor Target RPM", "%.1f", targetRPM);
+        telemetry.addData("Motor Actual RPM", "%.1f", hoodedOuttake.getRPMMotor());
         telemetry.addData("Hood Target Pos", "%.3f", targetHoodPosition);
+        telemetry.addData("Servo Actual Pos", hoodedOuttake.getHoodPosition());
+
     }
 }

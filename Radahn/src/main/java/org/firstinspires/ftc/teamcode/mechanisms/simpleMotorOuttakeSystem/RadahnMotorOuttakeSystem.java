@@ -29,11 +29,11 @@ public class RadahnMotorOuttakeSystem {
                 break;
 
             case INTAKING:
-                outtake.setVelocityRPM(-2000);
+                outtake.setVelocityRPM(4000);
                 break;
 
             case OUTTAKING:
-                outtake.setPower(.2000);
+                outtake.setVelocityRPM(-4000);
                 break;
         }
 
