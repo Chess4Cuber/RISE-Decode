@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.MotorO
 import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
 
 @Autonomous
-public class Nine_Ball_Blue_Test extends LinearOpMode {
+public class Six_Ball_Blue extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
