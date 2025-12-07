@@ -106,7 +106,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
             case AWAY_FROM_GOAL:
                 simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
 
-                targetPose.set(-40, -55, 63);
+                targetPose.set(-35, -50, 63);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
 
@@ -206,6 +206,8 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
                 chassis.odo.setPose(0, 0, 0);
                 chassis.odo.resetEncoderDeltas();
 
+                targetPose.set(0, -23, 0);
+
                 if(runtime.seconds()>.2){
                     parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
@@ -217,7 +219,7 @@ public class Nine_Ball_Blue_Test extends LinearOpMode {
 
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                targetPose.set(-45, -10, 0);
+                targetPose.set(-40, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
