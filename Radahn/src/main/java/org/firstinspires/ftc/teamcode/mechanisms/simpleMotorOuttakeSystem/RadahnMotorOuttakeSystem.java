@@ -26,14 +26,15 @@ public class RadahnMotorOuttakeSystem {
         switch (outtakeState) {
             case RESTING:
                 outtake.setPower(0);
+
                 break;
 
             case INTAKING:
-                outtake.setVelocityRPM(3500);
+                outtake.setPower(1);
                 break;
 
             case OUTTAKING:
-                outtake.setVelocityRPM(-3500);
+                outtake.setPower(-1);
                 break;
         }
 
@@ -73,6 +74,10 @@ public class RadahnMotorOuttakeSystem {
 
     public void setMotorOuttakeState(MotorOuttakeStates state){
         outtakeState = state;
+    }
+
+    public double getRPM(){
+        return outtake.getRPM();
     }
 
 }

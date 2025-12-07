@@ -9,7 +9,7 @@ public class RadahnPusher extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
     public RadahnPusher(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("pusher", .99, .55, hardwareMap);
+        super("pusher", .99, .79, .55, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }
@@ -18,9 +18,22 @@ public class RadahnPusher extends SingleServoClaw {
         switch (clawState){
             case OPEN:
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
+                    middleClaw();
+                }
+                break;
+
+            case MIDDLE:
+                if ((gamepad1.y != lastToggleY) && gamepad1.y){
+                    resetClaw();
+                }
+                break;
+
+            case RESET:
+                if ((gamepad1.y != lastToggleY) && gamepad1.y){
                     closeClaw();
                 }
                 break;
+
             case CLOSED:
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
                     openClaw();

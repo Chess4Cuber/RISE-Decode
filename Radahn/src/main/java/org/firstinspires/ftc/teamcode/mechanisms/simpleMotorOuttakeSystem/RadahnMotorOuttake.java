@@ -11,5 +11,9 @@ public class RadahnMotorOuttake extends PassiveIntake {
         super(1, new String[]{"flyMotor"}, 387.5, gamepad1, telemetry, hardwareMap);
         motors[0].encode();
     }
+
+    public double getRPM(){
+        return motors[0].getRPM();
+    }
 }
 

@@ -134,5 +134,9 @@ public class Motor {
         return ticksPerSec *60.0 / TICKS_PER_REV;
     }
 
+    public double getRPM(){
+        return dcMotorEx.getPower();
+    }
+
 
 }
