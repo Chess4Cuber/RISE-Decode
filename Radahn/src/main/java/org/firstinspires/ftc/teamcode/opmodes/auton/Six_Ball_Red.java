@@ -318,7 +318,7 @@ public class Six_Ball_Red extends LinearOpMode {
                         simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                        parkingStep = Six_Ball_Red.AutoStep.SECOND_LINE;
+                        parkingStep = AutoStep.PARK;
                         runtime.reset();
                         pusherState = Six_Ball_Red.PusherState.REVUP; // reset for next use
                     }
@@ -390,7 +390,7 @@ public class Six_Ball_Red extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(46, -12, 0);
+                targetPose.set(-40, 0, 0);
                 break;
         }
     }

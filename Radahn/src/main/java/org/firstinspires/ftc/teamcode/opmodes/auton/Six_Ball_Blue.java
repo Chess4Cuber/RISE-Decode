@@ -219,7 +219,7 @@ public class Six_Ball_Blue extends LinearOpMode {
 
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                targetPose.set(-40, 0, 0);
+                targetPose.set(-35, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -326,7 +326,7 @@ public class Six_Ball_Blue extends LinearOpMode {
                         simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                        parkingStep = AutoStep.SECOND_LINE;
+                        parkingStep = AutoStep.PARK;
                         runtime.reset();
                         pusherState = PusherState.REVUP; // reset for next use
                     }
@@ -571,7 +571,7 @@ public class Six_Ball_Blue extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(-46, -12, 0);
+                targetPose.set(-35, 0, 0);
                 break;
 
         }
