@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.turretManual;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;

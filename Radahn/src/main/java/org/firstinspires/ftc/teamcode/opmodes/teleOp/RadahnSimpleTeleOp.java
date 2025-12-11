@@ -11,11 +11,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttake;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
 
 @TeleOp
 public class RadahnSimpleTeleOp extends LinearOpMode {
     RadahnHoodedOuttake hood;
     RadahnMotorOuttakeSystem simpleOuttake;
+    RadahnTurretSystemManual turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnPusher pusher;
@@ -34,6 +36,7 @@ public class RadahnSimpleTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         pusher = new RadahnPusher(gamepad1, hardwareMap);
+        turret = new RadahnTurretSystemManual(gamepad1, telemetry, hardwareMap);
 
 
         while (opModeInInit()) {
@@ -54,6 +57,9 @@ public class RadahnSimpleTeleOp extends LinearOpMode {
 
             intake.controllerInput();
             intake.setPositions();
+
+            turret.controllerInput();
+            turret.setPositions();
 
             pusher.toggleClaw();
 
