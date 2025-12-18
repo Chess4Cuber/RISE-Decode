@@ -32,7 +32,6 @@ public class RadahnTurretSystem {
         targetAngle = turret.getTurretAngle();
     }
 
-
     public void setPositions() {
         switch (turretState) {
             case TRACKING:
@@ -59,7 +58,6 @@ public class RadahnTurretSystem {
         }
 
         setTelemetry();
-
     }
 
     public void controllerInput() {
@@ -67,11 +65,11 @@ public class RadahnTurretSystem {
         switch (turretState) {
             case TRACKING:
             case IDLE:
-                // Enter manual mode on bumper press
-                if (gamepad1.right_bumper && !lastRightBumper) {
+
+                if ((gamepad1.right_bumper != lastRightBumper) && gamepad1.right_bumper) {
                     targetAngle += manualIncrement;
                     turretState = TurretStates.MANUAL_RIGHT;
-                } else if (gamepad1.left_bumper && !lastLeftBumper) {
+                } else if ((gamepad1.left_bumper != lastLeftBumper) && gamepad1.left_bumper) {
                     targetAngle -= manualIncrement;
                     turretState = TurretStates.MANUAL_LEFT;
                 } else if (turret.hasTarget()) {
@@ -85,10 +83,10 @@ public class RadahnTurretSystem {
                 // Stay manual until both bumpers are pressed
                 if (gamepad1.left_bumper && gamepad1.right_bumper) {
                     turretState = turret.hasTarget() ? TurretStates.TRACKING : TurretStates.IDLE;
-                } else if (gamepad1.left_bumper && !lastLeftBumper) {
+                } else if ((gamepad1.left_bumper != lastLeftBumper) && gamepad1.left_bumper) {
                     targetAngle -= manualIncrement;
-                } else if (gamepad1.right_bumper && !lastRightBumper) {
-                    targetAngle += manualIncrement; // optional: allow fine adjustment opposite direction
+                } else if ((gamepad1.right_bumper != lastRightBumper) && gamepad1.right_bumper) {
+                    targetAngle += manualIncrement;
                 }
                 break;
 
@@ -96,10 +94,10 @@ public class RadahnTurretSystem {
                 // Stay manual until both bumpers are pressed
                 if (gamepad1.left_bumper && gamepad1.right_bumper) {
                     turretState = turret.hasTarget() ? TurretStates.TRACKING : TurretStates.IDLE;
-                } else if (gamepad1.right_bumper && !lastRightBumper) {
+                } else if ((gamepad1.right_bumper != lastRightBumper) && gamepad1.right_bumper) {
                     targetAngle += manualIncrement;
-                } else if (gamepad1.left_bumper && !lastLeftBumper) {
-                    targetAngle -= manualIncrement; // optional: allow fine adjustment opposite direction
+                } else if ((gamepad1.left_bumper != lastLeftBumper) && gamepad1.left_bumper) {
+                    targetAngle -= manualIncrement;
                 }
                 break;
         }
@@ -112,8 +110,7 @@ public class RadahnTurretSystem {
         turretState = state;
     }
 
-    public void setTelemetry(){
-        // Telemetry for debugging
+    public void setTelemetry() {
         telemetry.addData("Turret State", turretState);
         telemetry.addData("Turret Angle", turret.getTurretAngle());
         telemetry.addData("Target Visible", turret.hasTarget());
