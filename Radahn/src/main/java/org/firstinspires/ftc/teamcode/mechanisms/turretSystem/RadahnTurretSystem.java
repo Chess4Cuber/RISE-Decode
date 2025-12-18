@@ -1,108 +1,123 @@
 package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.openftc.apriltag.AprilTagDetection;
-import java.util.List;
 
 public class RadahnTurretSystem {
 
-    private final RadahnTurret turret;
-    private final Telemetry telemetry;
-    private final PID_Controller pid;
+    Gamepad gamepad1;
+    Telemetry telemetry;
 
-    private final double cameraWidth;
-    private final double cameraFOV;
-    private static final double CENTER_TOLERANCE_PIXELS = 50;
-    private static final double MIN_POWER = 0.0;
-    private static final double MAX_POWER = .7;
-    private static final double SMOOTHING = 0.2;
-    private static final double MAX_DELTA_ANGLE = Math.toRadians(2); // max 2 degrees per loop
-    private static final double ANGLE_SCALE = 1; // scale target angle to avoid overshoot
-    private static final double ANGLE_DEADZONE = Math.toRadians(0); // <0.5 rad ≈ 28.6 deg -> stop moving
+    RadahnTurret turret;
+    TurretStates turretState;
 
-    private TurretStates turretState;
-    private double lastPower = 0;
+    boolean lastRightBumper = false;
+    boolean lastLeftBumper = false;
 
-    public RadahnTurretSystem(HardwareMap hardwareMap, Telemetry telemetry, double pulleyRadius, PID_Controller pid, double cameraWidth, double cameraFOV) {
+    double manualIncrement = 15; // degrees per bumper press
+    double targetAngle;
+
+    public RadahnTurretSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
+        this.gamepad1 = gamepad1;
+        this.telemetry = telemetry;
+
         turret = new RadahnTurret(hardwareMap);
 
-        this.telemetry = telemetry;
-        this.pid = pid;
-        this.cameraWidth = cameraWidth;
-        this.cameraFOV = cameraFOV;
+        // PID tuned for snap-to-target
+        turret.turretPID.setPIDCoefficients(0.15, 0.05, 0.1);
+        turret.turretPID.tolerance = 0.5;
 
-        turretState = TurretStates.RESTING;
+        turretState = TurretStates.TRACKING;
+        targetAngle = turret.getTurretAngle();
     }
 
-    public void update(List<AprilTagDetection> detections, int targetTagID) {
-        double currentAngle = turret.getCurrentAngle();
-        double targetAngle = currentAngle;
 
-        boolean foundTarget = false;
-
-        if (detections != null && !detections.isEmpty()) {
-            for (AprilTagDetection tag : detections) {
-                if (tag.id == targetTagID) {
-                    double offsetPixels = tag.center.x - (cameraWidth / 2.0);
-
-                    if (Math.abs(offsetPixels) > CENTER_TOLERANCE_PIXELS) {
-                        double offsetRatio = offsetPixels / (cameraWidth / 2.0);
-                        double angleOffset = -offsetRatio * (cameraFOV / 2.0) * ANGLE_SCALE; // scale down
-                        targetAngle = currentAngle + angleOffset;
-                        turretState = TurretStates.TRACKING;
-                    } else {
-                        turretState = TurretStates.RESTING;
-                    }
-
-                    foundTarget = true;
-                    break;
+    public void setPositions() {
+        switch (turretState) {
+            case TRACKING:
+                if (turret.hasTarget()) {
+                    double offset = turret.getTargetOffset();
+                    targetAngle = turret.getTurretAngle() + offset;
                 }
-            }
+
+                double power = turret.turretPID.PID_Power(turret.getTurretAngle(), targetAngle);
+
+                // Minimum power threshold to overcome static friction
+                if (Math.abs(power) < 0.2) {
+                    power = Math.signum(power) * 0.2;
+                }
+
+                turret.setPower(power);
+                break;
+
+            case MANUAL_LEFT:
+            case MANUAL_RIGHT:
+            case IDLE:
+                turret.setTurretAngle(targetAngle);
+                break;
         }
 
-        if (!foundTarget) {
-            turretState = TurretStates.RESTING;
-        }
+        setTelemetry();
 
-        double power;
-
-        if (turretState == TurretStates.TRACKING) {
-            if (Math.abs(targetAngle - currentAngle) < ANGLE_DEADZONE) {
-                power = 0;
-                turretState = TurretStates.RESTING;
-            } else {
-                power = pid.PID_Power(currentAngle, targetAngle) * 0.5;
-                power = clamp(power, -MAX_POWER, MAX_POWER);
-
-                power = SMOOTHING * power + (1 - SMOOTHING) * lastPower;
-                if (Math.abs(power) < MIN_POWER) power = 0;
-            }
-
-            turret.setPower(power);
-        } else {
-            turret.setPower(0);
-            power = 0;
-        }
-
-        lastPower = power;
-
-        telemetry.addData("Turret State", turretState);
-        telemetry.addData("Turret Angle (rad)", turret.getCurrentAngle());
-        telemetry.addData("Target Angle (rad)", targetAngle);
-        telemetry.addData("Power", power);
     }
 
-    private double clamp(double val, double min, double max) {
-        return Math.max(min, Math.min(max, val));
+    public void controllerInput() {
+
+        switch (turretState) {
+            case TRACKING:
+            case IDLE:
+                // Enter manual mode on bumper press
+                if (gamepad1.right_bumper && !lastRightBumper) {
+                    targetAngle += manualIncrement;
+                    turretState = TurretStates.MANUAL_RIGHT;
+                } else if (gamepad1.left_bumper && !lastLeftBumper) {
+                    targetAngle -= manualIncrement;
+                    turretState = TurretStates.MANUAL_LEFT;
+                } else if (turret.hasTarget()) {
+                    turretState = TurretStates.TRACKING;
+                } else {
+                    turretState = TurretStates.IDLE;
+                }
+                break;
+
+            case MANUAL_LEFT:
+                // Stay manual until both bumpers are pressed
+                if (gamepad1.left_bumper && gamepad1.right_bumper) {
+                    turretState = turret.hasTarget() ? TurretStates.TRACKING : TurretStates.IDLE;
+                } else if (gamepad1.left_bumper && !lastLeftBumper) {
+                    targetAngle -= manualIncrement;
+                } else if (gamepad1.right_bumper && !lastRightBumper) {
+                    targetAngle += manualIncrement; // optional: allow fine adjustment opposite direction
+                }
+                break;
+
+            case MANUAL_RIGHT:
+                // Stay manual until both bumpers are pressed
+                if (gamepad1.left_bumper && gamepad1.right_bumper) {
+                    turretState = turret.hasTarget() ? TurretStates.TRACKING : TurretStates.IDLE;
+                } else if (gamepad1.right_bumper && !lastRightBumper) {
+                    targetAngle += manualIncrement;
+                } else if (gamepad1.left_bumper && !lastLeftBumper) {
+                    targetAngle -= manualIncrement; // optional: allow fine adjustment opposite direction
+                }
+                break;
+        }
+
+        lastRightBumper = gamepad1.right_bumper;
+        lastLeftBumper = gamepad1.left_bumper;
     }
 
     public void setTurretState(TurretStates state) {
         turretState = state;
     }
 
-    public RadahnTurret getTurret() {
-        return turret;
+    public void setTelemetry(){
+        // Telemetry for debugging
+        telemetry.addData("Turret State", turretState);
+        telemetry.addData("Turret Angle", turret.getTurretAngle());
+        telemetry.addData("Target Visible", turret.hasTarget());
+        telemetry.addData("Target Angle", targetAngle);
+        telemetry.update();
     }
 }
