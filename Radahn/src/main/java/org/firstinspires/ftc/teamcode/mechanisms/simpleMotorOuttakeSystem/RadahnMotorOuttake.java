@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnMotorOuttake extends PassiveIntake {
     public RadahnMotorOuttake(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        super(1, new String[]{"flyMotor"}, 387.5, gamepad1, telemetry, hardwareMap);
+        super(1, new String[]{"flyMotor", "flyMotor2"}, 387.5, gamepad1, telemetry, hardwareMap);
         motors[0].encode();
     }
 
