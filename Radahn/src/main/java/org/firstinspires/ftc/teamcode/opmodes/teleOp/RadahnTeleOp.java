@@ -6,46 +6,34 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.baseCode.CameraVision.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
 
-import java.util.List;
+// Limelight imports
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.limelightvision.LLResult;
 
 @TeleOp
 public class RadahnTeleOp extends LinearOpMode {
+
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
+    RadahnTurretSystemManual turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnPusher pusher;
-    OpenCvCamera camera;
-    AprilTagDetectionPipeline pipeline;
-
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
 
-    private static final double TAG_SIZE = 0.17; // 2 inches in meters
-    private static final double FX = 578.272;
-    private static final double FY = 578.272;
-    private static final double CX = 402.145;
-    private static final double CY = 221.506;
+    Limelight3A limelight;
 
-    private static final int CAMERA_WIDTH = 640;
-    private static final int CAMERA_HEIGHT = 480;
-
-    private static final int BLUE_GOAL_TAG_ID = 20;
-    private static final int RED_GOAL_TAG_ID = 24;
-
-    private boolean isBlueAlliance = true;
-    private boolean lastToggleY = false;
+    // --- Camera geometry constants ---
+    final double CAMERA_HEIGHT = 10.0; // inches
+    final double TARGET_HEIGHT = 24.0; // inches (center of tag)
+    final double CAMERA_ANGLE = Math.toRadians(30.0); // mounting pitch in radians
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,84 +44,53 @@ public class RadahnTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         pusher = new RadahnPusher(gamepad1, hardwareMap);
+        turret = new RadahnTurretSystemManual(gamepad1, telemetry, hardwareMap);
 
-        pipeline = new AprilTagDetectionPipeline(TAG_SIZE, FX, FY, CX, CY);
-        camera = OpenCvCameraFactory.getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        camera.setPipeline(pipeline);
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-                FtcDashboard.getInstance().startCameraStream(camera, 30);
-
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addData("Camera", "Failed to open: " + errorCode);
-                telemetry.update();
-            }
-        });
 
         while (opModeInInit()) {
             pusher.openClaw();
 
-            if ((gamepad1.y != lastToggleY) && gamepad1.y) {
-                isBlueAlliance = !isBlueAlliance;
-            }
-            lastToggleY = gamepad1.y;
+            hoodedOuttakeSystem.setMotorOuttakeState(
+                    org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
+            );
 
             telemetry.addLine("Waiting For Start");
-            telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
             telemetry.update();
         }
 
+
         while (opModeIsActive()) {
-            List<AprilTagDetection> detections = pipeline.getLatestDetections();
-            double tagDistanceInches = 0;
-            int trackedTagID = -1;
-
-            if (detections != null && !detections.isEmpty()) {
-                int targetTagID = isBlueAlliance ? BLUE_GOAL_TAG_ID : RED_GOAL_TAG_ID;
-
-                for (AprilTagDetection tag : detections) {
-                    if (tag.id == targetTagID) {
-                        tagDistanceInches = tag.pose.z * 39.3701; // meters -> inches
-                        trackedTagID = tag.id;
-                        break;
-                    }
-                }
-            }
-
-            hoodedOuttakeSystem.updateDistance(tagDistanceInches);
-            hoodedOuttakeSystem.controllerInput();
-            hoodedOuttakeSystem.setPositions();
 
             chassis.robotCentricDrive();
             chassis.updatePose();
 
+            // --- Read Limelight and estimate distance using vertical angle ---
+            double tagDistanceInches = 0;
+
+            LLResult result = limelight.getLatestResult();
+            if (result != null && result.isValid()) {
+                double tyRadians = Math.toRadians(result.getTy()); // convert vertical angle to radians
+                tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(CAMERA_ANGLE + tyRadians);
+            }
+
+
+            hoodedOuttakeSystem.updateDistance(tagDistanceInches);
+            hoodedOuttakeSystem.update();
+
             intake.controllerInput();
             intake.setPositions();
 
+            turret.controllerInput();
+            turret.setPositions();
+
             pusher.toggleClaw();
 
-            telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
-            telemetry.addData("Tracked Tag ID", trackedTagID >= 0 ? trackedTagID : "None");
-            telemetry.addData("Tag Distance (inches)", "%.2f", tagDistanceInches);
             telemetry.addData("Loop Time", runtime.seconds() - previousTime);
             telemetry.update();
 
             previousTime = runtime.seconds();
-        }
-
-        hoodedOuttakeSystem.updateDistance(0);
-        hoodedOuttakeSystem.setPositions();
-
-        if (camera != null) {
-            camera.stopStreaming();
-            camera.closeCameraDevice();
         }
     }
 }
