@@ -59,7 +59,7 @@ public class RadahnTeleOp extends LinearOpMode {
                     org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
             );
 
-            // Pipeline toggle with expanded if/else
+
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 if (activePipeline == 0) {
                     activePipeline = 1; // Switch from Blue goal to Red goal
@@ -80,7 +80,7 @@ public class RadahnTeleOp extends LinearOpMode {
             chassis.robotCentricDrive();
             chassis.updatePose();
 
-            // --- Read Limelight and estimate distance using vertical angle ---
+
             double tagDistanceInches = 0;
             LLResult result = limelight.getLatestResult();
             if (result != null && result.isValid()) {
