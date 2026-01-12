@@ -2,101 +2,70 @@ package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnTurretSystem {
 
-    Gamepad gamepad1;
+    Gamepad gamepad;
     Telemetry telemetry;
-
     RadahnTurret turret;
-    TurretStates turretState;
 
-    boolean lastRightBumper = false;
-    boolean lastLeftBumper = false;
+    public TurretStates turretState;
 
-    double manualIncrement = 15.0; // degrees per press
-    double targetAngle;
+    // Toggle tracking buttons
+    boolean lastToggleA = false;
+    boolean lastToggleY = false;
 
-    public RadahnTurretSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
-        this.gamepad1 = gamepad1;
+    double targetAngle = 0;
+
+    public RadahnTurretSystem(Gamepad gamepad, Telemetry telemetry, HardwareMap hardwareMap) {
+        this.gamepad = gamepad;
         this.telemetry = telemetry;
 
-        turret = new RadahnTurret(hardwareMap);
+        turret = new RadahnTurret(gamepad, hardwareMap);
+        turretState = TurretStates.IDLE;
+    }
 
-        // Let PulleySlides handle PID internally
-        turret.turretPID.setPIDCoefficients(0.1, 0.05, 0.1);
-        turret.turretPID.tolerance = 0.5;
+    public void updateTargetAngle(double tx) {
+        this.targetAngle = getCurrentAngle() + tx;
+    }
 
-        turretState = TurretStates.TRACKING;
-        targetAngle = turret.getTurretAngle();
+    public double getCurrentAngle() {
+        return turret.getTurretAngle();
     }
 
     public void controllerInput() {
-
-        boolean rightPressed =
-                (gamepad1.right_bumper != lastRightBumper) && gamepad1.right_bumper;
-        boolean leftPressed =
-                (gamepad1.left_bumper != lastLeftBumper) && gamepad1.left_bumper;
-
-        switch (turretState) {
-
-            case TRACKING:
-            case IDLE:
-                if (rightPressed) {
-                    targetAngle += manualIncrement;
-                    turretState = TurretStates.MANUAL_RIGHT;
-                } else if (leftPressed) {
-                    targetAngle -= manualIncrement;
-                    turretState = TurretStates.MANUAL_LEFT;
-                }
-                break;
-
-            case MANUAL_RIGHT:
-            case MANUAL_LEFT:
-                if (gamepad1.left_bumper && gamepad1.right_bumper) {
-                    turretState = turret.hasTarget()
-                            ? TurretStates.TRACKING
-                            : TurretStates.IDLE;
-                } else if (rightPressed) {
-                    targetAngle += manualIncrement;
-                } else if (leftPressed) {
-                    targetAngle -= manualIncrement;
-                }
-                break;
+        if ((gamepad.a != lastToggleA) && gamepad.a) {
+            turretState = TurretStates.TRACKING;
         }
 
-        lastRightBumper = gamepad1.right_bumper;
-        lastLeftBumper = gamepad1.left_bumper;
+        if ((gamepad.y != lastToggleY) && gamepad.y) {
+            turretState = TurretStates.IDLE;
+        }
+
+        lastToggleA = gamepad.a;
+        lastToggleY = gamepad.y;
     }
 
     public void setPositions() {
+        switch (turretState) {
+            case IDLE:
+                turret.setTurretPower(0);
+                break;
 
-        double currentAngle = turret.getTurretAngle();
-
-        if (turretState == TurretStates.TRACKING && turret.hasTarget()) {
-            targetAngle = currentAngle + turret.getTargetOffset();
+            case TRACKING:
+                turret.setExtension(targetAngle);
+                break;
         }
-
-        // Convert angle → extension (radians)
-        double targetExtension = targetAngle * (Math.PI / 180.0);
-
-        // THIS is the critical fix
-        turret.setExtension(targetExtension);
-
-        setTelemetry();
-    }
-
-    public void setTurretState(TurretStates state) {
-        turretState = state;
     }
 
     public void setTelemetry() {
-        telemetry.addData("Turret State", turretState);
-        telemetry.addData("Current Angle", turret.getTurretAngle());
+        telemetry.addData("Turret Angle", getCurrentAngle());
         telemetry.addData("Target Angle", targetAngle);
-        telemetry.addData("Extension Target", targetAngle * (Math.PI / 180.0));
-        telemetry.addData("Has Target", turret.hasTarget());
-        telemetry.update();
+        telemetry.addData("Turret State", turretState);
+        telemetry.addData("PID P", turret.slidesPID.P);
+        telemetry.addData("PID I", turret.slidesPID.I);
+        telemetry.addData("PID D", turret.slidesPID.D);
     }
 }

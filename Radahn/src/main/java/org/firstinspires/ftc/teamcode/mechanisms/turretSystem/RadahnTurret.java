@@ -1,50 +1,26 @@
 package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.limelightvision.LLResult;
 
-import org.firstinspires.ftc.baseCode.hardware.extension.PulleySlides;
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
+import org.firstinspires.ftc.baseCode.hardware.extension.PulleySlides;
 
 public class RadahnTurret extends PulleySlides {
 
-    public Limelight3A limelight;
-    public PID_Controller turretPID;
+    public static final double TICKS_PER_REV = 537.6 * 3.0; // Motor CPR * gear ratio
 
-    public RadahnTurret(HardwareMap hardwareMap) {
-        // Single motor, CONTINUOUS pulley, 435 RPM
-        super(1, new String[]{"turretMotor"}, 1, 435, RiggingMethod.CONTINUOUS, 1, 0,
-                new PID_Controller(0.05, 0.01, 0.1), hardwareMap);
-
-        // Limelight initialization
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.setPollRateHz(50);
-        limelight.start();
-
-        turretPID = new PID_Controller(0.05, 0.01, 0.1);
-        turretPID.tolerance = 0.5;
+    public RadahnTurret(Gamepad gamepad, HardwareMap hardwareMap) {
+        super(1, new String[]{"turretMotor"},1, TICKS_PER_REV, RiggingMethod.CONTINUOUS,1,0.0, new PID_Controller(0.02, 0.001, 0.8, 0.0), hardwareMap);
+        this.slidesPID.tolerance = 0.5; // degrees tolerance
     }
 
+    // get current turret angle in degrees
     public double getTurretAngle() {
-        return getExtension() * (180 / Math.PI);
+        return motors[0].getCurrPosDegrees();
     }
 
-    public void setTurretAngle(double targetAngle) {
-        double power = turretPID.PID_Power(getTurretAngle(), targetAngle);
+    public void setTurretPower(double power) {
         setPower(power);
-    }
-
-    public boolean hasTarget() {
-        LLResult result = limelight.getLatestResult();
-        return result != null && result.isValid();
-    }
-
-    public double getTargetOffset() {
-        LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
-            return result.getTx();
-        }
-        return 0;
     }
 }
