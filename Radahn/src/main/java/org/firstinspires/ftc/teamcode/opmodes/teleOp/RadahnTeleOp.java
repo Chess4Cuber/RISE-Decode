@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
+import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 // Limelight imports
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -20,7 +20,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 public class RadahnTeleOp extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
-    RadahnTurretSystemManual turret;
+    RadahnTurretSystem turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnPusher pusher;
@@ -31,12 +31,11 @@ public class RadahnTeleOp extends LinearOpMode {
     Limelight3A limelight;
 
     // --- Camera geometry constants ---
-    final double CAMERA_HEIGHT = 10.0; // inches
-    final double TARGET_HEIGHT = 24.0; // inches (center of tag)
-    final double CAMERA_ANGLE = Math.toRadians(30.0); // mounting pitch in radians
+    final double CAMERA_HEIGHT = 10.0;
+    final double TARGET_HEIGHT = 24.0;
+    final double CAMERA_ANGLE = Math.toRadians(30.0);
 
-
-    int activePipeline = 0; // 0 = Blue goal, 1 = Red goal
+    int activePipeline = 0;
     boolean lastToggleY = false;
 
     @Override
@@ -48,23 +47,23 @@ public class RadahnTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         pusher = new RadahnPusher(gamepad1, hardwareMap);
-        turret = new RadahnTurretSystemManual(gamepad1, telemetry, hardwareMap);
+        turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(activePipeline);
 
         while (opModeInInit()) {
+
             pusher.openClaw();
             hoodedOuttakeSystem.setMotorOuttakeState(
                     org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
             );
 
-
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 if (activePipeline == 0) {
-                    activePipeline = 1; // Switch from Blue goal to Red goal
+                    activePipeline = 1;
                 } else {
-                    activePipeline = 0; // Switch from Red goal to Blue goal
+                    activePipeline = 0;
                 }
                 limelight.pipelineSwitch(activePipeline);
             }
@@ -80,12 +79,14 @@ public class RadahnTeleOp extends LinearOpMode {
             chassis.robotCentricDrive();
             chassis.updatePose();
 
-
             double tagDistanceInches = 0;
+            double tx = 0;
+
             LLResult result = limelight.getLatestResult();
             if (result != null && result.isValid()) {
-                double tyRadians = Math.toRadians(result.getTy()); // convert vertical angle to radians
+                double tyRadians = Math.toRadians(result.getTy());
                 tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(CAMERA_ANGLE + tyRadians);
+                tx = result.getTx(); // horizontal offset for turret
             }
 
             hoodedOuttakeSystem.updateDistance(tagDistanceInches);
@@ -94,8 +95,10 @@ public class RadahnTeleOp extends LinearOpMode {
             intake.controllerInput();
             intake.setPositions();
 
+            turret.updateTargetAngle(tx);
             turret.controllerInput();
             turret.setPositions();
+            turret.setTelemetry();
 
             pusher.toggleClaw();
 
