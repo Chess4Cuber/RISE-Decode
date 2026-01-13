@@ -50,7 +50,6 @@ public class RadahnTurretSystem {
 
     public void setPositions() {
         switch (turretState) {
-
             case IDLE:
                 turret.setTurretPower(0);
                 break;
