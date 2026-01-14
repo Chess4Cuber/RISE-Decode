@@ -106,11 +106,11 @@ public class RadahnHoodedOuttakeSystem {
     }
 
     public double computeHoodPosition(double distanceInches) {
-        if (distanceInches < 30) {       // Close → Fully Closed
+        if (distanceInches < 30) {
             return 0.0;
-        } else if (distanceInches < 60) { // Medium → Middle Position
+        } else if (distanceInches < 60) {
             return 0.5;
-        } else {                          // Far → Fully Open
+        } else {
             return 1.0;
         }
     }

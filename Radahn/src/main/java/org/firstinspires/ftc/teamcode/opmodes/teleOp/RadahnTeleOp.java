@@ -81,13 +81,17 @@ public class RadahnTeleOp extends LinearOpMode {
 
             double tagDistanceInches = 0;
             double tx = 0;
+            boolean tagVisible = false;
 
             LLResult result = limelight.getLatestResult();
             if (result != null && result.isValid()) {
+                tagVisible = true;
+
                 double tyRadians = Math.toRadians(result.getTy());
                 tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(CAMERA_ANGLE + tyRadians);
-                tx = result.getTx(); // horizontal offset for turret
+                tx = result.getTx();
             }
+
 
             hoodedOuttakeSystem.updateDistance(tagDistanceInches);
             hoodedOuttakeSystem.update();
@@ -103,6 +107,7 @@ public class RadahnTeleOp extends LinearOpMode {
             pusher.toggleClaw();
 
             telemetry.addData("Loop Time", runtime.seconds() - previousTime);
+            telemetry.addData("AprilTag Visible", tagVisible ? "YES" : "NO");
             telemetry.update();
 
             previousTime = runtime.seconds();

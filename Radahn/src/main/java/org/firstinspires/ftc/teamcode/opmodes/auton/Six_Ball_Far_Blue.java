@@ -24,6 +24,7 @@ public class Six_Ball_Far_Blue extends LinearOpMode {
         SHOOTPRE,
         RESET_ODO,
         FIRST_LINE,
+        FIRST_LINE2,
         BACK_FIRST,
         SHOOT_FIRST,
         SECOND_LINE,
@@ -194,30 +195,15 @@ public class Six_Ball_Far_Blue extends LinearOpMode {
                     //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                    parkingStep = AutoStep.RESET_ODO;
+                    parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                     pusherState = PusherState.REVUP;
                 }
                 break;
 
-            case RESET_ODO:
-                chassis.odo.setPose(0, 0, 0);
-                chassis.odo.resetEncoderDeltas();
-
-                targetPose.set(0, -23, 0);
-
-                if(runtime.seconds()>.2){
-                    parkingStep = AutoStep.FIRST_LINE;
-                    runtime.reset();
-                }
-
-                break;
-
             case FIRST_LINE:
 
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                targetPose.set(-35, 0, 0);
+                targetPose.set(-35, 0, -90);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
 
@@ -227,8 +213,19 @@ public class Six_Ball_Far_Blue extends LinearOpMode {
 
                 break;
 
+            case FIRST_LINE2:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
+                targetPose.set(-35, 35, -90);
+
+                if (targetPose.findDistance(poseVector) < tolerance ){
+
+                    parkingStep = AutoStep.BACK_FIRST;
+                    runtime.reset();
+                }
+
             case BACK_FIRST:
-                targetPose.set(0, 0, 0);
+                targetPose.set(-20, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
@@ -566,7 +563,7 @@ public class Six_Ball_Far_Blue extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(-35, 0, 0);
+                targetPose.set(-20, 40, 0);
                 break;
 
         }
