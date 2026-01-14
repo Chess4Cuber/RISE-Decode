@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.MotorO
 import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
 
 @Autonomous
-public class Twelve_Ball_Pathing_Blue extends LinearOpMode {
+public class Six_Ball_Far_Blue extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
@@ -76,7 +76,7 @@ public class Twelve_Ball_Pathing_Blue extends LinearOpMode {
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
             simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-            hoodedServo.setHoodPosition(-.016);
+            hoodedServo.setHoodPosition(-.5);
 
             telemetry.update();
         }
@@ -102,9 +102,9 @@ public class Twelve_Ball_Pathing_Blue extends LinearOpMode {
 
         switch (parkingStep){
             case AWAY_FROM_GOAL:
-                simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
+                simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.FAR_SHOT);
 
-                targetPose.set(-35, -50, 63);
+                targetPose.set(-20, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
 

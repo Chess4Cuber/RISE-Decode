@@ -26,7 +26,6 @@ public class RadahnMotorOuttakeSystem {
         switch (outtakeState) {
             case RESTING:
                 outtake.setPower(0);
-
                 break;
 
             case INTAKING:
@@ -35,6 +34,10 @@ public class RadahnMotorOuttakeSystem {
 
             case OUTTAKING:
                 outtake.setPower(-.6);
+                break;
+
+            case FAR_SHOT:
+                outtake.setPower(1);
                 break;
         }
 
@@ -65,6 +68,11 @@ public class RadahnMotorOuttakeSystem {
                     outtakeState = MotorOuttakeStates.INTAKING;
                 }
                 break;
+
+            case FAR_SHOT:
+                if ((gamepad1.b != lastToggleB) && gamepad1.b) {
+                    outtakeState = MotorOuttakeStates.RESTING;
+                }
 
         }
 
