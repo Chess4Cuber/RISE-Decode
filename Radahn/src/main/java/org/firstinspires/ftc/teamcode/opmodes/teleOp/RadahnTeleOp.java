@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHooded
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
-// Limelight imports
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 
@@ -30,7 +29,7 @@ public class RadahnTeleOp extends LinearOpMode {
 
     Limelight3A limelight;
 
-    // --- Camera geometry constants ---
+    // Camera geometry
     final double CAMERA_HEIGHT = 10.0;
     final double TARGET_HEIGHT = 24.0;
     final double CAMERA_ANGLE = Math.toRadians(30.0);
@@ -49,8 +48,10 @@ public class RadahnTeleOp extends LinearOpMode {
         pusher = new RadahnPusher(gamepad1, hardwareMap);
         turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
+        // ---- Limelight Init ----
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(activePipeline);
+        limelight.start();   // <<< REQUIRED FOR FTC SDK DATA STREAM
 
         while (opModeInInit()) {
 
@@ -59,6 +60,7 @@ public class RadahnTeleOp extends LinearOpMode {
                     org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
             );
 
+            // Pipeline toggle
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 if (activePipeline == 0) {
                     activePipeline = 1;
@@ -70,7 +72,7 @@ public class RadahnTeleOp extends LinearOpMode {
             lastToggleY = gamepad1.y;
 
             telemetry.addLine("Waiting For Start");
-            telemetry.addData("Active Pipeline", activePipeline == 0 ? "Blue Goal" : "Red Goal");
+            telemetry.addData("Active Pipeline", activePipeline);
             telemetry.update();
         }
 
@@ -84,32 +86,50 @@ public class RadahnTeleOp extends LinearOpMode {
             boolean tagVisible = false;
 
             LLResult result = limelight.getLatestResult();
-            if (result != null && result.isValid()) {
-                tagVisible = true;
 
-                double tyRadians = Math.toRadians(result.getTy());
-                tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(CAMERA_ANGLE + tyRadians);
-                tx = result.getTx();
+            // ---- Limelight Read ----
+            if (result != null) {
+                if (result.isValid()) {
+                    tagVisible = true;
+
+                    double tyRadians = Math.toRadians(result.getTy());
+                    tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
+                            Math.tan(CAMERA_ANGLE + tyRadians);
+
+                    tx = result.getTx();
+                }
             }
 
-
+            // ---- Hood + Flywheel ----
             hoodedOuttakeSystem.updateDistance(tagDistanceInches);
             hoodedOuttakeSystem.update();
 
+            // ---- Intake ----
             intake.controllerInput();
             intake.setPositions();
 
+            // ---- Turret ----
             turret.updateTargetAngle(tx);
             turret.controllerInput();
             turret.setPositions();
             turret.setTelemetry();
 
+            // ---- Pusher ----
             pusher.toggleClaw();
 
-            telemetry.addData("Loop Time", runtime.seconds() - previousTime);
+            // ---- Telemetry ----
             telemetry.addData("AprilTag Visible", tagVisible ? "YES" : "NO");
-            telemetry.update();
+            //telemetry.addData("Limelight Pipeline", limelight.getPipelineIndex());
+            telemetry.addData("tx", tx);
+            telemetry.addData("Loop Time", runtime.seconds() - previousTime);
 
+            // Extra debug
+            telemetry.addData("LL Result Null", result == null);
+            if(result != null){
+                telemetry.addData("LL Valid", result.isValid());
+            }
+
+            telemetry.update();
             previousTime = runtime.seconds();
         }
     }
