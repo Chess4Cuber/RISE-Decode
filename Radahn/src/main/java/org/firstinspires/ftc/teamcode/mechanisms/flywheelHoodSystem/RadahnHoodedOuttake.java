@@ -13,11 +13,6 @@ public class RadahnHoodedOuttake extends PassiveIntake {
 
     public RadahnHoodedOuttake(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(2, new String[]{"flyMotor", "flyMotor2"}, 28, gamepad1, telemetry, hardwareMap);
-
-        for (Motor motor : motors) {
-            motor.encode();
-        }
-
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
     }
 
@@ -29,18 +24,15 @@ public class RadahnHoodedOuttake extends PassiveIntake {
         return hoodServo.getPosition();
     }
 
-    // --- Flywheel Control --
-    public void setVelocityRPM(double rpm) {
+    // --- Flywheel Control using POWER ---
+    public void setFlywheelPower(double power) {
         for (Motor motor : motors) {
-            motor.setVelocityRPM(rpm);
+            motor.setPower(power);
         }
     }
 
+    // Optional telemetry if one motor still has encoder
     public double getRPMMotor() {
-        double sum = 0;
-        for (Motor motor : motors) {
-            sum += motor.getVelocityRPM();
-        }
-        return sum / motors.length;
+        return motors[0].getVelocityRPM();
     }
 }

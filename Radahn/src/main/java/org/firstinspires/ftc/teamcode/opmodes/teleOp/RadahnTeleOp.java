@@ -29,12 +29,12 @@ public class RadahnTeleOp extends LinearOpMode {
 
     Limelight3A limelight;
 
-    // Camera geometry
-    final double CAMERA_HEIGHT = 10.0;
-    final double TARGET_HEIGHT = 24.0;
-    final double CAMERA_ANGLE = Math.toRadians(30.0);
+    // Camera geometry constants
+    final double CAMERA_HEIGHT = 10.0;     // inches
+    final double TARGET_HEIGHT = 24.0;     // inches
+    final double CAMERA_ANGLE = Math.toRadians(30.0); // radians
 
-    int activePipeline = 0;
+    int activePipeline = 0; // 0 = Blue Tag Pipeline, 1 = Red Tag Pipeline
     boolean lastToggleY = false;
 
     @Override
@@ -48,11 +48,11 @@ public class RadahnTeleOp extends LinearOpMode {
         pusher = new RadahnPusher(gamepad1, hardwareMap);
         turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
-        // ---- Limelight Init ----
+        // --- Limelight Hardware ---
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(activePipeline);
-        limelight.start();   // <<< REQUIRED FOR FTC SDK DATA STREAM
 
+        // ---------------- INIT LOOP ----------------
         while (opModeInInit()) {
 
             pusher.openClaw();
@@ -60,7 +60,7 @@ public class RadahnTeleOp extends LinearOpMode {
                     org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
             );
 
-            // Pipeline toggle
+            // Toggle pipeline with Y button
             if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                 if (activePipeline == 0) {
                     activePipeline = 1;
@@ -72,10 +72,16 @@ public class RadahnTeleOp extends LinearOpMode {
             lastToggleY = gamepad1.y;
 
             telemetry.addLine("Waiting For Start");
-            telemetry.addData("Active Pipeline", activePipeline);
+            telemetry.addData("Active Pipeline", activePipeline == 0 ? "Blue Goal" : "Red Goal");
             telemetry.update();
         }
 
+        // ---------------- START CAMERA AFTER START ----------------
+        waitForStart();
+
+        limelight.start(); // REQUIRED: start streaming after OpMode starts
+
+        // ---------------- MAIN LOOP ----------------
         while (opModeIsActive()) {
 
             chassis.robotCentricDrive();
@@ -85,49 +91,44 @@ public class RadahnTeleOp extends LinearOpMode {
             double tx = 0;
             boolean tagVisible = false;
 
+            // ---- Limelight Read ----
             LLResult result = limelight.getLatestResult();
 
-            // ---- Limelight Read ----
-            if (result != null) {
-                if (result.isValid()) {
-                    tagVisible = true;
+            if (result != null && result.isValid()) {
+                tagVisible = true;
 
-                    double tyRadians = Math.toRadians(result.getTy());
-                    tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
-                            Math.tan(CAMERA_ANGLE + tyRadians);
+                // Horizontal offset for turret tracking
+                tx = result.getTx();
 
-                    tx = result.getTx();
-                }
+                // Vertical angle for distance calculation
+                double tyRadians = Math.toRadians(result.getTy());
+                tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
+                        Math.tan(CAMERA_ANGLE + tyRadians);
             }
 
-            // ---- Hood + Flywheel ----
-            hoodedOuttakeSystem.updateDistance(tagDistanceInches);
+            // --- Update Flywheel + Hood ---
+            hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
             hoodedOuttakeSystem.update();
 
-            // ---- Intake ----
+            // --- Intake ---
             intake.controllerInput();
             intake.setPositions();
 
-            // ---- Turret ----
-            turret.updateTargetAngle(tx);
-            turret.controllerInput();
-            turret.setPositions();
-            turret.setTelemetry();
+            // --- Turret Auto Tracking ---
+//            turret.updateTargetAngle(tx);
+//            turret.controllerInput();
+//            turret.setPositions();
+//            turret.setTelemetry();
 
-            // ---- Pusher ----
+            // --- Pusher ---
             pusher.toggleClaw();
 
-            // ---- Telemetry ----
-            telemetry.addData("AprilTag Visible", tagVisible ? "YES" : "NO");
-            //telemetry.addData("Limelight Pipeline", limelight.getPipelineIndex());
+            // --- Telemetry ---
+            telemetry.addData("AprilTag Visible", tagVisible);
             telemetry.addData("tx", tx);
+            telemetry.addData("Distance (in)", tagDistanceInches);
+            telemetry.addData("Pipeline", activePipeline);
             telemetry.addData("Loop Time", runtime.seconds() - previousTime);
-
-            // Extra debug
-            telemetry.addData("LL Result Null", result == null);
-            if(result != null){
-                telemetry.addData("LL Valid", result.isValid());
-            }
 
             telemetry.update();
             previousTime = runtime.seconds();

@@ -17,7 +17,8 @@ public class RadahnTurret extends PulleySlides {
         super(1, new String[]{"turretMotor"}, 1, TICKS_PER_REV, RiggingMethod.CONTINUOUS, 1, 0.0, new PID_Controller(0.02, 0.001, 0.8, 0.0), hardwareMap);
 
         slidesPID.tolerance = 0.5;
-        motors[0].resetTurret(); // important for absolute angle reference
+        motors[0].resetTurret();
+        motors[0].setDirectionReverse();
     }
 
     public double getTurretAngle() {

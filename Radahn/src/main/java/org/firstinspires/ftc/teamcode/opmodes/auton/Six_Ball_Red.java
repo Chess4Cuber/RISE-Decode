@@ -77,7 +77,7 @@ public class Six_Ball_Red extends LinearOpMode {
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
             simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-            hoodedServo.setHoodPosition(-.016);
+            hoodedServo.setHoodPosition(.3);
 
             telemetry.update();
         }

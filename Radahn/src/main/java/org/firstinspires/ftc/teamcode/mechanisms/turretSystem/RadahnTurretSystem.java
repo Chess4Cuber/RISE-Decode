@@ -12,13 +12,17 @@ public class RadahnTurretSystem {
 
     public TurretStates turretState;
 
+    // bumper edge detection memory
     boolean lastLeftBumper = false;
     boolean lastRightBumper = false;
 
     double targetAngle = 0;
 
-    // Step size per press (degrees)
+    // Manual step size
     public static final double STEP_ANGLE = 12;
+
+    // Auto tracking correction gain
+    public static final double TRACKING_K = 0.6;
 
     public RadahnTurretSystem(Gamepad gamepad, Telemetry telemetry, HardwareMap hardwareMap) {
         this.gamepad = gamepad;
@@ -26,14 +30,27 @@ public class RadahnTurretSystem {
 
         turret = new RadahnTurret(gamepad, hardwareMap);
 
+        // Start in auto tracking mode
         turretState = TurretStates.TRACKING;
         targetAngle = turret.getTurretAngle();
     }
 
-    public void updateTargetAngle(double tx) {
-        if (turretState == TurretStates.TRACKING) {
-            targetAngle = turret.getTurretAngle() + tx;
-            targetAngle = turret.clampAngle(targetAngle);
+    // Called from TeleOp each loop
+    public void updateTargetAngle(double tx, boolean tagVisible) {
+
+        switch (turretState) {
+
+            case TRACKING:
+                if (tagVisible) {
+                    // Apply correction incrementally
+                    targetAngle += tx * TRACKING_K;
+                    targetAngle = turret.clampAngle(targetAngle);
+                }
+                break;
+
+            case MANUAL:
+                // manual mode owns targetAngle
+                break;
         }
     }
 
@@ -45,6 +62,7 @@ public class RadahnTurretSystem {
         switch (turretState) {
 
             case TRACKING:
+
                 if ((leftBumper != lastLeftBumper) && leftBumper) {
                     turretState = TurretStates.MANUAL;
                     targetAngle = turret.getTurretAngle() - STEP_ANGLE;
@@ -56,9 +74,12 @@ public class RadahnTurretSystem {
                     targetAngle = turret.getTurretAngle() + STEP_ANGLE;
                     targetAngle = turret.clampAngle(targetAngle);
                 }
+
                 break;
 
             case MANUAL:
+
+                // both bumpers → return to auto tracking
                 if (leftBumper && rightBumper) {
                     turretState = TurretStates.TRACKING;
                 }
@@ -72,6 +93,7 @@ public class RadahnTurretSystem {
                     targetAngle += STEP_ANGLE;
                     targetAngle = turret.clampAngle(targetAngle);
                 }
+
                 break;
         }
 
@@ -80,7 +102,9 @@ public class RadahnTurretSystem {
     }
 
     public void setPositions() {
+
         switch (turretState) {
+
             case TRACKING:
                 turret.setExtension(targetAngle);
                 break;
