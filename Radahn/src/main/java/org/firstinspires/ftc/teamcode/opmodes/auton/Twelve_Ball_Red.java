@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.Radahn
 
 
 @Autonomous
-public class Nine_Ball_Red extends LinearOpMode {
+public class Twelve_Ball_Red extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
@@ -125,7 +125,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                     case REVUP:
                         if (runtime.seconds() > 1.25) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FIRST;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FIRST;
                             runtime.reset();
                         }
                         break;
@@ -134,7 +134,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_SECOND;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_SECOND;
                             runtime.reset();
                         }
                         break;
@@ -145,7 +145,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
                             intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_THIRD;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_THIRD;
                             runtime.reset();
                         }
                         break;
@@ -154,7 +154,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FOURTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FOURTH;
                             runtime.reset();
                         }
                         break;
@@ -163,7 +163,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FIFTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FIFTH;
                             runtime.reset();
                         }
                         break;
@@ -173,7 +173,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
                             intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_SIXTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_SIXTH;
                             runtime.reset();
                         }
                         break;
@@ -182,7 +182,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .2) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.DONE;
+                            pusherState = Twelve_Ball_Red.PusherState.DONE;
                             runtime.reset();
                         }
                         break;
@@ -251,7 +251,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                     case REVUP:
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FIRST;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FIRST;
                             runtime.reset();
                         }
                         break;
@@ -260,7 +260,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_SECOND;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_SECOND;
                             runtime.reset();
                         }
                         break;
@@ -271,7 +271,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
                             intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_THIRD;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_THIRD;
                             runtime.reset();
                         }
                         break;
@@ -280,7 +280,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FOURTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FOURTH;
                             runtime.reset();
                         }
                         break;
@@ -289,7 +289,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_FIFTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_FIFTH;
                             runtime.reset();
                         }
                         break;
@@ -299,7 +299,7 @@ public class Nine_Ball_Red extends LinearOpMode {
                         if (runtime.seconds() > .5) {
                             pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
                             intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = Nine_Ball_Red.PusherState.SHOOT_SIXTH;
+                            pusherState = Twelve_Ball_Red.PusherState.SHOOT_SIXTH;
                             runtime.reset();
                         }
                         break;
@@ -308,7 +308,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
                         if (runtime.seconds() > .2) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = Nine_Ball_Red.PusherState.DONE;
+                            pusherState = Twelve_Ball_Red.PusherState.DONE;
                             runtime.reset();
                         }
                         break;
@@ -475,7 +475,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
             case THIRD_LINE:
                 // New coords: reflect Y from blue
-                targetPose.set(28.5, 47.5, 0);
+                targetPose.set(0, 70, 0);
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
@@ -486,7 +486,7 @@ public class Nine_Ball_Red extends LinearOpMode {
 
             case THIRD_LINE2:
                 // New coords: reflect Y from blue
-                targetPose.set(47, 47.5, 0);
+                targetPose.set(-47, 70, 0);
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     parkingStep = AutoStep.BACK_THIRD;
                     runtime.reset();
@@ -506,8 +506,107 @@ public class Nine_Ball_Red extends LinearOpMode {
                 }
                 break;
 
+            case SHOOT_THIRD:
+                switch (pusherState) {
+                    case REVUP:
+                        if (runtime.seconds() > 3) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+                            pusherState = PusherState.SHOOT_FIRST;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_FIRST:
+
+                        if (runtime.seconds() > .5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+                            pusherState = PusherState.SHOOT_SECOND;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_SECOND:
+
+
+                        if (runtime.seconds() > .5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
+
+                            pusherState = PusherState.SHOOT_THIRD;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_THIRD:
+
+
+                        if (runtime.seconds() > .5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+                            pusherState = PusherState.SHOOT_FOURTH;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_FOURTH:
+
+
+                        if (runtime.seconds() > .5) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+                            pusherState = PusherState.SHOOT_FIFTH;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_FIFTH:
+
+
+                        if (runtime.seconds() > .25) {
+                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
+                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+                            pusherState = PusherState.SHOOT_SIXTH;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case SHOOT_SIXTH:
+
+
+                        if (runtime.seconds() > .2) {
+                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
+                            pusherState = PusherState.DONE;
+                            runtime.reset();
+                        }
+                        break;
+
+
+                    case DONE:
+                        if(runtime.seconds() > .03){
+                            chassis.odo.setPose(0, 0, 0);
+                            chassis.odo.resetEncoderDeltas();
+                        }
+
+
+                        break;
+                }
+
+                if(pusherState==PusherState.DONE){
+                    if(runtime.seconds()>.0){
+                        parkingStep = AutoStep.PARK;
+                        runtime.reset();
+                        pusherState = PusherState.REVUP;
+                    }
+                }
+
+                break;
+
             case PARK:
-                // Mirror park from blue (reflect Y => unchanged)
                 targetPose.set(-35, 0, 0);
                 break;
 
