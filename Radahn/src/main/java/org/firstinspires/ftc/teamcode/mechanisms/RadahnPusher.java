@@ -9,7 +9,7 @@ public class RadahnPusher extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
     public RadahnPusher(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("pusher", .99, .79, .55, hardwareMap);
+        super("pusher", .99, .55, .55, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }

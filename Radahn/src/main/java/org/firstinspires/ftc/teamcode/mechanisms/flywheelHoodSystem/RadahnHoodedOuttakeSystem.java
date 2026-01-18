@@ -97,10 +97,14 @@ public class RadahnHoodedOuttakeSystem {
     // Outputs motor power (0 to 1)
     public double computeFlywheelPower(double distanceInches) {
 
+        if(distanceInches>=15.5){
+            return .6;
+        }
+
         // Tuned to ~half previous close-shot speed
         double a = 0.001;
         double b = 0.015;
-        double c = 0.25;   // close-shot base power (~25%)
+        double c = 0.15;
 
         double power = (a * distanceInches * distanceInches) +
                 (b * distanceInches) + c;
@@ -113,10 +117,11 @@ public class RadahnHoodedOuttakeSystem {
     public double computeHoodPosition(double distanceInches) {
         if (distanceInches < 10){
             return 0.0;
-        } else if (distanceInches < 30){
-            return .3;
+        } else if (distanceInches < 15.5) {
+            return .28;
         }
-        else return 1.0;
+
+        return .2;
     }
 
     public void setMotorOuttakeState(TurretHoodStates state) {

@@ -37,7 +37,7 @@ public class RadahnMotorOuttakeSystem {
                 break;
 
             case FAR_SHOT:
-                outtake.setPower(1);
+                outtake.setPower(.6);
                 break;
         }
 

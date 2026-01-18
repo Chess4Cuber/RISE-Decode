@@ -115,7 +115,7 @@ public class RadahnTeleOp extends LinearOpMode {
             intake.setPositions();
 
             // --- Turret Auto Tracking ---
-//            turret.updateTargetAngle(tx);
+//            turret.updateTargetAngle(tx, tagVisible);
 //            turret.controllerInput();
 //            turret.setPositions();
 //            turret.setTelemetry();

@@ -22,7 +22,8 @@ public class RadahnTurretSystem {
     public static final double STEP_ANGLE = 12;
 
     // Auto tracking correction gain
-    public static final double TRACKING_K = 0.6;
+    public static final double TRACKING_K = 0.3;
+    // ↓ lowered from 0.6 to prevent violent spinning on high gear ratio
 
     public RadahnTurretSystem(Gamepad gamepad, Telemetry telemetry, HardwareMap hardwareMap) {
         this.gamepad = gamepad;
@@ -42,9 +43,8 @@ public class RadahnTurretSystem {
 
             case TRACKING:
                 if (tagVisible) {
-                    // Apply correction incrementally
+                    // Apply incremental correction
                     targetAngle += tx * TRACKING_K;
-                    targetAngle = turret.clampAngle(targetAngle);
                 }
                 break;
 
@@ -66,13 +66,11 @@ public class RadahnTurretSystem {
                 if ((leftBumper != lastLeftBumper) && leftBumper) {
                     turretState = TurretStates.MANUAL;
                     targetAngle = turret.getTurretAngle() - STEP_ANGLE;
-                    targetAngle = turret.clampAngle(targetAngle);
                 }
 
                 if ((rightBumper != lastRightBumper) && rightBumper) {
                     turretState = TurretStates.MANUAL;
                     targetAngle = turret.getTurretAngle() + STEP_ANGLE;
-                    targetAngle = turret.clampAngle(targetAngle);
                 }
 
                 break;
@@ -86,12 +84,10 @@ public class RadahnTurretSystem {
 
                 if ((leftBumper != lastLeftBumper) && leftBumper) {
                     targetAngle -= STEP_ANGLE;
-                    targetAngle = turret.clampAngle(targetAngle);
                 }
 
                 if ((rightBumper != lastRightBumper) && rightBumper) {
                     targetAngle += STEP_ANGLE;
-                    targetAngle = turret.clampAngle(targetAngle);
                 }
 
                 break;
@@ -119,6 +115,7 @@ public class RadahnTurretSystem {
         telemetry.addData("Turret State", turretState);
         telemetry.addData("Turret Angle", turret.getTurretAngle());
         telemetry.addData("Target Angle", targetAngle);
+        telemetry.addData("Tag Tracking Gain", TRACKING_K);
         telemetry.addData("PID P", turret.slidesPID.P);
         telemetry.addData("PID I", turret.slidesPID.I);
         telemetry.addData("PID D", turret.slidesPID.D);
