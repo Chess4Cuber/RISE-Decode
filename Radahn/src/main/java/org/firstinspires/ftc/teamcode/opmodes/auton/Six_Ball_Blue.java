@@ -119,7 +119,7 @@ public class Six_Ball_Blue extends LinearOpMode {
             case SHOOTPRE:
                 switch (pusherState) {
                     case REVUP:
-                        if (runtime.seconds() > 1) {
+                        if (runtime.seconds() > 1.25) {
                             pusher.setClawState(SingleServoClaw.ClawState.OPEN);
                             pusherState = PusherState.SHOOT_FIRST;
                             runtime.reset();
@@ -219,7 +219,7 @@ public class Six_Ball_Blue extends LinearOpMode {
 
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                targetPose.set(-44, 0, 0);
+                targetPose.set(-40, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
 
@@ -322,7 +322,7 @@ public class Six_Ball_Blue extends LinearOpMode {
                 // advance only after pusher finished
                 if (pusherState == PusherState.DONE){
                     if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
-                        simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
+                        //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
                         parkingStep = AutoStep.SECOND_LINE;
