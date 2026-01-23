@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHooded
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -20,7 +21,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 public class RadahnTeleOp extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
-    RadahnTurretSystemManual turret;
+    RadahnTurretSystem turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnPusher pusher;
@@ -35,7 +36,7 @@ public class RadahnTeleOp extends LinearOpMode {
     final double TARGET_HEIGHT = 24.0;     // inches
     final double CAMERA_ANGLE = Math.toRadians(30.0); // radians
 
-    int activePipeline = 0; // 0 = Blue Tag Pipeline, 1 = Red Tag Pipeline
+    int activePipeline = 0;
     boolean lastToggleY = false;
 
     @Override
@@ -47,13 +48,12 @@ public class RadahnTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         pusher = new RadahnPusher(gamepad1, hardwareMap);
-        turret = new RadahnTurretSystemManual(gamepad1, telemetry, hardwareMap);
+        turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
         // --- Limelight Hardware ---
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(activePipeline);
 
-        // ---------------- INIT LOOP ----------------
         while (opModeInInit()) {
 
             pusher.openClaw();
@@ -77,12 +77,10 @@ public class RadahnTeleOp extends LinearOpMode {
             telemetry.update();
         }
 
-        // ---------------- START CAMERA AFTER START ----------------
         waitForStart();
 
-        limelight.start(); // REQUIRED: start streaming after OpMode starts
+        limelight.start();
 
-        // ---------------- MAIN LOOP ----------------
         while (opModeIsActive()) {
 
             chassis.robotCentricDrive();
@@ -92,36 +90,30 @@ public class RadahnTeleOp extends LinearOpMode {
             double tx = 0;
             boolean tagVisible = false;
 
-            // ---- Limelight Read ----
             LLResult result = limelight.getLatestResult();
 
             if (result != null && result.isValid()) {
                 tagVisible = true;
 
-                // Horizontal offset for turret tracking
                 tx = result.getTx();
 
-                // Vertical angle for distance calculation
                 double tyRadians = Math.toRadians(result.getTy());
                 tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
                         Math.tan(CAMERA_ANGLE + tyRadians);
             }
 
-            // --- Update Flywheel + Hood ---
             hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
             hoodedOuttakeSystem.update();
 
-            // --- Intake ---
             intake.controllerInput();
             intake.setPositions();
 
+            turret.updateLimelight(tx, tagVisible);
             turret.controllerInput();
             turret.setPositions();
 
-            // --- Pusher ---
             pusher.toggleClaw();
 
-            // --- Telemetry ---
             telemetry.addData("AprilTag Visible", tagVisible);
             telemetry.addData("tx", tx);
             telemetry.addData("Distance (in)", tagDistanceInches);

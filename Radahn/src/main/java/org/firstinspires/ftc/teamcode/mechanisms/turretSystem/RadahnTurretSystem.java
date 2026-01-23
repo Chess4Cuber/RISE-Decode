@@ -2,122 +2,124 @@ package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnTurretSystem {
 
-    Gamepad gamepad;
+    Gamepad gamepad1;
     Telemetry telemetry;
     RadahnTurret turret;
 
     public TurretStates turretState;
 
-    // bumper edge detection memory
-    boolean lastLeftBumper = false;
-    boolean lastRightBumper = false;
+    // PID
+    PID_Controller turretPID = new PID_Controller(0.02, 0.001);
 
+    // Soft limits
+    double leftLimit = -160;
+    double rightLimit = 160;
+
+    // Target angle storage
     double targetAngle = 0;
 
-    // Manual step size
-    public static final double STEP_ANGLE = 12;
+    // Limelight inputs
+    double tx = 0;
+    boolean targetVisible = false;
 
-    // Auto tracking correction gain
-    public static final double TRACKING_K = 0.3;
-    // ↓ lowered from 0.6 to prevent violent spinning on high gear ratio
+    // Manual nudge size (degrees)
+    double manualStep = 5;
 
-    public RadahnTurretSystem(Gamepad gamepad, Telemetry telemetry, HardwareMap hardwareMap) {
-        this.gamepad = gamepad;
+    boolean lastLB = false;
+    boolean lastRB = false;
+
+    public RadahnTurretSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
+        this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
+        turret = new RadahnTurret(gamepad1, telemetry, hardwareMap);
 
-        turret = new RadahnTurret(gamepad, hardwareMap);
+        turretPID.tolerance = 0.5;
 
-        // Start in auto tracking mode
-        turretState = TurretStates.TRACKING;
-        targetAngle = turret.getTurretAngle();
+        // Start in auto aim mode
+        turretState = TurretStates.AUTO_AIM;
     }
 
-    // Called from TeleOp each loop
-    public void updateTargetAngle(double tx, boolean tagVisible) {
+    // Receive Limelight data
+    public void updateLimelight(double tx, boolean targetVisible){
+        this.tx = tx;
+        this.targetVisible = targetVisible;
+    }
 
-        switch (turretState) {
+    public void controllerInput(){
 
-            case TRACKING:
-                if (tagVisible) {
-                    // Apply incremental correction
-                    targetAngle += tx * TRACKING_K;
-                }
+        // Both bumpers -> auto aim
+        if(gamepad1.left_bumper && gamepad1.right_bumper){
+            turretState = TurretStates.AUTO_AIM;
+        }
+
+        // Left bumper nudge left
+        else if((gamepad1.left_bumper != lastLB) && gamepad1.left_bumper){
+            turretState = TurretStates.MANUAL;
+            targetAngle -= manualStep;
+        }
+
+        // Right bumper nudge right
+        else if((gamepad1.right_bumper != lastRB) && gamepad1.right_bumper){
+            turretState = TurretStates.MANUAL;
+            targetAngle += manualStep;
+        }
+
+        lastLB = gamepad1.left_bumper;
+        lastRB = gamepad1.right_bumper;
+    }
+
+    public void setPositions(){
+
+        double currentAngle = turret.getAngleDegrees();
+
+        switch(turretState){
+
+            case RESTING:
+                turret.setPower(0);
                 break;
 
             case MANUAL:
-                // manual mode owns targetAngle
-                break;
-        }
-    }
-
-    public void controllerInput() {
-
-        boolean leftBumper = gamepad.left_bumper;
-        boolean rightBumper = gamepad.right_bumper;
-
-        switch (turretState) {
-
-            case TRACKING:
-
-                if ((leftBumper != lastLeftBumper) && leftBumper) {
-                    turretState = TurretStates.MANUAL;
-                    targetAngle = turret.getTurretAngle() - STEP_ANGLE;
-                }
-
-                if ((rightBumper != lastRightBumper) && rightBumper) {
-                    turretState = TurretStates.MANUAL;
-                    targetAngle = turret.getTurretAngle() + STEP_ANGLE;
-                }
-
+                // PID to manual targetAngle
+                double manualPower = turretPID.PID_Power(currentAngle, targetAngle);
+                manualPower = clamp(manualPower, -0.5, 0.5);
+                applySoftLimits(manualPower, currentAngle);
                 break;
 
-            case MANUAL:
+            case AUTO_AIM:
 
-                // both bumpers → return to auto tracking
-                if (leftBumper && rightBumper) {
-                    turretState = TurretStates.TRACKING;
+                if(targetVisible){
+                    targetAngle = currentAngle + tx;
                 }
 
-                if ((leftBumper != lastLeftBumper) && leftBumper) {
-                    targetAngle -= STEP_ANGLE;
-                }
-
-                if ((rightBumper != lastRightBumper) && rightBumper) {
-                    targetAngle += STEP_ANGLE;
-                }
-
+                double autoPower = turretPID.PID_Power(currentAngle, targetAngle);
+                autoPower = clamp(autoPower, -0.5, 0.5);
+                applySoftLimits(autoPower, currentAngle);
                 break;
         }
 
-        lastLeftBumper = leftBumper;
-        lastRightBumper = rightBumper;
+        displayTelemetry(currentAngle);
     }
 
-    public void setPositions() {
-
-        switch (turretState) {
-
-            case TRACKING:
-                turret.setExtension(targetAngle);
-                break;
-
-            case MANUAL:
-                turret.setExtension(targetAngle);
-                break;
-        }
+    private void applySoftLimits(double power, double angle){
+        if(angle <= leftLimit && power < 0) power = 0;
+        if(angle >= rightLimit && power > 0) power = 0;
+        turret.setPower(power);
     }
 
-    public void setTelemetry() {
+    private double clamp(double val, double min, double max){
+        return Math.max(min, Math.min(max, val));
+    }
+
+    private void displayTelemetry(double angle){
         telemetry.addData("Turret State", turretState);
-        telemetry.addData("Turret Angle", turret.getTurretAngle());
-        telemetry.addData("Target Angle", targetAngle);
-        telemetry.addData("Tag Tracking Gain", TRACKING_K);
-        telemetry.addData("PID P", turret.slidesPID.P);
-        telemetry.addData("PID I", turret.slidesPID.I);
-        telemetry.addData("PID D", turret.slidesPID.D);
+        telemetry.addData("Turret Angle", "%.1f", angle);
+        telemetry.addData("Turret Target", "%.1f", targetAngle);
+        telemetry.addData("tx", "%.2f", tx);
+        telemetry.addData("Target Visible", targetVisible);
     }
 }

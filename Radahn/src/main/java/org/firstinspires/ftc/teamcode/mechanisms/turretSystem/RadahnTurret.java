@@ -2,29 +2,27 @@ package org.firstinspires.ftc.teamcode.mechanisms.turretSystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.baseCode.control.PID_Controller;
-import org.firstinspires.ftc.baseCode.hardware.extension.PulleySlides;
+import org.firstinspires.ftc.baseCode.hardware.Motor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class RadahnTurret extends PulleySlides {
+public class RadahnTurret {
 
-    public static final double TICKS_PER_REV = 537.6 * 3.0;
+    public Motor turretMotor;
 
-    public RadahnTurret(Gamepad gamepad, HardwareMap hardwareMap) {
-        super(1, new String[]{"turretMotor"}, 1, TICKS_PER_REV,
-                RiggingMethod.CONTINUOUS, 1, 0.0,
-                new PID_Controller(0.02, 0.001, 0.8, 0.0),
-                hardwareMap);
+    // 537.7 CPR motor * 3:1 gear ratio
+    public static final double TURRET_CPR = 537.7 * 3;
 
-        slidesPID.tolerance = 0.5;
-        motors[0].resetTurret();
-        motors[0].setDirectionReverse();
+    public RadahnTurret(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
+        turretMotor = new Motor("turretMotor", TURRET_CPR, hardwareMap);
+        turretMotor.resetTurret();
+        turretMotor.setBreakMode();
     }
 
-    public double getTurretAngle() {
-        return motors[0].getCurrPosDegrees();
+    public void setPower(double power){
+        turretMotor.setPower(power);
     }
 
-    public void setTurretPower(double power) {
-        setPower(power);
+    public double getAngleDegrees(){
+        return turretMotor.getCurrPosDegrees();
     }
 }
