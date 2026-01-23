@@ -231,6 +231,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
             case BACK_FIRST:
                 targetPose.set(0, 0, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
@@ -244,6 +245,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SHOOT_FIRST:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
                 switch (pusherState) {
                     case REVUP:
                         if (runtime.seconds() > .5) {
@@ -344,7 +347,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SECOND_LINE2:
-                targetPose.set(-47, -36, 0);
+                targetPose.set(-44, -36, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     parkingStep = AutoStep.BACK_SECOND;
@@ -354,6 +358,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
             case BACK_SECOND:
                 targetPose.set(0, 0, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -366,6 +371,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SHOOT_SECOND:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
                 switch (pusherState) {
                     case REVUP:
                         if (runtime.seconds() > .5) {
@@ -472,6 +479,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
             case BACK_THIRD:
                 targetPose.set(0, 0, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -485,6 +494,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
 
             case SHOOT_THIRD:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
                 switch (pusherState) {
                     case REVUP:
                         if (runtime.seconds() > .5) {

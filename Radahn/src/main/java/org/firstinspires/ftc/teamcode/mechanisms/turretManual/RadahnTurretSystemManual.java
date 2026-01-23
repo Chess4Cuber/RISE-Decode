@@ -37,9 +37,9 @@ public class RadahnTurretSystemManual {
 
             case MANUAL:
                 if (gamepad1.right_bumper){
-                    turret.setPower(0.25);
+                    turret.setPower(0.75);
                 } else if (gamepad1.dpad_down){
-                    turret.setPower(-0.25);
+                    turret.setPower(-0.75);
                 } else {
                     turret.setPower(0);
                 }

@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -19,7 +20,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 public class RadahnTeleOp extends LinearOpMode {
 
     RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
-    RadahnTurretSystem turret;
+    RadahnTurretSystemManual turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnPusher pusher;
@@ -46,7 +47,7 @@ public class RadahnTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         pusher = new RadahnPusher(gamepad1, hardwareMap);
-        turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
+        turret = new RadahnTurretSystemManual(gamepad1, telemetry, hardwareMap);
 
         // --- Limelight Hardware ---
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -114,11 +115,8 @@ public class RadahnTeleOp extends LinearOpMode {
             intake.controllerInput();
             intake.setPositions();
 
-            // --- Turret Auto Tracking ---
-//            turret.updateTargetAngle(tx, tagVisible);
-//            turret.controllerInput();
-//            turret.setPositions();
-//            turret.setTelemetry();
+            turret.controllerInput();
+            turret.setPositions();
 
             // --- Pusher ---
             pusher.toggleClaw();

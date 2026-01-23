@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.Radahn
 public class Twelve_Ball_Red extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
+    double count = 0;
 
     public enum AutoStep{
         AWAY_FROM_GOAL,
@@ -81,7 +82,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
             simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-            hoodedServo.setHoodPosition(.3);
+            hoodedServo.setHoodPosition(.27);
 
             telemetry.update();
         }
@@ -110,7 +111,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
             case AWAY_FROM_GOAL:
                 simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
 
-                targetPose.set(-35, 50, -63);
+                targetPose.set(-30, 50, -63);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
 
@@ -210,7 +211,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 chassis.odo.setPose(0, 0, 0);
                 chassis.odo.resetEncoderDeltas();
 
-                targetPose.set(0, 23, 0);
+                targetPose.set(0, 29, 0);
 
                 if(runtime.seconds()>.2){
                     parkingStep = AutoStep.FIRST_LINE;
@@ -225,6 +226,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 targetPose.set(-41, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
+                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
                     parkingStep = AutoStep.BACK_FIRST;
                     runtime.reset();
@@ -247,6 +249,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case SHOOT_FIRST:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
                 switch (pusherState) {
                     case REVUP:
                         if (runtime.seconds() > .5) {
@@ -314,13 +317,14 @@ public class Twelve_Ball_Red extends LinearOpMode {
                         break;
 
                     case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
+//                        if(runtime.seconds() > .03){
+////                            chassis.odo.setPose(0, 0, 0);
+////                            chassis.odo.resetEncoderDeltas();
+//                        }
 
                         break;
                 }
+
 
                 // advance only after pusher finished
                 if (pusherState == PusherState.DONE){
@@ -338,7 +342,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
 
             case SECOND_LINE:
                 // From Six_Ball_Red
-                targetPose.set(0, 36, 0);
+                targetPose.set(0, 44, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -349,15 +353,19 @@ public class Twelve_Ball_Red extends LinearOpMode {
 
             case SECOND_LINE2:
                 // From Six_Ball_Red
-                targetPose.set(-48, 36, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
+                targetPose.set(-48, 44, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
+                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
                     parkingStep = AutoStep.BACK_SECOND;
                     runtime.reset();
                 }
                 break;
 
             case BACK_SECOND:
+
                 targetPose.set(0, 0, 0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
@@ -371,6 +379,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case SHOOT_SECOND:
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
                 switch (pusherState) {
                     case REVUP:
                         if (runtime.seconds() > 3) {
@@ -451,10 +460,10 @@ public class Twelve_Ball_Red extends LinearOpMode {
 
 
                     case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
+//                        if(runtime.seconds() > .03){
+//                            chassis.odo.setPose(0, 0, 0);
+//                            chassis.odo.resetEncoderDeltas();
+//                        }
 
 
                         break;
@@ -465,7 +474,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                         //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                        parkingStep = AutoStep.PARK;
+                        parkingStep = AutoStep.THIRD_LINE;
                         runtime.reset();
                         pusherState = PusherState.REVUP; // reset for next use
                     }
@@ -487,7 +496,11 @@ public class Twelve_Ball_Red extends LinearOpMode {
             case THIRD_LINE2:
                 // New coords: reflect Y from blue
                 targetPose.set(-47, 70, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+
                 if (targetPose.findDistance(poseVector) < tolerance ){
+                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+
                     parkingStep = AutoStep.BACK_THIRD;
                     runtime.reset();
                 }
@@ -500,7 +513,9 @@ public class Twelve_Ball_Red extends LinearOpMode {
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
                     simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
 
-                    parkingStep = AutoStep.SHOOT_THIRD;
+
+                        parkingStep = AutoStep.SHOOT_THIRD;
+
                     runtime.reset();
                     pusherState = PusherState.REVUP;
                 }
@@ -587,11 +602,11 @@ public class Twelve_Ball_Red extends LinearOpMode {
 
 
                     case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
-
+//                        if(runtime.seconds() > .03){
+//                            chassis.odo.setPose(0, 0, 0);
+//                            chassis.odo.resetEncoderDeltas();
+//                        }
+//
 
                         break;
                 }
