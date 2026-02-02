@@ -109,8 +109,7 @@ public class RadahnTeleOp extends LinearOpMode {
             intake.setPositions();
 
             turret.updateLimelight(tx, tagVisible);
-            turret.controllerInput();
-            turret.setPositions();
+            turret.update();
 
             pusher.toggleClaw();
 

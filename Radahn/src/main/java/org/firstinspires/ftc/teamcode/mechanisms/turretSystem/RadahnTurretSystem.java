@@ -13,21 +13,16 @@ public class RadahnTurretSystem {
 
     public TurretStates turretState;
 
-    // PID
     PID_Controller turretPID = new PID_Controller(0.02, 0.001);
 
-    // Soft limits
     double leftLimit = -160;
     double rightLimit = 160;
 
-    // Target angle storage
     double targetAngle = 0;
 
-    // Limelight inputs
     double tx = 0;
     boolean targetVisible = false;
 
-    // Manual nudge size (degrees)
     double manualStep = 5;
 
     boolean lastLB = false;
@@ -40,7 +35,6 @@ public class RadahnTurretSystem {
 
         turretPID.tolerance = 0.5;
 
-        // Start in auto aim mode
         turretState = TurretStates.AUTO_AIM;
     }
 
@@ -50,23 +44,40 @@ public class RadahnTurretSystem {
         this.targetVisible = targetVisible;
     }
 
+    public void update(){
+        controllerInput();
+        setPositions();
+    }
+
     public void controllerInput(){
 
-        // Both bumpers -> auto aim
-        if(gamepad1.left_bumper && gamepad1.right_bumper){
-            turretState = TurretStates.AUTO_AIM;
-        }
+        switch(turretState){
 
-        // Left bumper nudge left
-        else if((gamepad1.left_bumper != lastLB) && gamepad1.left_bumper){
-            turretState = TurretStates.MANUAL;
-            targetAngle -= manualStep;
-        }
+            case AUTO_AIM:
+            case MANUAL:
+            case RESTING:
 
-        // Right bumper nudge right
-        else if((gamepad1.right_bumper != lastRB) && gamepad1.right_bumper){
-            turretState = TurretStates.MANUAL;
-            targetAngle += manualStep;
+                // Both bumpers → return to auto
+                if(gamepad1.left_bumper && gamepad1.right_bumper){
+                    turretState = TurretStates.AUTO_AIM;
+                    break;
+                }
+
+                // Left bumper → manual nudge left
+                if((gamepad1.left_bumper != lastLB) && gamepad1.left_bumper){
+                    turretState = TurretStates.MANUAL;
+                    targetAngle -= manualStep;
+                    break;
+                }
+
+                // Right bumper → manual nudge right
+                if((gamepad1.right_bumper != lastRB) && gamepad1.right_bumper){
+                    turretState = TurretStates.MANUAL;
+                    targetAngle += manualStep;
+                    break;
+                }
+
+                break;
         }
 
         lastLB = gamepad1.left_bumper;
@@ -76,18 +87,16 @@ public class RadahnTurretSystem {
     public void setPositions(){
 
         double currentAngle = turret.getAngleDegrees();
+        double power = 0;
 
         switch(turretState){
 
             case RESTING:
-                turret.setPower(0);
+                power = 0;
                 break;
 
             case MANUAL:
-                // PID to manual targetAngle
-                double manualPower = turretPID.PID_Power(currentAngle, targetAngle);
-                manualPower = clamp(manualPower, -0.5, 0.5);
-                applySoftLimits(manualPower, currentAngle);
+                power = turretPID.PID_Power(currentAngle, targetAngle);
                 break;
 
             case AUTO_AIM:
@@ -96,12 +105,12 @@ public class RadahnTurretSystem {
                     targetAngle = currentAngle + tx;
                 }
 
-                double autoPower = turretPID.PID_Power(currentAngle, targetAngle);
-                autoPower = clamp(autoPower, -0.5, 0.5);
-                applySoftLimits(autoPower, currentAngle);
+                power = turretPID.PID_Power(currentAngle, targetAngle);
                 break;
         }
 
+        power = clamp(power, -0.5, 0.5);
+        applySoftLimits(power, currentAngle);
         displayTelemetry(currentAngle);
     }
 
