@@ -42,7 +42,7 @@ public class RadahnHoodedOuttakeSystem {
 
     public void setPositions() {
 
-        double targetPower = computeFlywheelPower(tagDistanceInches);
+        double targetFlywheelCommand = computeFlywheelPower(tagDistanceInches);
         double targetHoodPosition = computeHoodPosition(tagDistanceInches);
 
         switch (outtakeState) {
@@ -51,12 +51,12 @@ public class RadahnHoodedOuttakeSystem {
                 break;
 
             case OUTTAKING:
-                hoodedOuttake.setFlywheelPower(targetPower);
+                hoodedOuttake.setFlywheelPower(targetFlywheelCommand); // PID is applied inside RadahnHoodedOuttake#setFlywheelPower
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
             case INTAKING:
-                hoodedOuttake.setFlywheelPower(-targetPower);
+                hoodedOuttake.setFlywheelPower(-targetFlywheelCommand); // PID is applied inside RadahnHoodedOuttake#setFlywheelPower
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
         }
