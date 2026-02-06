@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+package org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 
-public class RadahnPusher extends SingleServoClaw {
+public class RadahnGate extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
-    public RadahnPusher(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("pusher", .99, .55, .55, hardwareMap);
+    public RadahnGate(Gamepad gamepad1, HardwareMap hardwareMap){
+        super("pusher", 0, .55, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }
@@ -17,18 +17,6 @@ public class RadahnPusher extends SingleServoClaw {
     public void toggleClaw(){
         switch (clawState){
             case OPEN:
-                if ((gamepad1.y != lastToggleY) && gamepad1.y){
-                    middleClaw();
-                }
-                break;
-
-            case MIDDLE:
-                if ((gamepad1.y != lastToggleY) && gamepad1.y){
-                    resetClaw();
-                }
-                break;
-
-            case RESET:
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
                     closeClaw();
                 }

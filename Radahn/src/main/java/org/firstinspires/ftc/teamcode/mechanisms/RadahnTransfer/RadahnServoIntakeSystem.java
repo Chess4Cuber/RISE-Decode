@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.otherMechanisms.intakeSystem;
+package org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,8 +8,8 @@ public class RadahnServoIntakeSystem {
     Gamepad gamepad1;
     RadahnServoIntake intake;
     boolean lastToggleUp = false;
-    boolean lastToggleDown = false;
-    boolean lastToggleRight = false;
+    boolean lastToggleY = false;
+
     public IntakeStates intakeState;
 
     public RadahnServoIntakeSystem(Gamepad gamepad1, HardwareMap hardwareMap){
@@ -37,7 +37,7 @@ public class RadahnServoIntakeSystem {
     public void controllerInput(){
         switch(intakeState) {
             case RESTING:
-                if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
+                if ((gamepad1.y != lastToggleY) && gamepad1.y) {
                     intakeState = IntakeStates.INTAKING;
                 }
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up) {
@@ -49,25 +49,27 @@ public class RadahnServoIntakeSystem {
                 if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
                     intakeState = IntakeStates.OUTTAKING;
                 }
-                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                if((gamepad1.y != lastToggleY) && gamepad1.y){
                     intakeState = IntakeStates.RESTING;
                 }
                 break;
 
             case OUTTAKING:
-                if((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down) {
+                if((gamepad1.y != lastToggleY) && gamepad1.y) {
                     intakeState = IntakeStates.INTAKING;
                 }
-                if((gamepad1.dpad_right != lastToggleRight) && gamepad1.dpad_right){
+                if((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
                     intakeState = IntakeStates.RESTING;
                 }
                 break;
         }
          lastToggleUp = gamepad1.dpad_up;
-         lastToggleDown = gamepad1.dpad_down;
-         lastToggleRight = gamepad1.dpad_right;
-    }
+         lastToggleY = gamepad1.dpad_down;
+     }
 
+     public void setServoIntakeState(IntakeStates state){
+        intakeState = state;
+     }
 
 
 }

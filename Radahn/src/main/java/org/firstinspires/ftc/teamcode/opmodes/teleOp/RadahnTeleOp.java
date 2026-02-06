@@ -7,11 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.turretManual.RadahnTurretSystemManual;
-import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -24,7 +22,7 @@ public class RadahnTeleOp extends LinearOpMode {
     RadahnTurretSystem turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
-    RadahnPusher pusher;
+    RadahnGate pusher;
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -47,7 +45,7 @@ public class RadahnTeleOp extends LinearOpMode {
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
-        pusher = new RadahnPusher(gamepad1, hardwareMap);
+        pusher = new RadahnGate(gamepad1, hardwareMap);
         turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
         // --- Limelight Hardware ---

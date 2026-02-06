@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttake;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
@@ -38,14 +38,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     }
 
     public enum PusherState {
-        REVUP,
-        SHOOT_FIRST,
-        SHOOT_SECOND,
-        SHOOT_THIRD,
-        SHOOT_FOURTH,
-        SHOOT_FIFTH,
-        SHOOT_SIXTH,
-
         DONE
     }
 
@@ -54,7 +46,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnMotorOuttakeSystem simpleOuttake;
-    RadahnPusher pusher;
+    RadahnGate pusher;
     RadahnHoodedOuttake hoodedServo;
 
     AutoStep parkingStep;
@@ -69,11 +61,11 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         simpleOuttake = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
-        pusher = new RadahnPusher(gamepad1, hardwareMap);
+        pusher = new RadahnGate(gamepad1, hardwareMap);
         hoodedServo = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
 
         parkingStep = AutoStep.AWAY_FROM_GOAL;
-        pusherState = PusherState.REVUP;
+        pusherState = PusherState.DONE;
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -112,85 +104,10 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                     parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
-                    pusherState = PusherState.REVUP;
                 }
                 break;
 
             case SHOOTPRE:
-                switch (pusherState) {
-                    case REVUP:
-                        if (runtime.seconds() > 1.25) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIRST;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIRST:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_SECOND;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SECOND:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                            pusherState = PusherState.SHOOT_THIRD;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_THIRD:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_FOURTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FOURTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIFTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIFTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = PusherState.SHOOT_SIXTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SIXTH:
-
-                        if (runtime.seconds() > .2) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.DONE;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
-
-                        break;
-                }
 
                 if (pusherState == PusherState.DONE){
                     //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
@@ -198,7 +115,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                     parkingStep = AutoStep.RESET_ODO;
                     runtime.reset();
-                    pusherState = PusherState.REVUP;
                 }
                 break;
 
@@ -239,7 +155,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                     parkingStep = AutoStep.SHOOT_FIRST;
                     runtime.reset();
-                    pusherState = PusherState.REVUP;
                 }
 
                 break;
@@ -247,80 +162,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             case SHOOT_FIRST:
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                switch (pusherState) {
-                    case REVUP:
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIRST;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIRST:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_SECOND;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SECOND:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                            pusherState = PusherState.SHOOT_THIRD;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_THIRD:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_FOURTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FOURTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIFTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIFTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = PusherState.SHOOT_SIXTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SIXTH:
-
-                        if (runtime.seconds() > .2) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.DONE;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
-
-                        break;
-                }
 
                 // advance only after pusher finished
                 if (pusherState == PusherState.DONE){
@@ -330,7 +171,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                         parkingStep = AutoStep.SECOND_LINE;
                         runtime.reset();
-                        pusherState = PusherState.REVUP; // reset for next use
                     }
                 }
 
@@ -366,84 +206,12 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                     parkingStep = AutoStep.SHOOT_SECOND;
                     runtime.reset();
-                    pusherState = PusherState.REVUP;
                 }
                 break;
 
             case SHOOT_SECOND:
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                switch (pusherState) {
-                    case REVUP:
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIRST;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIRST:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_SECOND;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SECOND:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                            pusherState = PusherState.SHOOT_THIRD;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_THIRD:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_FOURTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FOURTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIFTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIFTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = PusherState.SHOOT_SIXTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SIXTH:
-
-                        if (runtime.seconds() > .2) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.DONE;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case DONE:
-
-
-                        break;
-                }
 
                 // advance only after pusher finished
                 if (pusherState == PusherState.DONE){
@@ -453,7 +221,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                         parkingStep = AutoStep.THIRD_LINE;
                         runtime.reset();
-                        pusherState = PusherState.REVUP; // reset for next use
                     }
                 }
 
@@ -488,7 +255,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                     parkingStep = AutoStep.SHOOT_THIRD;
                     runtime.reset();
-                    pusherState = PusherState.REVUP;
                 }
                 break;
 
@@ -496,80 +262,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             case SHOOT_THIRD:
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                switch (pusherState) {
-                    case REVUP:
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIRST;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIRST:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_SECOND;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SECOND:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                            pusherState = PusherState.SHOOT_THIRD;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_THIRD:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            pusherState = PusherState.SHOOT_FOURTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FOURTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.SHOOT_FIFTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_FIFTH:
-
-                        if (runtime.seconds() > .5) {
-                            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                            intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                            pusherState = PusherState.SHOOT_SIXTH;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case SHOOT_SIXTH:
-
-                        if (runtime.seconds() > .2) {
-                            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                            pusherState = PusherState.DONE;
-                            runtime.reset();
-                        }
-                        break;
-
-                    case DONE:
-                        if(runtime.seconds() > .03){
-                            chassis.odo.setPose(0, 0, 0);
-                            chassis.odo.resetEncoderDeltas();
-                        }
-
-                        break;
-                }
 
                 // advance only after pusher finished
                 if (pusherState == PusherState.DONE){
@@ -578,7 +270,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                         parkingStep = AutoStep.PARK;
                         runtime.reset();
-                        pusherState = PusherState.REVUP; // reset for next use
                     }
                 }
 
@@ -589,115 +280,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         }
     }
 
-    public void pusherMove1(){
-        //Rev up flywheel and shoot first ball
-        if(runtime.seconds() > 2){
-            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-            runtime.reset();
-        }
 
-        if(runtime.seconds() > .5){
-            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-            runtime.reset();
-        }
-        //Shoot second ball
-        if(runtime.seconds() > .5){
-            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-            runtime.reset();
-        }
-
-        if(runtime.seconds() > .5){
-            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-            runtime.reset();
-        }
-        //Shoot third ball
-        if(runtime.seconds() > .5){
-            pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-            runtime.reset();
-        }
-
-        if(runtime.seconds() > .5){
-            pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-            runtime.reset();
-        }
-    }
-
-    public void pusherMove() {
-        switch (pusherState) {
-            case REVUP:
-                if (runtime.seconds() > 4) {
-                    pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                    pusherState = PusherState.SHOOT_FIRST;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_FIRST:
-
-                if (runtime.seconds() > 1) {
-                    pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                    pusherState = PusherState.SHOOT_SECOND;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_SECOND:
-
-                if (runtime.seconds() > 1) {
-                    pusher.setClawState(SingleServoClaw.ClawState.RESET);
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                    pusherState = PusherState.SHOOT_THIRD;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_THIRD:
-
-                if (runtime.seconds() > 3) {
-                    pusher.setClawState(SingleServoClaw.ClawState.MIDDLE);
-                    pusherState = PusherState.SHOOT_FOURTH;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_FOURTH:
-
-                if (runtime.seconds() > 1) {
-                    pusher.setClawState(SingleServoClaw.ClawState.CLOSED);
-                    pusherState = PusherState.SHOOT_FIFTH;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_FIFTH:
-
-                if (runtime.seconds() > 1) {
-                    pusher.setClawState(SingleServoClaw.ClawState.OPEN);
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                    pusherState = PusherState.SHOOT_SIXTH;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_SIXTH:
-
-                if (runtime.seconds() > 1) {
-                    pusher.setClawState(SingleServoClaw.ClawState.RESET);
-                    pusherState = PusherState.DONE;
-                    runtime.reset();
-                }
-                break;
-
-            case DONE:
-                if(runtime.seconds() > .03){
-                    chassis.odo.setPose(0, 0, 0);
-                    chassis.odo.resetEncoderDeltas();
-                }
-
-                break;
-        }
-    }
 
     public void Telemetry(){
         //TODO: show the tolerance stuff and PID values and states

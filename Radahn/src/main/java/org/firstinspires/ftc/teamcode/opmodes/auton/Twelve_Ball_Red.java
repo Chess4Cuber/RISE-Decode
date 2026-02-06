@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnPusher;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttake;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
@@ -58,7 +58,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnMotorOuttakeSystem simpleOuttake;
-    RadahnPusher pusher;
+    RadahnGate pusher;
     RadahnHoodedOuttake hoodedServo;
 
     AutoStep parkingStep;
@@ -73,7 +73,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         simpleOuttake = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
-        pusher = new RadahnPusher(gamepad1, hardwareMap);
+        pusher = new RadahnGate(gamepad1, hardwareMap);
         hoodedServo = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
 
         parkingStep = AutoStep.AWAY_FROM_GOAL;
