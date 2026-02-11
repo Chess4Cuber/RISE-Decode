@@ -4,10 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnColorSensor;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.IntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnServoIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttake;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
@@ -37,35 +39,37 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         PARK
     }
 
-    public enum PusherState {
-        DONE
-    }
 
-    PusherState pusherState;
+//TODO: FIX POSITIONS
 
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnMotorOuttakeSystem simpleOuttake;
-    RadahnGate pusher;
+    RadahnGate gate;
+    RadahnServoIntakeSystem transfer;
     RadahnHoodedOuttake hoodedServo;
+
+    RadahnColorSensor colorSensors;
 
     AutoStep parkingStep;
 
     Vector3D poseVector = new Vector3D(0,0,0);
     Vector3D targetPose = new Vector3D(0, 0, 0);
 
-    double tolerance = 3;
+    double tolerance = 1.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         simpleOuttake = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
-        pusher = new RadahnGate(gamepad1, hardwareMap);
+        gate = new RadahnGate(gamepad1, hardwareMap);
+        transfer = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
         hoodedServo = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
 
+        colorSensors = new RadahnColorSensor(hardwareMap);
+
         parkingStep = AutoStep.AWAY_FROM_GOAL;
-        pusherState = PusherState.DONE;
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -79,7 +83,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             chassis.updatePose();
             intake.setPositions();
             simpleOuttake.setPositions();
-            pusher.setPosition();
+            gate.setPosition();
+            transfer.setPositions();
 
             autonBlue();
 
@@ -108,8 +113,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SHOOTPRE:
-
-                if (pusherState == PusherState.DONE){
+                gate.openClaw();
+                if (runtime.seconds()>.5){
                     //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
@@ -164,7 +169,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
 
                 // advance only after pusher finished
-                if (pusherState == PusherState.DONE){
+                if (runtime.seconds()>.5){
                     if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
                         //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -214,7 +219,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
 
                 // advance only after pusher finished
-                if (pusherState == PusherState.DONE){
+                if (runtime.seconds()>.5){
                     if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
                         //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
                         //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
@@ -264,7 +269,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
 
                 // advance only after pusher finished
-                if (pusherState == PusherState.DONE){
+                if (runtime.seconds()>.5){
                     if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
                         //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
@@ -281,6 +286,50 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     }
 
 
+    public void transferCommence(){
+        gate.openClaw();
+        transfer.setServoIntakeState(IntakeStates.INTAKING);
+    }
+
+    public void transferStop(){
+        gate.closeClaw();
+        transfer.setServoIntakeState(IntakeStates.RESTING);
+    }
+
+    //ADD WHEN NEAR GATE
+    public boolean colorCheck(){
+        boolean check = false;
+
+        if(colorSensors.seesGreenOrPurple(0)){
+            check = true;
+
+        } else if (colorSensors.seesGreenOrPurple(1)) {
+            check = true;
+        }
+
+        return check;
+    }
+
+    public boolean colorTransition(){
+        int count = 0;
+
+        boolean check = false;
+
+        while(runtime.seconds() < 4){
+
+            if(colorCheck()){
+                count++;
+            }
+
+        }
+
+        if(count == 3){
+            check = true;
+        }
+
+        return check;
+
+    }
 
     public void Telemetry(){
         //TODO: show the tolerance stuff and PID values and states

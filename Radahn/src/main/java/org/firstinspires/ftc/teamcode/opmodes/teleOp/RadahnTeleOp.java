@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
+import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnServoIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
@@ -22,7 +23,8 @@ public class RadahnTeleOp extends LinearOpMode {
     RadahnTurretSystem turret;
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
-    RadahnGate pusher;
+    RadahnGate gate;
+    RadahnServoIntakeSystem transfer;
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -45,16 +47,18 @@ public class RadahnTeleOp extends LinearOpMode {
         hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
-        pusher = new RadahnGate(gamepad1, hardwareMap);
+        gate = new RadahnGate(gamepad1, hardwareMap);
+        transfer = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
         turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
-        // --- Limelight Hardware ---
+
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(activePipeline);
 
         while (opModeInInit()) {
 
-            pusher.openClaw();
+            gate.openClaw();
+
             hoodedOuttakeSystem.setMotorOuttakeState(
                     org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates.RESTING
             );
@@ -109,7 +113,10 @@ public class RadahnTeleOp extends LinearOpMode {
             turret.updateLimelight(tx, tagVisible);
             turret.update();
 
-            pusher.toggleClaw();
+            transfer.controllerInput();
+            transfer.setPositions();
+
+            gate.toggleClaw();
 
             telemetry.addData("AprilTag Visible", tagVisible);
             telemetry.addData("tx", tx);

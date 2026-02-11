@@ -62,6 +62,23 @@ public abstract class ColorSensor {
                 Math.abs(color.blue - b) < a);
     }
 
+    public boolean seesGreenOrPurple(int num){
+        NormalizedRGBA color = getColor(num);
+
+        float red = color.red;
+        float green = color.green;
+        float blue = color.blue;
+
+        // Check for GREEN (green dominant)
+        boolean isGreen = (green > red && green > blue);
+
+        // Check for PURPLE (red and blue dominant over green)
+        boolean isPurple = (red > green && blue > green);
+
+        return isGreen || isPurple;
+    }
+
+
 
 
 }
