@@ -16,7 +16,7 @@ public class RadahnHoodedOuttakeSystem {
     TurretHoodStates outtakeState;
 
     double tagDistanceInches = 0;
-    double lastValidDistance = 0;   // <-- NEW
+    double lastValidDistance = 0;
 
     public RadahnHoodedOuttakeSystem(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         hoodedOuttake = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
@@ -32,7 +32,6 @@ public class RadahnHoodedOuttakeSystem {
         displayTelemetry();
     }
 
-    // NEW: tagVisible decides whether to update stored distance
     public void updateDistance(double distanceInches, boolean tagVisible) {
         if (tagVisible) {
             lastValidDistance = distanceInches;
@@ -51,12 +50,14 @@ public class RadahnHoodedOuttakeSystem {
                 break;
 
             case OUTTAKING:
-                hoodedOuttake.setFlywheelPower(targetFlywheelCommand); // PID is applied inside RadahnHoodedOuttake#setFlywheelPower
+                // PID + feedforward control is applied inside setFlywheelPower
+                hoodedOuttake.setFlywheelPower(targetFlywheelCommand);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
             case INTAKING:
-                hoodedOuttake.setFlywheelPower(-targetFlywheelCommand); // PID is applied inside RadahnHoodedOuttake#setFlywheelPower
+                // Run flywheel in reverse for intake
+                hoodedOuttake.setFlywheelPower(-targetFlywheelCommand);
                 hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
         }
@@ -93,15 +94,16 @@ public class RadahnHoodedOuttakeSystem {
         lastToggleB = gamepad1.b;
     }
 
-    // ---- NEW POWER CURVE ----
-    // Outputs motor power (0 to 1)
+
     public double computeFlywheelPower(double distanceInches) {
 
-        if(distanceInches>=15.5){
-            return .6;
+        // Far shots use constant high power
+        if(distanceInches >= 15.5){
+            return 0.6;
         }
 
-        // Tuned to ~half previous close-shot speed
+        // Close to medium shots use quadratic curve
+        // Coefficients tuned for your specific shooter
         double a = 0.001;
         double b = 0.015;
         double c = 0.15;
@@ -109,29 +111,45 @@ public class RadahnHoodedOuttakeSystem {
         double power = (a * distanceInches * distanceInches) +
                 (b * distanceInches) + c;
 
-        // Clamp
+        // Clamp to valid motor range
         power = Math.max(0.0, Math.min(1.0, power));
         return power;
     }
 
     public double computeHoodPosition(double distanceInches) {
         if (distanceInches < 10){
-            return 0.0;
+            return 0.0;  // Close shots - hood down
         } else if (distanceInches < 15.5) {
-            return .28;
+            return 0.28; // Medium shots - hood mid
         }
 
-        return .2;
+        return 0.2;  // Far shots - hood position for arc
     }
 
     public void setMotorOuttakeState(TurretHoodStates state) {
         this.outtakeState = state;
     }
 
+
     private void displayTelemetry() {
         telemetry.addData("Outtake State", outtakeState);
-        telemetry.addData("Shooter Distance Used", "%.1f", tagDistanceInches);
-        telemetry.addData("Flywheel Power", "%.2f", computeFlywheelPower(tagDistanceInches));
+        telemetry.addData("Shooter Distance", "%.1f in", tagDistanceInches);
+
+        double targetPower = computeFlywheelPower(tagDistanceInches);
+        double targetSpeed = hoodedOuttake.getTargetRPM(targetPower);
+        double currentSpeed = hoodedOuttake.getRPMMotor();
+
+        telemetry.addData("Flywheel Power", "%.2f", targetPower);
+        telemetry.addData("Target RPM", "%.0f", targetSpeed);
+        telemetry.addData("Current RPM", "%.0f", currentSpeed);
+
+        // Show if we're at target speed (important for knowing when to shoot)
+        telemetry.addData("At Speed", hoodedOuttake.isAtTargetSpeed() ? "YES" : "NO");
+
+        // Show RPM error for PID tuning
+        double rpmError = hoodedOuttake.getAverageRPMError();
+        telemetry.addData("RPM Error", "%.0f", rpmError);
+
         telemetry.addData("Hood Pos", "%.2f", hoodedOuttake.getHoodPosition());
     }
 }
