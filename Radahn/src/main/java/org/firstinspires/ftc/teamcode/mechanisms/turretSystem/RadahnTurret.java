@@ -12,7 +12,6 @@ public class RadahnTurret {
     public Motor turretMotor;
     public PID_Controller turretPID;
 
-
     public static final double GOBILDA_CPR = 537.7;
     public static final double GEAR_RATIO = 3.0;
     public static final double TURRET_CPR = GOBILDA_CPR * GEAR_RATIO;
@@ -54,7 +53,6 @@ public class RadahnTurret {
         return clampedPower;
     }
 
-
     public boolean isAtTarget(double targetAngle) {
         double error = Math.abs(targetAngle - getAngleDegrees());
         return error < ANGLE_TOLERANCE;
@@ -66,6 +64,6 @@ public class RadahnTurret {
 
     public void stop() {
         turretMotor.setPower(0);
-        turretPID.area = 0;  // Reset integral accumulation
+        turretPID.area = 0;
     }
 }

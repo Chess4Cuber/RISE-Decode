@@ -24,7 +24,6 @@ public class RadahnTeleOp extends LinearOpMode {
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
     RadahnGate gate;
-    RadahnServoIntakeSystem transfer;
 
     public ElapsedTime runtime = new ElapsedTime();
     double previousTime = 0;
@@ -48,7 +47,6 @@ public class RadahnTeleOp extends LinearOpMode {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
         gate = new RadahnGate(gamepad1, hardwareMap);
-        transfer = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
         turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
 
 
@@ -112,9 +110,6 @@ public class RadahnTeleOp extends LinearOpMode {
 
             turret.updateLimelight(tx, tagVisible);
             turret.update();
-
-            transfer.controllerInput();
-            transfer.setPositions();
 
             gate.toggleClaw();
 

@@ -31,11 +31,11 @@ public class RadahnMotorIntakeSystem {
                 break;
 
             case INTAKING:
-                intake.setPower(-.6);
+                intake.setPower(1);
                 break;
 
             case OUTTAKING:
-                intake.setPower(.6);
+                intake.setPower(-1);
                 break;
         }
     }
