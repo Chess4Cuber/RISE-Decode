@@ -9,7 +9,7 @@ public class RadahnGate extends SingleServoClaw {
     Gamepad gamepad1;
     boolean lastToggleY = false;
     public RadahnGate(Gamepad gamepad1, HardwareMap hardwareMap){
-        super("pusher", .4, .55, hardwareMap);
+        super("pusher", .26, .50, hardwareMap);
 
         this.gamepad1 = gamepad1;
     }
