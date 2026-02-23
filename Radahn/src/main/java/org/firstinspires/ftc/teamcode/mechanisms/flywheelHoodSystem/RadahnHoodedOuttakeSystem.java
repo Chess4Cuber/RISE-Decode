@@ -97,13 +97,10 @@ public class RadahnHoodedOuttakeSystem {
 
     public double computeFlywheelPower(double distanceInches) {
 
-        // Far shots use constant high power
         if(distanceInches >= 15.5){
             return 0.6;
         }
 
-        // Close to medium shots use quadratic curve
-        // Coefficients tuned for your specific shooter
         double a = 0.001;
         double b = 0.015;
         double c = 0.15;
@@ -111,7 +108,6 @@ public class RadahnHoodedOuttakeSystem {
         double power = (a * distanceInches * distanceInches) +
                 (b * distanceInches) + c;
 
-        // Clamp to valid motor range
         power = Math.max(0.0, Math.min(1.0, power));
         return power;
     }

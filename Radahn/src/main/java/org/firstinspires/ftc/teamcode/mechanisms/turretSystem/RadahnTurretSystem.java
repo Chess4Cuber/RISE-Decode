@@ -12,14 +12,15 @@ public class RadahnTurretSystem {
 
     public TurretStates turretState;
 
-    private static final double LEFT_LIMIT = -160.0;   // Maximum left rotation
-    private static final double RIGHT_LIMIT = 160.0;   // Maximum right rotation
+    private static final double LEFT_LIMIT = -110.0;   // Maximum left rotation
+    private static final double RIGHT_LIMIT = 110.0;   // Maximum right rotation
 
-    private static final double MANUAL_STEP = 5.0;
+    private static final double MANUAL_STEP = 10.0;
 
     // how aggressively to correct for tx
-    private static final double AUTO_TRACKING_GAIN = 0.4;
+    private static final double AUTO_TRACKING_GAIN = 0.2;
 
+    private static final double CAMERA_DEADBAND = 7;
     private static final double MAX_POWER = 0.5;
 
     private double targetAngle = 0;
@@ -95,13 +96,10 @@ public class RadahnTurretSystem {
             case AUTO_AIM:
 
                 if (targetVisible) {
-
-                    targetAngle += tx * AUTO_TRACKING_GAIN;
-
-                    // Option 2: Direct correction (more aggressive)
-                    // targetAngle = currentAngle + tx;
-
-                    targetAngle = clamp(targetAngle, LEFT_LIMIT, RIGHT_LIMIT);
+                    if (Math.abs(tx) > CAMERA_DEADBAND) {
+                        targetAngle += tx * AUTO_TRACKING_GAIN;
+                        targetAngle = clamp(targetAngle, LEFT_LIMIT, RIGHT_LIMIT);
+                    }
                 }
 
                 appliedPower = turret.setTargetAngle(targetAngle, MAX_POWER);

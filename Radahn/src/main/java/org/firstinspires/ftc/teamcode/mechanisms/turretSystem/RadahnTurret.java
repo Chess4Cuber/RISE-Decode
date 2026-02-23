@@ -16,8 +16,8 @@ public class RadahnTurret {
     public static final double GEAR_RATIO = 3.0;
     public static final double TURRET_CPR = GOBILDA_CPR * GEAR_RATIO;
 
-    private static final double KP = 0.02;
-    private static final double KD = 0.001;
+    private static final double KP = 0.018;
+    private static final double KD = 0.003;
     private static final double KI = 0.0;
 
     private static final double ANGLE_TOLERANCE = 2.0;
