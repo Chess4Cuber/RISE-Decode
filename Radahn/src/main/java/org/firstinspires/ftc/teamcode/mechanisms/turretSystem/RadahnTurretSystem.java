@@ -34,6 +34,7 @@ public class RadahnTurretSystem {
     // Unwinding state
     private boolean isUnwinding = false;
     private double unwindTargetAngle = 0;
+    private boolean justFinishedUnwinding = false;  // Flag: just completed unwind, wait for tag
 
     private boolean lastLB = false;
     private boolean lastRB = false;
@@ -63,7 +64,8 @@ public class RadahnTurretSystem {
         if (gamepad1.left_bumper && gamepad1.right_bumper) {
             if (turretState != TurretStates.AUTO_AIM) {
                 turretState = TurretStates.AUTO_AIM;
-                isUnwinding = false;  // Cancel any unwinding when returning to AUTO
+                isUnwinding = false;
+                justFinishedUnwinding = false;  // Reset waiting flag
             }
         }
 
@@ -73,6 +75,7 @@ public class RadahnTurretSystem {
 
             targetAngle = clamp(targetAngle, LEFT_LIMIT, RIGHT_LIMIT);
             isUnwinding = false;
+            justFinishedUnwinding = false;
         }
 
         else if ((gamepad1.right_bumper != lastRB) && gamepad1.right_bumper) {
@@ -81,6 +84,7 @@ public class RadahnTurretSystem {
             // Clamp to limits
             targetAngle = clamp(targetAngle, LEFT_LIMIT, RIGHT_LIMIT);
             isUnwinding = false;
+            justFinishedUnwinding = false;
         }
 
         lastLB = gamepad1.left_bumper;
@@ -114,27 +118,45 @@ public class RadahnTurretSystem {
                     // Check if unwind is complete
                     if (turret.isAtTarget(unwindTargetAngle)) {
                         isUnwinding = false;
-                        // Unwinding complete - resume normal tracking
+                        justFinishedUnwinding = true;
+                        targetAngle = unwindTargetAngle;
+                    }
+                }
+                else if (justFinishedUnwinding) {
+
+                    if (targetVisible) {
+
+                        double estimatedTagAngle = currentAngle + tx;
+
+                        boolean tagIsReachable = isAngleReachable(currentAngle, estimatedTagAngle);
+
+                        if (tagIsReachable) {
+                            justFinishedUnwinding = false;
+                            targetAngle = estimatedTagAngle;
+                        }
+                        else {
+                            triggerUnwind(currentAngle, estimatedTagAngle);
+                            justFinishedUnwinding = false;
+                        }
+                    }
+                    else {
+                        appliedPower = turret.setTargetAngle(targetAngle, MAX_POWER);
                     }
                 }
                 else if (targetVisible) {
-                    // Normal tracking mode with deadband
                     if (Math.abs(tx) > CAMERA_DEADBAND) {
                         targetAngle += tx * AUTO_TRACKING_GAIN;
                     }
 
-                    // Check if we should trigger an unwind
                     if (shouldUnwind(currentAngle, targetAngle)) {
                         triggerUnwind(currentAngle, targetAngle);
                     }
                     else {
-                        // Normal operation - clamp to limits
                         targetAngle = clamp(targetAngle, LEFT_LIMIT, RIGHT_LIMIT);
                         appliedPower = turret.setTargetAngle(targetAngle, MAX_POWER);
                     }
                 }
                 else {
-                    // Target not visible - hold position
                     appliedPower = turret.setTargetAngle(targetAngle, MAX_POWER);
                 }
                 break;
@@ -162,44 +184,42 @@ public class RadahnTurretSystem {
         return Math.max(min, Math.min(max, val));
     }
 
-    /**
-     * Determines if turret should unwind based on current and target positions
-     *
-     * Triggers unwind when:
-     * 1. Target is on opposite side of center from current position
-     * 2. Current position is near a limit
-     * 3. Going around would allow continuous tracking
-     */
     private boolean shouldUnwind(double current, double target) {
 
-        // Near right limit and target is on left side?
-        if (current > (RIGHT_LIMIT - UNWIND_THRESHOLD) && target < 0) {
+        // Near right limit and target is FAR on left side (can't reach)?
+        if (current > (RIGHT_LIMIT - UNWIND_THRESHOLD) && target < (LEFT_LIMIT + UNWIND_THRESHOLD)) {
             return true;
         }
 
-        // Near left limit and target is on right side?
-        if (current < (LEFT_LIMIT + UNWIND_THRESHOLD) && target > 0) {
-            return true;
-        }
-
-        // Target would exceed limits?
-        if (target > RIGHT_LIMIT || target < LEFT_LIMIT) {
+        // Near left limit and target is FAR on right side (can't reach)?
+        if (current < (LEFT_LIMIT + UNWIND_THRESHOLD) && target > (RIGHT_LIMIT - UNWIND_THRESHOLD)) {
             return true;
         }
 
         return false;
     }
 
+    private boolean isAngleReachable(double current, double target) {
+        // Clamp target to limits
+        double clampedTarget = clamp(target, LEFT_LIMIT, RIGHT_LIMIT);
+
+        // If we're on the right side (positive)
+        if (current > 0) {
+            return clampedTarget > -UNWIND_THRESHOLD;
+        }
+        // If we're on the left side (negative)
+        else {
+            return clampedTarget < UNWIND_THRESHOLD;
+        }
+    }
+
     private void triggerUnwind(double current, double target) {
         isUnwinding = true;
 
-        // Determine which direction to unwind
         if (current > 0) {
-            // Currently on right side - unwind through left
             unwindTargetAngle = LEFT_LIMIT;
         }
         else {
-            // Currently on left side - unwind through right
             unwindTargetAngle = RIGHT_LIMIT;
         }
     }
@@ -236,6 +256,9 @@ public class RadahnTurretSystem {
         if (isUnwinding) {
             telemetry.addData("UNWINDING", "To %.1f°", unwindTargetAngle);
         }
+        else if (justFinishedUnwinding) {
+            telemetry.addData("WAITING", "For AprilTag at limit");
+        }
         else {
             telemetry.addData("At Target", atTarget ? "YES" : "NO");
             telemetry.addData("Centered", withinDeadband ? "YES" : "NO");
@@ -257,11 +280,11 @@ public class RadahnTurretSystem {
         telemetry.addData("Unwind Threshold", "±%.0f°", UNWIND_THRESHOLD);
 
         // Show when near unwind zone
-        if (currentAngle > (RIGHT_LIMIT - UNWIND_THRESHOLD) && !isUnwinding) {
-            telemetry.addData("UNWIND ZONE", "Near right limit");
+        if (currentAngle > (RIGHT_LIMIT - UNWIND_THRESHOLD) && !isUnwinding && !justFinishedUnwinding) {
+            telemetry.addData("⚡ UNWIND ZONE", "Near right limit");
         }
-        if (currentAngle < (LEFT_LIMIT + UNWIND_THRESHOLD) && !isUnwinding) {
-            telemetry.addData("UNWIND ZONE", "Near left limit");
+        if (currentAngle < (LEFT_LIMIT + UNWIND_THRESHOLD) && !isUnwinding && !justFinishedUnwinding) {
+            telemetry.addData("⚡ UNWIND ZONE", "Near left limit");
         }
     }
 }
