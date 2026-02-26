@@ -97,13 +97,10 @@ public class RadahnHoodedOuttakeSystem {
 
     public double computeFlywheelPower(double distanceInches) {
 
-        if(distanceInches >= 15.5){
-            return 0.6;
-        }
 
-        double a = 0.001;
-        double b = 0.015;
-        double c = 0.15;
+        double a = 0.00075;  // Was 0.001
+        double b = 0.01125;  // Was 0.015
+        double c = 0.1125;   // Was 0.15
 
         double power = (a * distanceInches * distanceInches) +
                 (b * distanceInches) + c;
@@ -116,7 +113,7 @@ public class RadahnHoodedOuttakeSystem {
         if (distanceInches < 10){
             return 0.0;  // Close shots - hood down
         } else if (distanceInches < 15.5) {
-            return 0.28; // Medium shots - hood mid
+            return 0.25; // Medium shots - hood mid
         }
 
         return 0.2;  // Far shots - hood position for arc

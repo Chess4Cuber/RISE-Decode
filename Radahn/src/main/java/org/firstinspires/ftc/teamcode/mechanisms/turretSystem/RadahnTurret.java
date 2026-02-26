@@ -20,7 +20,7 @@ public class RadahnTurret {
     private static final double KD = 0.003;
     private static final double KI = 0.0;
 
-    private static final double ANGLE_TOLERANCE = 3.0;
+    private static final double ANGLE_TOLERANCE = 2.5;
 
     public RadahnTurret(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         turretMotor = new Motor("turretMotor", TURRET_CPR, hardwareMap);
