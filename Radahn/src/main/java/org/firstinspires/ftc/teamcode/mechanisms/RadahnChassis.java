@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnChassis extends MecanumChassis {
 
-    double CPR = 8192;
+    double CPR = 2048;
     double wheelDia = 1.36;
     double trackwidth = 7.874;
     double forwardOffset = 5;
