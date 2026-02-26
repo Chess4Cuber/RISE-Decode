@@ -125,7 +125,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     public void autonBlue(){
         switch(parkingStep){
             case  AWAY_FROM_GOAL:
-                targetPose.set(-15, 0, 0);
+                targetPose.set(0, -20, 0);
                 break;
         }
 
