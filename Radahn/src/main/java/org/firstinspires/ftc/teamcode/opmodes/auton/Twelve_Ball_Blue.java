@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auton;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -7,14 +9,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnColorSensor;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.IntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnGate;
-import org.firstinspires.ftc.teamcode.mechanisms.RadahnTransfer.RadahnServoIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttake;
+import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.RadahnHoodedOuttakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeStates;
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
-import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.MotorOuttakeStates;
-import org.firstinspires.ftc.teamcode.mechanisms.simpleMotorOuttakeSystem.RadahnMotorOuttakeSystem;
+import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 
 @Autonomous
 public class Twelve_Ball_Blue extends LinearOpMode {
@@ -39,19 +39,21 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         PARK
     }
 
-
-//TODO: FIX POSITIONS
-
     RadahnChassis chassis;
     RadahnMotorIntakeSystem intake;
-    RadahnMotorOuttakeSystem simpleOuttake;
+    RadahnHoodedOuttakeSystem hoodedOuttakeSystem;
+    RadahnTurretSystem turret;
     RadahnGate gate;
-    RadahnServoIntakeSystem transfer;
-    RadahnHoodedOuttake hoodedServo;
-
     RadahnColorSensor colorSensors;
 
     AutoStep parkingStep;
+
+    Limelight3A limelight;
+
+    // Camera geometry constants
+    final double CAMERA_HEIGHT = 10.0;     // inches
+    final double TARGET_HEIGHT = 24.0;     // inches
+    final double CAMERA_ANGLE = Math.toRadians(30.0); // radians
 
     Vector3D poseVector = new Vector3D(0,0,0);
     Vector3D targetPose = new Vector3D(0, 0, 0);
@@ -62,29 +64,52 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         chassis = new RadahnChassis(gamepad1, telemetry, hardwareMap);
         intake = new RadahnMotorIntakeSystem(gamepad1, telemetry, hardwareMap);
-        simpleOuttake = new RadahnMotorOuttakeSystem(gamepad1, telemetry, hardwareMap);
+        hoodedOuttakeSystem = new RadahnHoodedOuttakeSystem(gamepad1, telemetry, hardwareMap);
+        turret = new RadahnTurretSystem(gamepad1, telemetry, hardwareMap);
         gate = new RadahnGate(gamepad1, hardwareMap);
-        transfer = new RadahnServoIntakeSystem(gamepad1, hardwareMap);
-        hoodedServo = new RadahnHoodedOuttake(gamepad1, telemetry, hardwareMap);
 
         colorSensors = new RadahnColorSensor(hardwareMap);
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
 
         parkingStep = AutoStep.AWAY_FROM_GOAL;
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-            simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-            hoodedServo.setHoodPosition(.3);
 
             telemetry.update();
         }
 
         while (opModeIsActive()){
+
+            double tagDistanceInches = 0;
+            double tx = 0;
+            boolean tagVisible = false;
+
+            LLResult result = limelight.getLatestResult();
+
+            if (result != null && result.isValid()) {
+                tagVisible = true;
+
+                tx = result.getTx();
+
+                double tyRadians = Math.toRadians(result.getTy());
+                tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
+                        Math.tan(CAMERA_ANGLE + tyRadians);
+            }
+
+
             chassis.updatePose();
             intake.setPositions();
-            simpleOuttake.setPositions();
+
+            hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
+            hoodedOuttakeSystem.update();
+
+            turret.updateLimelight(tx, tagVisible);
+            turret.update();
+
             gate.setPosition();
-            transfer.setPositions();
 
             autonBlue();
 
@@ -98,244 +123,20 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     }
 
     public void autonBlue(){
-
-        switch (parkingStep){
-            case AWAY_FROM_GOAL:
-                simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
-
-                targetPose.set(-38, -53, 63);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-
-                    parkingStep = AutoStep.SHOOTPRE;
-                    runtime.reset();
-                }
+        switch(parkingStep){
+            case  AWAY_FROM_GOAL:
+                targetPose.set(0, -15, 0);
                 break;
-
-            case SHOOTPRE:
-                gate.openClaw();
-                if (runtime.seconds()>.5){
-                    //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                    parkingStep = AutoStep.RESET_ODO;
-                    runtime.reset();
-                }
-                break;
-
-            case RESET_ODO:
-                chassis.odo.setPose(0, 0, 0);
-                chassis.odo.resetEncoderDeltas();
-
-                targetPose.set(0, -23, 0);
-
-                if(runtime.seconds()>.2){
-                    parkingStep = AutoStep.FIRST_LINE;
-                    runtime.reset();
-                }
-
-                break;
-
-            case FIRST_LINE:
-
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                targetPose.set(-40, 0, 0);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-
-                    parkingStep = AutoStep.BACK_FIRST;
-                    runtime.reset();
-                }
-
-                break;
-
-            case BACK_FIRST:
-                targetPose.set(0, 0, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
-                    //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                    parkingStep = AutoStep.SHOOT_FIRST;
-                    runtime.reset();
-                }
-
-                break;
-
-            case SHOOT_FIRST:
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-
-                // advance only after pusher finished
-                if (runtime.seconds()>.5){
-                    if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
-                        //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-                        //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                        parkingStep = AutoStep.SECOND_LINE;
-                        runtime.reset();
-                    }
-                }
-
-                break;
-
-            case SECOND_LINE:
-                targetPose.set(0, -36, 0);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                    parkingStep = AutoStep.SECOND_LINE2;
-                    runtime.reset();
-                }
-                break;
-
-            case SECOND_LINE2:
-                targetPose.set(-44, -36, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    parkingStep = AutoStep.BACK_SECOND;
-                    runtime.reset();
-                }
-                break;
-
-            case BACK_SECOND:
-                targetPose.set(0, 0, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                    simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
-
-                    parkingStep = AutoStep.SHOOT_SECOND;
-                    runtime.reset();
-                }
-                break;
-
-            case SHOOT_SECOND:
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-
-                // advance only after pusher finished
-                if (runtime.seconds()>.5){
-                    if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
-                        //simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
-                        //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                        parkingStep = AutoStep.THIRD_LINE;
-                        runtime.reset();
-                    }
-                }
-
-                break;
-
-            case THIRD_LINE:
-                targetPose.set(0, -70, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    parkingStep = AutoStep.THIRD_LINE2;
-                    runtime.reset();
-                }
-                break;
-
-            case THIRD_LINE2:
-                targetPose.set(-47, -70, 0);
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    parkingStep = AutoStep.BACK_THIRD;
-                    runtime.reset();
-                }
-                break;
-
-            case BACK_THIRD:
-                targetPose.set(0, 0, 0);
-                intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                    simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.INTAKING);
-
-                    parkingStep = AutoStep.SHOOT_THIRD;
-                    runtime.reset();
-                }
-                break;
-
-
-            case SHOOT_THIRD:
-                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-
-                // advance only after pusher finished
-                if (runtime.seconds()>.5){
-                    if (runtime.seconds() > .0) { // allow the DONE condition to be processed immediately
-                        //intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
-                        parkingStep = AutoStep.PARK;
-                        runtime.reset();
-                    }
-                }
-
-            case PARK:
-                targetPose.set(-35, 0, 0);
-                break;
-
-        }
-    }
-
-
-    public void transferCommence(){
-        gate.openClaw();
-        transfer.setServoIntakeState(IntakeStates.INTAKING);
-    }
-
-    public void transferStop(){
-        gate.closeClaw();
-        transfer.setServoIntakeState(IntakeStates.RESTING);
-    }
-
-    //ADD WHEN NEAR GATE
-    public boolean colorCheck(){
-        boolean check = false;
-
-        if(colorSensors.seesGreenOrPurple(0)){
-            check = true;
-
-        } else if (colorSensors.seesGreenOrPurple(1)) {
-            check = true;
         }
 
-        return check;
-    }
-
-    public boolean colorTransition(){
-        int count = 0;
-
-        boolean check = false;
-
-        while(runtime.seconds() < 4){
-
-            if(colorCheck()){
-                count++;
-            }
-
-        }
-
-        if(count == 3){
-            check = true;
-        }
-
-        return check;
 
     }
+
+
 
     public void Telemetry(){
         //TODO: show the tolerance stuff and PID values and states
         telemetry.addData("Auton State", parkingStep);
-
-        telemetry.addData("Motor RPM:", simpleOuttake.getRPM());
 
         telemetry.addData("Pose Estimate X:", chassis.getPose()[0]);
         telemetry.addData("Pose Estimate Y:", chassis.getPose()[1]);
