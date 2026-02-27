@@ -73,7 +73,7 @@ public class Far_Park_Red extends LinearOpMode {
 
         switch (parkingStep){
             case PARK:
-                targetPose.set(0, 40, 0);
+                targetPose.set(0, 0, 40);
                 break;
         }
     }

@@ -55,7 +55,7 @@ public class Encoder {
     }
 
     public double getCurrPosInches(){
-        return getCurrPosRadians()*WHEEL_DIAMETER;
+        return getCurrPosRadians() * (WHEEL_DIAMETER / 2.0);  // radius, not diameter
     }
 
 

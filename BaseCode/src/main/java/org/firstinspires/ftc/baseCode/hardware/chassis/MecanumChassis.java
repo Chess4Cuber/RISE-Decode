@@ -93,14 +93,13 @@ public abstract class MecanumChassis {
     }
 
     public void setDriveVectorsFieldCentric(Vector3D input){
-        // if not working check directional convention for heading
-        double x_rotated = input.A * Math.cos(odo.getHeading()) + input.B * Math.sin(odo.getHeading());
-        double y_rotated = input.A * Math.sin(odo.getHeading()) - input.B * Math.cos(odo.getHeading());
+        double x_rotated = input.A * Math.cos(odo.getHeading()) - input.B * Math.sin(odo.getHeading());
+        double y_rotated = input.A * Math.sin(odo.getHeading()) + input.B * Math.cos(odo.getHeading());
 
-        fLeft = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
-        fRight = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
-        bRight = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
-        bLeft = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
+        fLeft  = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
+        fRight = -VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        bRight =  VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        bLeft  =  VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {
