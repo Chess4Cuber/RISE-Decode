@@ -197,6 +197,7 @@ public abstract class MecanumChassis {
     public void updatePose(){
         odo.updatePose();
     }
+
     public void setPower(double power){
         this.frontLeft.setPower(power);
         this.frontRight.setPower(power);

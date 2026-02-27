@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 public class PID_PointFollowerTest extends LinearOpMode {
 
     RadahnChassis chassis;
-    Vector3D point = new Vector3D(20, 20, 45);
+    Vector3D point = new Vector3D(0, 0, 35);
 
     @Override
     public void runOpMode() throws InterruptedException {

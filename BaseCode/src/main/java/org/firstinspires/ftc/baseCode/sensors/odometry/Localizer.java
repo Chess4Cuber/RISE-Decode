@@ -1,35 +1,34 @@
 package org.firstinspires.ftc.baseCode.sensors.odometry;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.baseCode.sensors.imu;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class Odometry {
-    private final Encoder perp, par;
+public class Localizer {
+    private final DcMotorEx perp, par;
     private final imu IMU;
-    private final double PARALLEL_OFFSET_IN, PERP_OFFSET_IN;
+    private final double PARALLEL_OFFSET_IN, PERP_OFFSET_IN, TICKS_TO_INCHES;
     private double lastX, lastY, lastHead_rad;
     private Pose2D position;
 
-    public Odometry(String[] names, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap, double xOff, double yOff, double headOff) {
-        this.perp = new Encoder(names[2], odoConstants[0], odoConstants[1], hardwareMap);
-        this.par = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
-        this.IMU = new imu(hardwareMap);
-        PARALLEL_OFFSET_IN = xOff;
-        PERP_OFFSET_IN = yOff;
+    public Localizer(DcMotorEx perp, DcMotorEx par, imu IMU, double xOffsetIn, double yOffsetIn, double ticksToInches) {
+        this.perp = perp;
+        this.par = par;
+        this.IMU = IMU;
+        PARALLEL_OFFSET_IN = xOffsetIn;
+        PERP_OFFSET_IN = yOffsetIn;
+        TICKS_TO_INCHES = ticksToInches;
         position = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.RADIANS, 0);
     }
 
-    public void updatePose() {
+    public void update() {
         // Read poses
-        double curX_in = par.getCurrPosInches();
-        double curY_in = perp.getCurrPosInches();
-        double curHead_rad = AngleUnit.normalizeRadians(IMU.Angle_FieldCentric());
+        double curX_in = par.getCurrentPosition() * TICKS_TO_INCHES;
+        double curY_in = perp.getCurrentPosition() * TICKS_TO_INCHES;
+        double curHead_rad = AngleUnit.normalizeRadians(Math.toRadians(IMU.Angle_FieldCentric()));
 
         // Deltas
         double dHead_rad = AngleUnit.normalizeRadians(curHead_rad - lastHead_rad);
@@ -64,54 +63,10 @@ public class Odometry {
      */
     public void setPosition(double x_in, double y_in, double heading_deg) {
         position = new Pose2D(DistanceUnit.INCH, x_in, y_in, AngleUnit.RADIANS, Math.toRadians(heading_deg));
-        lastX = par.getCurrPosInches();
-        lastY = perp.getCurrPosInches();
+        lastX = par.getCurrentPosition() * TICKS_TO_INCHES;
+        lastY = perp.getCurrentPosition() * TICKS_TO_INCHES;
         lastHead_rad = AngleUnit.normalizeRadians(Math.toRadians(IMU.Angle_FieldCentric()));
     }
 
     public Pose2D getPosition() { return position; }
-
-    public double getX(){
-        return position.getX(DistanceUnit.INCH);
-    }
-
-    public double getY(){
-        return position.getY(DistanceUnit.INCH);
-    }
-
-    public double getHeading(){
-        return position.getHeading(AngleUnit.DEGREES);
-    }
-
-    public double [] getPose(){
-        double [] pose  = new double[3];
-
-        pose[0] = getX();
-        pose[1] = getY();
-        pose[2] = getHeading();
-
-        return pose;
-    }
-
-    public double[] getEncoderReadings(){
-        double [] pose  = new double[2];
-        pose[0] = perp.getCurrPosTicks();
-        pose[1] = par.getCurrPosTicks();
-
-        return pose;
-
-    }
-
-    public void setPose(double x, double y, double headingDeg) {
-
-    }
-
-    public void resetEncoderDeltas() {
-
-    }
-
-    public Vector3D getPoseVector(){
-        return new Vector3D(getX(), getY(),  getHeading());
-    }
-
 }
