@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.baseCode.hardware.chassis.MecanumChassis;
-import org.firstinspires.ftc.baseCode.sensors.imu;
 import org.firstinspires.ftc.baseCode.sensors.odometry.OdometryType;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,19 +18,15 @@ public class RadahnChassis extends MecanumChassis {
     public PID_Controller TranslationalPID_X;
     public PID_Controller TranslationalPID_Y;
     public PID_Controller HeadingPID;
-
     public RadahnChassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super(new String[]{"fLeft", "fRight", "bRight", "bLeft"}, gamepad1, telemetry, hardwareMap);
 
-        setOdometry(new String[]{"fLeft", null, "bRight"}, OdometryType.TWO_WHEEL,
-                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, 1, 1, 1);
+        setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
+                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, -1, 1, -.95);
 
-        // Wire in the IMU - it will take over heading from odometry
-        setIMU(new imu(hardwareMap));
-
-        TranslationalPID_X = new PID_Controller(0.03);
-        TranslationalPID_Y = new PID_Controller(0.03);
-        HeadingPID = new PID_Controller(0.02);
+        TranslationalPID_X = new PID_Controller(0.02);
+        TranslationalPID_Y = new PID_Controller(0.02);
+        HeadingPID = new PID_Controller(0.0125);
 
         setPID_Controller(TranslationalPID_X, TranslationalPID_Y, HeadingPID);
 
@@ -40,4 +35,6 @@ public class RadahnChassis extends MecanumChassis {
         backRight.setDirectionReverse();
         backLeft.setDirectionForward();
     }
+
+
 }
