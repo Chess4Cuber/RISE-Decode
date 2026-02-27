@@ -113,7 +113,7 @@ public class RadahnHoodedOuttakeSystem {
         if (distanceInches < 10){
             return 0.0;  // Close shots - hood down
         } else if (distanceInches < 15.5) {
-            return 0.25; // Medium shots - hood mid
+            return 0.4; // Medium shots - hood mid
         }
 
         return 0.2;  // Far shots - hood position for arc

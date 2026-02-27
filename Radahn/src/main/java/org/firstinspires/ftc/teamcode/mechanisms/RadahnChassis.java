@@ -12,8 +12,8 @@ public class RadahnChassis extends MecanumChassis {
 
     double CPR = 2048;
     double wheelDia = 1.36;
-    double trackwidth = 7.874;
-    double forwardOffset = 5;
+    double trackwidth = 8;
+    double forwardOffset = 5.5;
 
     public PID_Controller TranslationalPID_X;
     public PID_Controller TranslationalPID_Y;

@@ -98,8 +98,11 @@ public class RadahnTeleOp extends LinearOpMode {
                 tx = result.getTx();
 
                 double tyRadians = Math.toRadians(result.getTy());
+                // Distance formula: d = (h2 - h1) / tan(angle_to_target)
+                // angle_to_target = ty - camera_angle (camera pointing up = negative)
+                // OR: angle_to_target = camera_angle + ty (if camera angle is already negative)
                 tagDistanceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) /
-                        Math.tan(CAMERA_ANGLE + tyRadians);
+                        Math.tan(tyRadians - CAMERA_ANGLE);
             }
 
             hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
