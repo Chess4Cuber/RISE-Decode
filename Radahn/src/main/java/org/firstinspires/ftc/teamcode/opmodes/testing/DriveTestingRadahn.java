@@ -25,11 +25,11 @@ public class DriveTestingRadahn extends LinearOpMode {
 
             telemetry.addData("Pose Estimate X:", chassis.getPose()[0]);
             telemetry.addData("Pose Estimate Y:", chassis.getPose()[1]);
-            telemetry.addData("Pose Estimate Angle:", chassis.odo.getHeading());
+            telemetry.addData("Pose Estimate Angle:", chassis.getPose()[2]);
 
             telemetry.addData("Encoder Reading Left:", chassis.getEncoderReadings()[0]);
-            telemetry.addData("Encoder Reading Middle:", chassis.getEncoderReadings()[1]);
-            //telemetry.addData("Encoder Reading Middle:", chassis.getEncoderReadings()[2]);
+            telemetry.addData("Encoder Reading Right:", chassis.getEncoderReadings()[1]);
+            telemetry.addData("Encoder Reading Middle:", chassis.getEncoderReadings()[2]);
 
             telemetry.addData("loop time", runtime.seconds()-previousTime);
             telemetry.update();

@@ -1,117 +1,170 @@
 package org.firstinspires.ftc.baseCode.sensors.odometry;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.baseCode.math.Vector3D;
-import org.firstinspires.ftc.baseCode.sensors.imu;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class Odometry {
-    private final Encoder perp, par;
-    private final imu IMU;
-    private final double PARALLEL_OFFSET_IN, PERP_OFFSET_IN;
-    private double lastX, lastY, lastHead_rad;
-    private Pose2D position;
+    public double[] pose = new double[3];  // made public so IMU can override pose[2]
 
-    public Odometry(String[] names, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap, double xOff, double yOff, double headOff) {
-        this.perp = new Encoder(names[2], odoConstants[0], odoConstants[1], hardwareMap);
-        this.par = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
-        this.IMU = new imu(hardwareMap);
-        PARALLEL_OFFSET_IN = xOff;
-        PERP_OFFSET_IN = yOff;
-        position = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.RADIANS, 0);
+    double x_pos = 0;
+    double y_pos = 0;
+    public double heading = 0;             // made public so IMU can override heading
+
+    double x_offset = 0;
+    double y_offset = 0;
+    double head_offset = 0;
+
+    double[] previousEncoderPos = {0, 0, 0};
+
+    public Encoder leftEncoder, rightEncoder, middleEncoder;
+
+    double[] encoderReadings = {0, 0, 0};
+
+    // Array order convention: odoConstants = {CPR, wheelDia, TRACKWIDTH, FORWARD_OFFSET}
+    // For TWO_WHEEL: TRACKWIDTH and FORWARD_OFFSET are unused (heading comes from IMU)
+    double[] odoConstants;
+
+    OdometryType odoType;
+
+    // names[0] = parallel encoder (forward/back)
+    // names[1] = right encoder    (THREE_WHEEL only)
+    // names[2] = strafe encoder   (perpendicular)
+    public Odometry(String[] names, OdometryType odoType, double[] odoConstants, HardwareMap hardwareMap, double xOff, double yOff, double headOff){
+        switch (odoType){
+            case THREE_WHEEL:
+                leftEncoder   = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
+                rightEncoder  = new Encoder(names[1], odoConstants[0], odoConstants[1], hardwareMap);
+                middleEncoder = new Encoder(names[2], odoConstants[0], odoConstants[1], hardwareMap);
+                x_offset    = xOff;
+                y_offset    = yOff;
+                head_offset = headOff;
+                break;
+
+            case TWO_WHEEL:
+                // leftEncoder   = parallel wheel (measures forward/back movement)
+                // middleEncoder = strafe wheel   (measures lateral movement)
+                // rightEncoder is NOT used — heading comes entirely from the IMU
+                leftEncoder   = new Encoder(names[0], odoConstants[0], odoConstants[1], hardwareMap);
+                middleEncoder = new Encoder(names[2], odoConstants[0], odoConstants[1], hardwareMap);
+                x_offset    = xOff;
+                y_offset    = yOff;
+                head_offset = headOff;
+                break;
+        }
+
+        this.odoType      = odoType;
+        this.odoConstants = odoConstants;
     }
 
     public void updatePose() {
-        // Read poses
-        double curX_in = par.getCurrPosInches();
-        double curY_in = perp.getCurrPosInches();
-        double curHead_rad = AngleUnit.normalizeRadians(IMU.Angle_FieldCentric());
+        switch (odoType) {
+            case THREE_WHEEL: {
+                double deltaLeftEncoderPos   = leftEncoder.getCurrPosInches()   - previousEncoderPos[0];
+                double deltaRightEncoderPos  = rightEncoder.getCurrPosInches()  - previousEncoderPos[1];
+                double deltaMiddleEncoderPos = middleEncoder.getCurrPosInches() - previousEncoderPos[2];
 
-        // Deltas
-        double dHead_rad = AngleUnit.normalizeRadians(curHead_rad - lastHead_rad);
-        double dX_in = curX_in - lastX - PARALLEL_OFFSET_IN * dHead_rad;
-        double dY_in = curY_in - lastY - PERP_OFFSET_IN * dHead_rad;
+                // phi used for X/Y integration and heading if no IMU
+                double phi = (deltaRightEncoderPos - deltaLeftEncoderPos) / odoConstants[2];
 
-        // Rotate vector
-        double cos = Math.cos(curHead_rad);
-        double sin = Math.sin(curHead_rad);
-        double xChange = dX_in * cos - dY_in * sin;
-        double yChange = dX_in * sin + dY_in * cos;
+                double deltaParallel = (deltaLeftEncoderPos + deltaRightEncoderPos) / 2.0;
+                double deltaPerp     = deltaMiddleEncoderPos - (odoConstants[3] * phi);
 
-        // Update last vals
-        lastX = curX_in;
-        lastY = curY_in;
-        lastHead_rad = curHead_rad;
+                double deltaX = deltaParallel * Math.cos(heading) - deltaPerp * Math.sin(heading);
+                double deltaY = deltaParallel * Math.sin(heading) + deltaPerp * Math.cos(heading);
 
-        // Accumulate position directly into the position object
-        position = new Pose2D(
-                DistanceUnit.INCH,
-                position.getX(DistanceUnit.INCH) + xChange,
-                position.getY(DistanceUnit.INCH) + yChange,
-                AngleUnit.RADIANS,
-                curHead_rad
-        );
+                x_pos += deltaX;
+                y_pos += deltaY;
+
+                // IMU overrides this in MecanumChassis.updatePose() if active
+                heading += phi;
+                heading = Math.atan2(Math.sin(heading), Math.cos(heading));
+
+                previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+                previousEncoderPos[1] = rightEncoder.getCurrPosInches();
+                previousEncoderPos[2] = middleEncoder.getCurrPosInches();
+
+                encoderReadings[0] = previousEncoderPos[0];
+                encoderReadings[1] = previousEncoderPos[1];
+                encoderReadings[2] = previousEncoderPos[2];
+
+                pose[0] = x_pos * x_offset;
+                pose[1] = y_pos * y_offset;
+                pose[2] = Math.toDegrees(heading) * head_offset;
+                break;
+            }
+
+            case TWO_WHEEL: {
+                // heading is always set externally by the IMU via MecanumChassis.updatePose()
+                // before this method is called. No phi term — IMU owns heading entirely.
+
+                double deltaParallelEncoderPos = leftEncoder.getCurrPosInches()   - previousEncoderPos[0];
+                double deltaStrafeEncoderPos   = middleEncoder.getCurrPosInches() - previousEncoderPos[2];
+
+                // Integrate X/Y using the current IMU heading (in radians)
+                double deltaX = deltaParallelEncoderPos * Math.cos(heading) - deltaStrafeEncoderPos * Math.sin(heading);
+                double deltaY = deltaParallelEncoderPos * Math.sin(heading) + deltaStrafeEncoderPos * Math.cos(heading);
+
+                x_pos += deltaX;
+                y_pos += deltaY;
+
+                // heading is NOT modified here — IMU owns it entirely
+
+                // index 1 skipped — no right encoder in TWO_WHEEL mode
+                previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+                previousEncoderPos[2] = middleEncoder.getCurrPosInches();
+
+                encoderReadings[0] = previousEncoderPos[0];
+                encoderReadings[2] = previousEncoderPos[2];
+
+                pose[0] = x_pos * x_offset;
+                pose[1] = y_pos * y_offset;
+                pose[2] = Math.toDegrees(heading) * head_offset;
+                break;
+            }
+        }
     }
 
-    /**
-     * @param x_in New x position of the robot in inches;
-     * @param y_in New x position of the robot in inches;
-     * @param heading_deg New heading of the robot in degrees;
-     */
-    public void setPosition(double x_in, double y_in, double heading_deg) {
-        position = new Pose2D(DistanceUnit.INCH, x_in, y_in, AngleUnit.RADIANS, Math.toRadians(heading_deg));
-        lastX = par.getCurrPosInches();
-        lastY = perp.getCurrPosInches();
-        lastHead_rad = AngleUnit.normalizeRadians(Math.toRadians(IMU.Angle_FieldCentric()));
-    }
-
-    public Pose2D getPosition() { return position; }
-
-    public double getX(){
-        return position.getX(DistanceUnit.INCH);
-    }
-
-    public double getY(){
-        return position.getY(DistanceUnit.INCH);
-    }
-
-    public double getHeading(){
-        return position.getHeading(AngleUnit.DEGREES);
-    }
-
-    public double [] getPose(){
-        double [] pose  = new double[3];
-
-        pose[0] = getX();
-        pose[1] = getY();
-        pose[2] = getHeading();
-
+    public double[] getPose() {
         return pose;
     }
 
-    public double[] getEncoderReadings(){
-        double [] pose  = new double[2];
-        pose[0] = perp.getCurrPosTicks();
-        pose[1] = par.getCurrPosTicks();
+    public Vector3D getPoseVector() {
+        return new Vector3D(pose[0], pose[1], pose[2]);
+    }
 
-        return pose;
+    public double getX() {
+        return x_pos;
+    }
 
+    public double getY() {
+        return y_pos;
+    }
+
+    public double getHeading() {
+        return heading;
+    }
+
+    public double[] getEncoderReadings() {
+        return encoderReadings;
     }
 
     public void setPose(double x, double y, double headingDeg) {
+        this.x_pos   = x;
+        this.y_pos   = y;
+        this.heading = Math.toRadians(headingDeg);
 
+        pose[0] = x;
+        pose[1] = y;
+        pose[2] = headingDeg;
     }
 
     public void resetEncoderDeltas() {
-
+        previousEncoderPos[0] = leftEncoder.getCurrPosInches();
+        // Only reset right encoder if it exists (THREE_WHEEL mode only)
+        if (rightEncoder != null) {
+            previousEncoderPos[1] = rightEncoder.getCurrPosInches();
+        }
+        previousEncoderPos[2] = middleEncoder.getCurrPosInches();
     }
-
-    public Vector3D getPoseVector(){
-        return new Vector3D(getX(), getY(),  getHeading());
-    }
-
 }

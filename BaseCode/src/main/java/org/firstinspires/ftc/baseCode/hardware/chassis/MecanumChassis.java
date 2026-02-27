@@ -9,6 +9,7 @@ import org.firstinspires.ftc.baseCode.control.motionProfiling.TrapezoidalMotionP
 import org.firstinspires.ftc.baseCode.control.PID_Controller;
 import org.firstinspires.ftc.baseCode.hardware.Motor;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
+import org.firstinspires.ftc.baseCode.sensors.imu;
 import org.firstinspires.ftc.baseCode.sensors.odometry.Odometry;
 import org.firstinspires.ftc.baseCode.sensors.odometry.OdometryType;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -26,7 +27,6 @@ public abstract class MecanumChassis {
     public Motor backRight;
     public Motor backLeft;
 
-
     double fLeft;
     double fRight;
     double bLeft;
@@ -39,6 +39,7 @@ public abstract class MecanumChassis {
     double OMEGA_WEIGHT = 1;
 
     public Odometry odo;
+    public imu imuSensor;
 
     PID_Controller TranslationalPID_X;
     PID_Controller TranslationalPID_Y;
@@ -76,10 +77,10 @@ public abstract class MecanumChassis {
     }
 
     public void setDriveVectorsRobotCentric(Vector3D input)  {
-        fLeft = VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
-        fRight = VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
-        bRight = -VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
-        bLeft = -VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
+        fLeft = -VX_WEIGHT * input.A - VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
+        fRight = -VX_WEIGHT * input.A + VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
+        bRight = VX_WEIGHT * input.A - VY_WEIGHT * input.B + OMEGA_WEIGHT * input.C;
+        bLeft = VX_WEIGHT * input.A + VY_WEIGHT * input.B - OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {
@@ -93,14 +94,13 @@ public abstract class MecanumChassis {
     }
 
     public void setDriveVectorsFieldCentric(Vector3D input){
-        // if not working check directional convention for heading
-        double x_rotated = input.A * Math.cos(odo.getHeading()) + input.B * Math.sin(odo.getHeading());
-        double y_rotated = input.A * Math.sin(odo.getHeading()) - input.B * Math.cos(odo.getHeading());
+        double x_rotated = input.A * Math.cos(odo.getHeading()) - input.B * Math.sin(odo.getHeading());
+        double y_rotated = input.A * Math.sin(odo.getHeading()) + input.B * Math.cos(odo.getHeading());
 
-        fLeft = VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
-        fRight = VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
-        bRight = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
-        bLeft = -VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        fLeft  = -VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
+        fRight = -VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        bRight =  VX_WEIGHT * x_rotated - VY_WEIGHT * y_rotated + OMEGA_WEIGHT * input.C;
+        bLeft  =  VX_WEIGHT * x_rotated + VY_WEIGHT * y_rotated - OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {
@@ -110,7 +110,7 @@ public abstract class MecanumChassis {
             bRight /= max;
         }
 
-        setPower(-fLeft, -fRight, -bRight, -bLeft);
+        setPower(fLeft, fRight, bRight, bLeft);
     }
 
     public void robotCentricDrive(){
@@ -124,27 +124,23 @@ public abstract class MecanumChassis {
     }
 
     public void goToPosePID(Vector3D input){
-        // Translation PIDs
-        double PID_Drive = TranslationalPID_X.PID_Power(odo.getX(), input.A);
+        double PID_Drive  = TranslationalPID_X.PID_Power(odo.getX(), input.A);
         double PID_Strafe = TranslationalPID_Y.PID_Power(odo.getY(), input.B);
 
-        // Heading PID
-        double currentHeading = getPose()[2];   // in degrees
-        double targetHeading = input.C;         // in degrees
+        double currentHeading = getPose()[2];
+        double targetHeading  = input.C;
 
-        // Wrap the heading error to [-180, 180] to take shortest rotation path
-        double headingError = targetHeading - currentHeading;
-        if (headingError > 180) headingError -= 360;
-        if (headingError < -180) headingError += 360;
+        // Wrap current heading to same domain as target before PID sees it
+        double wrappedCurrent = currentHeading;
+        double diff = targetHeading - currentHeading;
+        if (diff >  180) wrappedCurrent += 360;
+        if (diff < -180) wrappedCurrent -= 360;
 
-        // Feed PID: current = 0, target = headingError
-        double PID_Turn = HeadingPID.PID_Power(0, headingError);
+        double PID_Turn = HeadingPID.PID_Power(wrappedCurrent, targetHeading);
 
         Vector3D PID_Vector = new Vector3D(PID_Drive, PID_Strafe, PID_Turn);
-
         setDriveVectorsFieldCentric(PID_Vector);
     }
-
 
 
     public void goToPoseTrapezoidalProfile(Vector3D input){
@@ -183,6 +179,10 @@ public abstract class MecanumChassis {
         odo = new Odometry(odoNames, odoType, odoConstants, hardwareMap, xOff, yOff, headOff);
     }
 
+    public void setIMU(imu imuSensor){
+        this.imuSensor = imuSensor;
+    }
+
     public double[] getPose(){
         return odo.getPose();
     }
@@ -190,12 +190,22 @@ public abstract class MecanumChassis {
     public double[] getEncoderReadings(){
         return odo.getEncoderReadings();
     }
+
     public Vector3D getPoseVector(){
         return odo.getPoseVector();
     }
 
     public void updatePose(){
+        if (imuSensor != null) {
+            odo.heading = imuSensor.Angle_FieldCentric();
+            odo.pose[2] = Math.toDegrees(odo.heading);
+        }
         odo.updatePose();
+        // Re-apply so odometry doesn't overwrite in TWO_WHEEL case (it won't, but safe)
+        if (imuSensor != null) {
+            odo.heading = imuSensor.Angle_FieldCentric();
+            odo.pose[2] = Math.toDegrees(odo.heading);
+        }
     }
 
     public void setPower(double power){
