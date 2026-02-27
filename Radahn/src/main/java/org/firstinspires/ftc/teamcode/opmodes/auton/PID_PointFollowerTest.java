@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 public class PID_PointFollowerTest extends LinearOpMode {
 
     RadahnChassis chassis;
-    Vector3D point = new Vector3D(0, 0, 45);
+    Vector3D point = new Vector3D(20, 20, 45);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -20,9 +20,9 @@ public class PID_PointFollowerTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
+            chassis.goToPosePID(point);
             chassis.updatePose();
 
-            chassis.goToPosePID(point);
 
             telemetry.addData("Pose Estimate X:", chassis.getPose()[0]);
             telemetry.addData("Pose Estimate Y:", chassis.getPose()[1]);
