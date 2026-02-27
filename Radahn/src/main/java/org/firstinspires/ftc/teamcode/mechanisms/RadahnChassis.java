@@ -24,7 +24,7 @@ public class RadahnChassis extends MecanumChassis {
         super(new String[]{"fLeft", "fRight", "bRight", "bLeft"}, gamepad1, telemetry, hardwareMap);
 
         setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
-                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, 1, 1, 1);
+                new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, .3044, .3059, 1);
 
         // Wire in the IMU - it will take over heading from odometry
         setIMU(new imu(hardwareMap));

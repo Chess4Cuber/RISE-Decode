@@ -50,8 +50,13 @@ public class Far_Park_Red extends LinearOpMode {
             simpleOuttake.setMotorOuttakeState(MotorOuttakeStates.RESTING);
             hoodedServo.setHoodPosition(-.016);
 
+            // After waitForStart() and before the while loop:
+            chassis.odo.setPose(0, 0, 0);
+            chassis.odo.resetEncoderDeltas();
+
             telemetry.update();
         }
+
 
         while (opModeIsActive()){
             chassis.updatePose();
