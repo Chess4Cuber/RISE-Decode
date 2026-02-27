@@ -1,105 +1,95 @@
 package org.firstinspires.ftc.baseCode.sensors;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class imu {
-    public BNO055IMU imu;
+    public IMU imu;
 
-    public Orientation straight;
-    public double globalAngle;
-    public imu(HardwareMap hardwareMap){
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+    private double startingYaw = 0;
 
-        // IMU Setup
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    // Default constructor — assumes Control Hub is flat, USB ports facing forward
+    public imu(HardwareMap hardwareMap) {
+        imu = hardwareMap.get(IMU.class, "imu");
 
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.accelUnit = BNO055IMU.AccelUnit.MILLI_EARTH_GRAVITY;
-            /*
-            We never use the accelerometer functions of the imu, so we set the
-            accel unit to milli-earth-gravities as a joke
-            */
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                )
+        );
 
         imu.initialize(parameters);
+        imu.resetYaw();
 
-        straight = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XZY, AngleUnit.RADIANS);
+        // Record starting yaw so Angle_FieldCentric() returns relative heading
+        startingYaw = getRawYawRadians();
     }
-    public imu(AxesOrder order, HardwareMap hardwareMap){
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        // IMU Setup
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    // Constructor that lets you specify Control Hub mounting orientation
+    public imu(RevHubOrientationOnRobot.LogoFacingDirection logoDir,
+               RevHubOrientationOnRobot.UsbFacingDirection usbDir,
+               HardwareMap hardwareMap) {
+        imu = hardwareMap.get(IMU.class, "imu");
 
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.accelUnit = BNO055IMU.AccelUnit.MILLI_EARTH_GRAVITY;
-            /*
-            We never use the accelerometer functions of the imu, so we set the
-            accel unit to milli-earth-gravities as a joke
-            */
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(logoDir, usbDir)
+        );
 
         imu.initialize(parameters);
+        imu.resetYaw();
 
-        straight = imu.getAngularOrientation(AxesReference.INTRINSIC, order, AngleUnit.RADIANS);
+        startingYaw = getRawYawRadians();
     }
 
-    public imu(AxesOrder order, AngleUnit unit, HardwareMap hardwareMap){
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        // IMU Setup
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.accelUnit = BNO055IMU.AccelUnit.MILLI_EARTH_GRAVITY;
-            /*
-            We never use the accelerometer functions of the imu, so we set the
-            accel unit to milli-earth-gravities as a joke
-            */
-
-        imu.initialize(parameters);
-
-        straight = imu.getAngularOrientation(AxesReference.INTRINSIC, order, AngleUnit.RADIANS);
+    // Returns raw yaw in radians from IMU
+    private double getRawYawRadians() {
+        YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
+        return angles.getYaw(AngleUnit.RADIANS);
     }
 
-    public double Angle_FieldCentric(){
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XZY, AngleUnit.RADIANS);
-        globalAngle = angles.firstAngle - straight.firstAngle;
+    // Returns heading in radians relative to starting position
+    // Negative sign keeps same convention as the old BNO055 implementation
+    public double Angle_FieldCentric() {
+        double currentYaw = getRawYawRadians();
+        double relativeYaw = currentYaw - startingYaw;
 
-        return -globalAngle;
+        // Wrap to [-pi, pi]
+        while (relativeYaw >  Math.PI) relativeYaw -= 2 * Math.PI;
+        while (relativeYaw < -Math.PI) relativeYaw += 2 * Math.PI;
+
+        return -relativeYaw;
     }
 
-    public double getFirstAngle(){
-        return imu.getAngularOrientation().firstAngle;
+    public double getFirstAngle() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
-    public double getSecondAngle(){
-        return imu.getAngularOrientation().firstAngle;
+    public double getSecondAngle() {
+        return imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.RADIANS);
     }
 
-    public double getThirdAngle(){
-        return imu.getAngularOrientation().firstAngle;
+    public double getThirdAngle() {
+        return imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.RADIANS);
     }
 
-    public double getXAngularVelocity(){
-        return imu.getAngularVelocity().xRotationRate;
+    public double getXAngularVelocity() {
+        AngularVelocity velocity = imu.getRobotAngularVelocity(AngleUnit.RADIANS);
+        return velocity.xRotationRate;
     }
 
-    public double getYAngularVelocity(){
-        return imu.getAngularVelocity().yRotationRate;
+    public double getYAngularVelocity() {
+        AngularVelocity velocity = imu.getRobotAngularVelocity(AngleUnit.RADIANS);
+        return velocity.yRotationRate;
     }
 
-    public double getZAngularVelocity(){
-        return imu.getAngularVelocity().zRotationRate;
+    public double getZAngularVelocity() {
+        AngularVelocity velocity = imu.getRobotAngularVelocity(AngleUnit.RADIANS);
+        return velocity.zRotationRate;
     }
 }
