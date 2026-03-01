@@ -241,6 +241,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                     parkingStep = AutoStep.BACK_CLASSIFIER1;
                     runtime.reset();
                 }
+                break;
 
             case BACK_CLASSIFIER1:
                 targetPose.set(5.60, -54.65,0);
