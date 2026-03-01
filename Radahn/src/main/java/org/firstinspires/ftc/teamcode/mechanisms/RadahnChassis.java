@@ -29,9 +29,9 @@ public class RadahnChassis extends MecanumChassis {
         // Wire in the IMU - it will take over heading from odometry
         setIMU(new imu(hardwareMap));
 
-        TranslationalPID_X = new PID_Controller(0.045);
-        TranslationalPID_Y = new PID_Controller(0.045);
-        HeadingPID = new PID_Controller(0.04);
+        TranslationalPID_X = new PID_Controller(0.04);
+        TranslationalPID_Y = new PID_Controller(0.04);
+        HeadingPID = new PID_Controller(0.03);
 
         setPID_Controller(TranslationalPID_X, TranslationalPID_Y, HeadingPID);
 
