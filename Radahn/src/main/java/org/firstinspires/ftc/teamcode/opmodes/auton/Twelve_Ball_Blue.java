@@ -68,7 +68,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
     Vector3D targetPose = new Vector3D(0, 0, 0);
 
     double tolerance = 3;
-    double shootTime = 2;
+    double shootTime = 1;
+    double intakeTime = 1.5;
     double count = 0;
 
     @Override
@@ -114,10 +115,10 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             chassis.updatePose();
             intake.setPositions();
 
-            hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
+            hoodedOuttakeSystem.updateDistance(24.5, true);
             hoodedOuttakeSystem.update();
 
-            turret.updateLimelight(tx, tagVisible);
+            turret.updateLimelight(tx, false);
             turret.update();
 
             gate.setPosition();
@@ -147,7 +148,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case REVUP:
-                if(runtime.seconds() > 2.5){
+                if(runtime.seconds() > 1.5){
                     parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
                 }
@@ -211,7 +212,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case OPEN_CLASSIFIER1:
-                targetPose.set(5.60, -54.65, 0);
+                targetPose.set(10, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -221,7 +222,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case OPEN_CLASSIFIER2:
-                targetPose.set(-11.89, -54.65, 0);
+                targetPose.set(-7.89, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -238,14 +239,14 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 }
 
             case INTAKE_CLASSIFIER:
-                if(runtime.seconds() > 3){
+                if(runtime.seconds() > intakeTime){
                     parkingStep = AutoStep.BACK_CLASSIFIER1;
                     runtime.reset();
                 }
                 break;
 
             case BACK_CLASSIFIER1:
-                targetPose.set(5.60, -54.65, 0);
+                targetPose.set(10, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_CLASSIFIER2;
@@ -270,10 +271,10 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                    if (count >= 3) {
+                    if (count >= 2) {
                         // Done with classifier cycle — move on
                         intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-                        parkingStep = AutoStep.BACK_SECOND;
+                        parkingStep = AutoStep.SECOND_LINE;
                     } else {
                         // Loop back for another classifier pass
                         parkingStep = AutoStep.OPEN_CLASSIFIER1;
@@ -284,7 +285,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SECOND_LINE:
-                targetPose.set(-11, -65 , 0);
+                targetPose.set(-10, -40.54, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_SECOND;
@@ -293,7 +294,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case BACK_SECOND:
-                targetPose.set(-15, 0, 0);
+                targetPose.set(20.06, -33.54, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.SHOOT_SECOND;
@@ -304,7 +305,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             case SHOOT_SECOND:
                 gate.openClaw();
 
-                if (runtime.seconds() > .5) {
+                if (runtime.seconds() > shootTime) {
                     gate.closeClaw();
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
                     parkingStep = AutoStep.PARK;
@@ -313,7 +314,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(0, 0, 0);
+                targetPose.set(-10, -33.54, 0);
                 break;
         }
     }
