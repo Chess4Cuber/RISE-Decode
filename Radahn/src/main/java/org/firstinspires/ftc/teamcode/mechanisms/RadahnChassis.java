@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnChassis extends MecanumChassis {
 
-    double CPR = 8192;
-    double wheelDia = 1.378;
+    double CPR = 8192 ;
+    double wheelDia = 1.36;
     double trackwidth = 8;
     double forwardOffset = 5.5;
 
@@ -23,15 +23,15 @@ public class RadahnChassis extends MecanumChassis {
     public RadahnChassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super(new String[]{"fLeft", "fRight", "bRight", "bLeft"}, gamepad1, telemetry, hardwareMap);
 
-        setOdometry(new String[]{"fLeft", null, "bRight"}, OdometryType.TWO_WHEEL,
+        setOdometry(new String[]{"fLeft", "fRight", "bRight"}, OdometryType.THREE_WHEEL,
                 new double[]{CPR, wheelDia, trackwidth, forwardOffset}, hardwareMap, 1, 1, 1);
 
         // Wire in the IMU - it will take over heading from odometry
         setIMU(new imu(hardwareMap));
 
-        TranslationalPID_X = new PID_Controller(0.03);
-        TranslationalPID_Y = new PID_Controller(0.03);
-        HeadingPID = new PID_Controller(0.02);
+        TranslationalPID_X = new PID_Controller(0.045);
+        TranslationalPID_Y = new PID_Controller(0.045);
+        HeadingPID = new PID_Controller(0.04);
 
         setPID_Controller(TranslationalPID_X, TranslationalPID_Y, HeadingPID);
 

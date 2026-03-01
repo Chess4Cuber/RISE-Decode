@@ -16,7 +16,7 @@ public class RadahnHoodedOuttake extends PassiveIntake {
 
     double maxFlywheelRPM = 6000.0;
 
-    double kF = 0.000167;
+    double kF = 0.000083;
 
     boolean[] atTargetSpeed;
     double[] targetRPM;
@@ -32,10 +32,10 @@ public class RadahnHoodedOuttake extends PassiveIntake {
 
         for (int i = 0; i < flywheelPID.length; i++) {
 
-            flywheelPID[i] = new PID_Controller(0.0003, 0.00008, 0.7, 0.00001);
+            flywheelPID[i] = new PID_Controller(0.0006, 0.00012, 0.7, 0.00001);
 
             // RPM tolerance before integral windup is reset
-            flywheelPID[i].tolerance = 50;
+            flywheelPID[i].tolerance = 40;
 
             motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

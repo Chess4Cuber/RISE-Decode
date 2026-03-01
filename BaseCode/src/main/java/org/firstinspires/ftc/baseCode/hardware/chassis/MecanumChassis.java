@@ -196,12 +196,8 @@ public abstract class MecanumChassis {
     }
 
     public void updatePose(){
-        if (imuSensor != null) {
-            odo.heading = imuSensor.Angle_FieldCentric();
-            odo.pose[2] = Math.toDegrees(odo.heading);
-        }
         odo.updatePose();
-        // Re-apply so odometry doesn't overwrite in TWO_WHEEL case (it won't, but safe)
+        // Override heading with IMU - keeps X/Y from odometry, heading from IMU
         if (imuSensor != null) {
             odo.heading = imuSensor.Angle_FieldCentric();
             odo.pose[2] = Math.toDegrees(odo.heading);

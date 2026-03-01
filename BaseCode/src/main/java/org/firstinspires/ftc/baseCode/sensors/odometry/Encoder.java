@@ -55,9 +55,10 @@ public class Encoder {
     }
 
     public double getCurrPosInches(){
-        return getCurrPosRadians() * (WHEEL_DIAMETER / 2.0);
+        return getCurrPosRadians() * (WHEEL_DIAMETER / 2.0);  // radius, not diameter
     }
-    
+
+
     public MotorConfigurationType getMotorType(){
         return dcMotorEx.getMotorType();
     }

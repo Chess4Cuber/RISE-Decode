@@ -20,7 +20,7 @@ public class RadahnTurretSystem {
     // how aggressively to correct for tx
     private static final double AUTO_TRACKING_GAIN = 0.2;
 
-    private static final double CAMERA_DEADBAND = 7;
+    private static final double CAMERA_DEADBAND = 3;
     private static final double MAX_POWER = 0.5;
 
     // Unwinding feature - triggers when this close to limit

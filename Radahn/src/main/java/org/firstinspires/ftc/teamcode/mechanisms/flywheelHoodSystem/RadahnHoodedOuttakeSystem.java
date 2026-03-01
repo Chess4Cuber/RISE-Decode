@@ -96,27 +96,28 @@ public class RadahnHoodedOuttakeSystem {
 
 
     public double computeFlywheelPower(double distanceInches) {
+        double absDist = Math.abs(distanceInches);
 
+        double a = 0.00001860/1.2;
+        double b = 0.00907738/1.5;
+        double c = 0.00260417/1.4;
 
-        double a = 0.00075;  // Was 0.001
-        double b = 0.01125;  // Was 0.015
-        double c = 0.1125;   // Was 0.15
-
-        double power = (a * distanceInches * distanceInches) +
-                (b * distanceInches) + c;
+        double power = (a * absDist * absDist) + (b * absDist) + c;
 
         power = Math.max(0.0, Math.min(1.0, power));
+        power = power * .81;
         return power;
     }
 
     public double computeHoodPosition(double distanceInches) {
-        if (distanceInches < 10){
+        double absDist = Math.abs(distanceInches);
+        if (absDist < 10){
             return 0.0;  // Close shots - hood down
-        } else if (distanceInches < 15.5) {
-            return 0.4; // Medium shots - hood mid
+        } else if (absDist < 40) {
+            return .01; // Medium shots - hood mid
         }
 
-        return 0.2;  // Far shots - hood position for arc
+        return 0.1;  // Far shots - hood position for arc
     }
 
     public void setMotorOuttakeState(TurretHoodStates state) {

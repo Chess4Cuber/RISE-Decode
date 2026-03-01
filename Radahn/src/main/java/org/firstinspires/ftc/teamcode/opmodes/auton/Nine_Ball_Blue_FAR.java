@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.baseCode.hardware.claws.SingleServoClaw;
 import org.firstinspires.ftc.baseCode.math.Vector3D;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnChassis;
 import org.firstinspires.ftc.teamcode.mechanisms.RadahnColorSensor;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.MotorIntakeSt
 import org.firstinspires.ftc.teamcode.mechanisms.motorIntakeSystem.RadahnMotorIntakeSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.RadahnTurretSystem;
 import org.firstinspires.ftc.teamcode.mechanisms.flywheelHoodSystem.TurretHoodStates;
+import org.firstinspires.ftc.teamcode.mechanisms.turretSystem.TurretStates;
 
 @Autonomous
 public class Nine_Ball_Blue_FAR extends LinearOpMode {
@@ -57,7 +59,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
     Vector3D poseVector = new Vector3D(0,0,0);
     Vector3D targetPose = new Vector3D(0, 0, 0);
 
-    double tolerance = 1.5;
+    double tolerance = 3.75;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,7 +78,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-            gate.closeClaw();
+            gate.openClaw();
 
             telemetry.update();
         }
@@ -124,13 +126,14 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
     public void autonBlue(){
         switch(parkingStep){
             case  MOVE_TURN_TURRET:
-                targetPose.set(-15, 0, 0);
-                //some  way  to  move  turret to  face goal
-
+                targetPose.set(0, 6.65, 0);
+                //turret.setState(TurretStates.MANUAL);
+                //turret.setTargetAngle(-25.0);
 
                 if (targetPose.findDistance(poseVector) < tolerance ){
                     hoodedOuttakeSystem.setMotorOuttakeState(TurretHoodStates.OUTTAKING);
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+                    turret.setState(TurretStates.AUTO_AIM);
 
                     parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
@@ -139,19 +142,19 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case SHOOTPRE:
-                gate.openClaw();
+                gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                if (runtime.seconds() > .5) {
-                    gate.closeClaw();
+                if (runtime.seconds() > 1) {
+                    gate.setClawState(SingleServoClaw.ClawState.CLOSED);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                    parkingStep = AutoStep.SHOOTPRE;
+                    parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                 }
                 break;
 
             case FIRST_LINE:
-                targetPose.set(-35, -35, 0);
+                targetPose.set(-7.26, 24.31, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -162,7 +165,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case FIRST_LINE2:
-                targetPose.set(-35, -58, 0);
+                targetPose.set(-27.55, 24.31, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_FIRST;
@@ -172,7 +175,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case BACK_FIRST:
-                targetPose.set(-15, 0, 0);
+                targetPose.set(0, 6.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.SHOOT_FIRST;
@@ -182,10 +185,10 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case SHOOT_FIRST:
-                gate.openClaw();
+                gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                if (runtime.seconds() > .5) {
-                    gate.closeClaw();
+                if (runtime.seconds() > 1) {
+                    gate.setClawState(SingleServoClaw.ClawState.CLOSED);
 
                     parkingStep = AutoStep.SECOND_LINE;
                     runtime.reset();
@@ -193,7 +196,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case SECOND_LINE:
-                targetPose.set(-11, -60, 0);
+                targetPose.set(-30, 0, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_SECOND;
@@ -203,7 +206,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case BACK_SECOND:
-                targetPose.set(-15, 0, 0);
+                targetPose.set(0, 6.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.SHOOT_SECOND;
@@ -215,7 +218,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
             case SHOOT_SECOND:
                 gate.openClaw();
 
-                if (runtime.seconds() > .5) {
+                if (runtime.seconds() > 1) {
                     gate.closeClaw();
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
@@ -225,7 +228,7 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(-35, 0, 0);
+                targetPose.set(0, 20, 0);
                 break;
 
         }
