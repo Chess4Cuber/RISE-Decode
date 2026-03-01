@@ -33,6 +33,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         SHOOT_FIRST,
         OPEN_CLASSIFIER1,
         OPEN_CLASSIFIER2,
+        BALL_CLASSIFIER,
         INTAKE_CLASSIFIER,
         BACK_CLASSIFIER1,
         BACK_CLASSIFIER2,
@@ -134,12 +135,12 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
     public void autonBlue(){
         switch(parkingStep){
-            case  MOVE_TURN_TURRET:
+            case MOVE_TURN_TURRET:
                 targetPose.set(20.06, -33.54, 0);
                 hoodedOuttakeSystem.setMotorOuttakeState(TurretHoodStates.OUTTAKING);
                 intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
-                if (targetPose.findDistance(poseVector) < tolerance ){
+                if (targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.REVUP;
                     runtime.reset();
                 }
@@ -157,7 +158,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
-
                     parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                 }
@@ -167,7 +167,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 targetPose.set(10.63, -60.45, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
-
                     parkingStep = AutoStep.FIRST_LINE2;
                     runtime.reset();
                 }
@@ -178,7 +177,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_FIRST1;
-
                     runtime.reset();
                 }
                 break;
@@ -188,7 +186,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_FIRST2;
-
                     runtime.reset();
                 }
                 break;
@@ -198,7 +195,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.SHOOT_FIRST;
-
                     runtime.reset();
                 }
                 break;
@@ -209,32 +205,37 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
                     parkingStep = AutoStep.OPEN_CLASSIFIER1;
                     runtime.reset();
                 }
                 break;
+
             case OPEN_CLASSIFIER1:
-                targetPose.set(5.60, -54.65,0);
+                targetPose.set(5.60, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
                     parkingStep = AutoStep.OPEN_CLASSIFIER2;
                     runtime.reset();
                 }
                 break;
 
             case OPEN_CLASSIFIER2:
-                targetPose.set(-11.89,-54.65,0);
+                targetPose.set(-11.89, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-
-                    parkingStep = AutoStep.INTAKE_CLASSIFIER;
+                    parkingStep = AutoStep.BALL_CLASSIFIER;
                     runtime.reset();
                 }
                 break;
+
+            case BALL_CLASSIFIER:
+                targetPose.set(-11.89, -60, 0);
+
+                if(targetPose.findDistance(poseVector) < tolerance){
+                    parkingStep = AutoStep.INTAKE_CLASSIFIER;
+                }
 
             case INTAKE_CLASSIFIER:
                 if(runtime.seconds() > 3){
@@ -244,7 +245,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case BACK_CLASSIFIER1:
-                targetPose.set(5.60, -54.65,0);
+                targetPose.set(5.60, -54.65, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_CLASSIFIER2;
@@ -254,34 +255,39 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
             case BACK_CLASSIFIER2:
                 targetPose.set(20.06, -33.54, 0);
-                count++;
 
                 if(targetPose.findDistance(poseVector) < tolerance){
+                    count++;
                     parkingStep = AutoStep.SHOOT_CLASSIFIER;
                     runtime.reset();
                 }
                 break;
 
             case SHOOT_CLASSIFIER:
-                gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                if (count == 3 && (runtime.seconds() > shootTime)) {
+                gate.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
 
-                    parkingStep = AutoStep.BACK_SECOND;
-                    runtime.reset();
-                }else {
-                    parkingStep = AutoStep.OPEN_CLASSIFIER1;
+                    if (count >= 3) {
+                        // Done with classifier cycle — move on
+                        intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+                        parkingStep = AutoStep.BACK_SECOND;
+                    } else {
+                        // Loop back for another classifier pass
+                        parkingStep = AutoStep.OPEN_CLASSIFIER1;
+                    }
                     runtime.reset();
                 }
 
+                break;
+
             case SECOND_LINE:
-                targetPose.set(-11, -60, 0);
+                targetPose.set(-11, -65 , 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_SECOND;
-
                     runtime.reset();
                 }
                 break;
@@ -291,7 +297,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.SHOOT_SECOND;
-
                     runtime.reset();
                 }
                 break;
@@ -302,7 +307,6 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 if (runtime.seconds() > .5) {
                     gate.closeClaw();
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-
                     parkingStep = AutoStep.PARK;
                     runtime.reset();
                 }
@@ -311,13 +315,8 @@ public class Twelve_Ball_Blue extends LinearOpMode {
             case PARK:
                 targetPose.set(0, 0, 0);
                 break;
-
         }
-
-
     }
-
-
 
     public void Telemetry(){
         //TODO: show the tolerance stuff and PID values and states
@@ -343,8 +342,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
         telemetry.addData("Y PID Integral", chassis.TranslationalPID_Y.I);
         telemetry.addData("Heading PID Integral", chassis.HeadingPID.I);
 
-
+        telemetry.addData("count", count);
         telemetry.addData("runtime", runtime.seconds());
-
     }
 }

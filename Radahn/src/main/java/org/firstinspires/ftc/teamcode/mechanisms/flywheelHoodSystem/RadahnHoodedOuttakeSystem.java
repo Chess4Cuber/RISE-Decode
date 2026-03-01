@@ -105,7 +105,7 @@ public class RadahnHoodedOuttakeSystem {
         double power = (a * absDist * absDist) + (b * absDist) + c;
 
         power = Math.max(0.0, Math.min(1.0, power));
-        power = power * .775;
+        power = power * .8;
         return power;
     }
 
@@ -114,7 +114,7 @@ public class RadahnHoodedOuttakeSystem {
         if (absDist < 10){
             return 0.0;  // Close shots - hood down
         } else if (absDist < 40) {
-            return .014; // Medium shots - hood mid
+            return .0145; // Medium shots - hood mid
         }
 
         return 0.1;  // Far shots - hood position for arc
