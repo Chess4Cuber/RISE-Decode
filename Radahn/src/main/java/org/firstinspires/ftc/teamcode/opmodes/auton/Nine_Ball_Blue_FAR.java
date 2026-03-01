@@ -24,13 +24,15 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
     ElapsedTime runtime = new ElapsedTime();
 
     public enum AutoStep{
-        MOVE_TURN_TURRET,
+        REVUP,
         SHOOTPRE,
         FIRST_LINE,
         FIRST_LINE2,
         BACK_FIRST,
+        REV_1,
         SHOOT_FIRST,
         SECOND_LINE,
+        INTAKE_SECOND_LINE,
         BACK_SECOND,
         SHOOT_SECOND,
         THIRD_LINE,
@@ -59,7 +61,10 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
     Vector3D poseVector = new Vector3D(0,0,0);
     Vector3D targetPose = new Vector3D(0, 0, 0);
 
-    double tolerance = 3.75;
+    double tolerance = 3;
+    double shootTime = 1.5;
+    double intakeTime = 1.5;
+    double count = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -74,11 +79,11 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
 
-        parkingStep = AutoStep.MOVE_TURN_TURRET;
+        parkingStep = AutoStep.REVUP;
 
         while (opModeInInit()){
             intake.setMotorIntakeState(MotorIntakeStates.RESTING);
-            gate.openClaw();
+            gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
             telemetry.update();
         }
@@ -104,10 +109,10 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
             chassis.updatePose();
             intake.setPositions();
 
-            hoodedOuttakeSystem.updateDistance(tagDistanceInches, tagVisible);
+            hoodedOuttakeSystem.updateDistance(41.2, true);
             hoodedOuttakeSystem.update();
 
-            turret.updateLimelight(tx, tagVisible);
+            turret.updateLimelight(tx, false);
             turret.update();
 
             gate.setPosition();
@@ -125,28 +130,23 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
 
     public void autonBlue(){
         switch(parkingStep){
-            case  MOVE_TURN_TURRET:
-                targetPose.set(0, 6.65, 0);
-                //turret.setState(TurretStates.MANUAL);
-                //turret.setTargetAngle(-25.0);
 
-                if (targetPose.findDistance(poseVector) < tolerance ){
-                    hoodedOuttakeSystem.setMotorOuttakeState(TurretHoodStates.OUTTAKING);
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
-                    turret.setState(TurretStates.AUTO_AIM);
+            case REVUP:
+                gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
+                hoodedOuttakeSystem.setMotorOuttakeState(TurretHoodStates.OUTTAKING);
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+                if(runtime.seconds() > 3){
                     parkingStep = AutoStep.SHOOTPRE;
                     runtime.reset();
                 }
-
                 break;
 
             case SHOOTPRE:
-                gate.setClawState(SingleServoClaw.ClawState.OPEN);
+                gate.setClawState(SingleServoClaw.ClawState.CLOSED);
 
-                if (runtime.seconds() > 1) {
-                    gate.setClawState(SingleServoClaw.ClawState.CLOSED);
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+                if (runtime.seconds() > shootTime) {
+                    gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
                     parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
@@ -157,7 +157,6 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 targetPose.set(-7.26, 24.31, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
-                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                     parkingStep = AutoStep.FIRST_LINE2;
                     runtime.reset();
@@ -175,20 +174,28 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case BACK_FIRST:
-                targetPose.set(0, 6.65, 0);
+                targetPose.set(0, 0, 0);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
-                    parkingStep = AutoStep.SHOOT_FIRST;
+                    parkingStep = AutoStep.REV_1;
 
                     runtime.reset();
                 }
                 break;
 
-            case SHOOT_FIRST:
-                gate.setClawState(SingleServoClaw.ClawState.OPEN);
+            case REV_1:
+                if(runtime.seconds() > 2){
+                    parkingStep = AutoStep.SHOOT_FIRST;
+                    runtime.reset();
+                }
+                break;
 
-                if (runtime.seconds() > 1) {
-                    gate.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+            case SHOOT_FIRST:
+                gate.setClawState(SingleServoClaw.ClawState.CLOSED);
+
+                if (runtime.seconds() > shootTime) {
+                    gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
                     parkingStep = AutoStep.SECOND_LINE;
                     runtime.reset();
@@ -196,33 +203,44 @@ public class Nine_Ball_Blue_FAR extends LinearOpMode {
                 break;
 
             case SECOND_LINE:
-                targetPose.set(-30, 0, 0);
+                targetPose.set(-35, 0, 0);
+                intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
 
                 if(targetPose.findDistance(poseVector) < tolerance){
-                    parkingStep = AutoStep.BACK_SECOND;
+                    parkingStep = AutoStep.INTAKE_SECOND_LINE;
+                    runtime.reset();
+                }
+                break;
 
+            case INTAKE_SECOND_LINE:
+                if(runtime.seconds() > intakeTime){
+                    parkingStep = AutoStep.BACK_SECOND;
                     runtime.reset();
                 }
                 break;
 
             case BACK_SECOND:
-                targetPose.set(0, 6.65, 0);
+                targetPose.set(0, 0, 0);
+
 
                 if(targetPose.findDistance(poseVector) < tolerance){
+                    count++;
                     parkingStep = AutoStep.SHOOT_SECOND;
-
                     runtime.reset();
                 }
                 break;
 
             case SHOOT_SECOND:
-                gate.openClaw();
+                gate.setClawState(SingleServoClaw.ClawState.CLOSED);
 
-                if (runtime.seconds() > 1) {
-                    gate.closeClaw();
-                    intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+                if (runtime.seconds() > shootTime) {
+                    gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                    parkingStep = AutoStep.PARK;
+                    if (count >= 3) {
+                        parkingStep = AutoStep.PARK;
+                    } else {
+                        parkingStep = AutoStep.FIRST_LINE;
+                    }
                     runtime.reset();
                 }
                 break;

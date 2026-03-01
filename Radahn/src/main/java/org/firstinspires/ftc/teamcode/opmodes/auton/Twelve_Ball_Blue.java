@@ -159,6 +159,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
+
                     parkingStep = AutoStep.FIRST_LINE;
                     runtime.reset();
                 }
@@ -178,6 +179,7 @@ public class Twelve_Ball_Blue extends LinearOpMode {
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_FIRST1;
+
                     runtime.reset();
                 }
                 break;
@@ -303,10 +305,10 @@ public class Twelve_Ball_Blue extends LinearOpMode {
                 break;
 
             case SHOOT_SECOND:
-                gate.openClaw();
+                gate.setClawState(SingleServoClaw.ClawState.CLOSED);
 
                 if (runtime.seconds() > shootTime) {
-                    gate.closeClaw();
+                    gate.setClawState(SingleServoClaw.ClawState.OPEN);
                     intake.setMotorIntakeState(MotorIntakeStates.RESTING);
                     parkingStep = AutoStep.PARK;
                     runtime.reset();

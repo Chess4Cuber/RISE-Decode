@@ -100,7 +100,7 @@ public class RadahnHoodedOuttakeSystem {
         double absDist = Math.abs(distanceInches);
 
         if(absDist >39){
-            return .162;
+            return .165;
         }
 
         double a = 0.00001860/1.2;
