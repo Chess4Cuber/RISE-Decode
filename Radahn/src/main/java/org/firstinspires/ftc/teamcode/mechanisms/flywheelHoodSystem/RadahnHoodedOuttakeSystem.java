@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RadahnHoodedOuttakeSystem {
 
-    RadahnHoodedOuttake hoodedOuttake;
+    public RadahnHoodedOuttake hoodedOuttake;
     Gamepad gamepad1;
     Telemetry telemetry;
 
@@ -52,13 +52,13 @@ public class RadahnHoodedOuttakeSystem {
             case OUTTAKING:
                 // PID + feedforward control is applied inside setFlywheelPower
                 hoodedOuttake.setFlywheelPower(targetFlywheelCommand);
-                hoodedOuttake.setHoodPosition(targetHoodPosition);
+                //hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
 
             case INTAKING:
                 // Run flywheel in reverse for intake
                 hoodedOuttake.setFlywheelPower(-targetFlywheelCommand);
-                hoodedOuttake.setHoodPosition(targetHoodPosition);
+                //hoodedOuttake.setHoodPosition(targetHoodPosition);
                 break;
         }
     }
@@ -117,7 +117,7 @@ public class RadahnHoodedOuttakeSystem {
     public double computeHoodPosition(double distanceInches) {
         double absDist = Math.abs(distanceInches);
         if (absDist < 10){
-            return 0.0;  // Close shots - hood down
+            return 0.4;  // Close shots - hood down
         } else if (absDist < 39) {
             return .01; // Medium shots - hood mid
         }

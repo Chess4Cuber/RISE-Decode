@@ -37,6 +37,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
         INTAKE_CLASSIFIER,
         BACK_CLASSIFIER1,
         BACK_CLASSIFIER2,
+        STEPBACK_CLASSIFIER,
         SHOOT_CLASSIFIER,
         SECOND_LINE,
         BACK_SECOND,
@@ -118,6 +119,9 @@ public class Twelve_Ball_Red extends LinearOpMode {
             hoodedOuttakeSystem.updateDistance(24.5, true);
             hoodedOuttakeSystem.update();
 
+            hoodedOuttakeSystem.hoodedOuttake.setHoodPosition(.01);
+
+
             turret.updateLimelight(tx, false);
             turret.update();
 
@@ -166,7 +170,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case FIRST_LINE:
-                targetPose.set(10.63, 60.45, 0);    // Y negated
+                targetPose.set(15.63, 57.45, 0);    // Y negated
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.FIRST_LINE2;
@@ -175,7 +179,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case FIRST_LINE2:
-                targetPose.set(-14.26, 60.45, 0);   // Y negated
+                targetPose.set(-14.26, 57.45, 0);   // Y negated
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_FIRST1;
@@ -213,7 +217,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case OPEN_CLASSIFIER1:
-                targetPose.set(10, 54.65, 0);       // Y negated
+                targetPose.set(10, 49.65, 0);       // Y negated
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
@@ -223,8 +227,17 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case OPEN_CLASSIFIER2:
-                targetPose.set(-7.89, 54.65, 0);    // Y negated
+                targetPose.set(-10.89, 49.65, 0);    // Y negated
 
+                if(targetPose.findDistance(poseVector) < tolerance){
+                    intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
+                    parkingStep = AutoStep.STEPBACK_CLASSIFIER;
+                    runtime.reset();
+                }
+                break;
+
+            case STEPBACK_CLASSIFIER:
+                targetPose.set(-2.55, 45.65, 0);
                 if(targetPose.findDistance(poseVector) < tolerance){
                     intake.setMotorIntakeState(MotorIntakeStates.INTAKING);
                     parkingStep = AutoStep.BALL_CLASSIFIER;
@@ -233,7 +246,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case BALL_CLASSIFIER:
-                targetPose.set(-11.89, 60, 0);      // Y negated
+                targetPose.set(-16.89, 68, 0);      // Y negated
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.INTAKE_CLASSIFIER;
@@ -271,8 +284,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 if (runtime.seconds() > shootTime) {
                     gate.setClawState(SingleServoClaw.ClawState.OPEN);
 
-                    if (count >= 2) {
-                        intake.setMotorIntakeState(MotorIntakeStates.RESTING);
+                    if (count >= 1) {
                         parkingStep = AutoStep.SECOND_LINE;
                     } else {
                         parkingStep = AutoStep.OPEN_CLASSIFIER1;
@@ -282,7 +294,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case SECOND_LINE:
-                targetPose.set(-10, 40.54, 0);      // Y negated
+                targetPose.set(-10, 29.54, 0);      // Y negated
 
                 if(targetPose.findDistance(poseVector) < tolerance){
                     parkingStep = AutoStep.BACK_SECOND;
@@ -311,7 +323,7 @@ public class Twelve_Ball_Red extends LinearOpMode {
                 break;
 
             case PARK:
-                targetPose.set(-10, 33.54, 0);      // Y negated
+                targetPose.set(-1, 29.54, 0);      // Y negated
                 break;
         }
     }
